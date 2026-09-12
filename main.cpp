@@ -1,7 +1,8 @@
 // Desktop pet demo: a transparent, always-on-top floating window that plays a
 // PNG frame sequence (desktop_pet_image\<action>\000.png ..) using the Win32
-// layered-window API and GDI+. The base action loops forever; a "clicked"
-// action plays once on each click. Single file, self-contained, C++17.
+// layered-window API and GDI+. With no argument the base animation is a random
+// idle pool ("idle"/"idle2"); a "clicked" action plays once per click and a
+// "drag" action loops while dragging. Single file, self-contained, C++17.
 //
 // Build (MSVC):
 //   cl /nologo /EHsc /std:c++17 /O2 main.cpp gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
@@ -21,6 +22,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -54,9 +56,10 @@ struct Frame {
     bool hasAlpha = false;  // source PNG had an alpha channel?
 };
 
-std::vector<Frame> g_baseFrames;
+std::vector<std::vector<Frame>> g_basePool;
 std::vector<Frame> g_clickFrames;
 std::vector<Frame> g_dragFrames;
+int g_basePoolIndex = 0;
 int g_baseIndex = 0;
 int g_clickIndex = 0;
 int g_dragIndex = 0;
@@ -220,6 +223,29 @@ void PresentFrame(HWND hwnd, const Frame& frame) {
     SelectObject(g_memDC, previous);
 }
 
+// Present the current frame of the active base (idle) animation.
+void PresentBaseFrame(HWND hwnd) {
+    if (g_basePool.empty()) {
+        return;
+    }
+    const std::vector<Frame>& base =
+        g_basePool[static_cast<size_t>(g_basePoolIndex)];
+    if (base.empty()) {
+        return;
+    }
+    PresentFrame(hwnd, base[static_cast<size_t>(g_baseIndex) % base.size()]);
+}
+
+// Random idle: pick the next idle animation in the pool (may repeat).
+int PickRandomBaseIndex(int poolSize) {
+    if (poolSize <= 1) {
+        return 0;
+    }
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(0, poolSize - 1);
+    return dist(rng);
+}
+
 // Restart the one-shot clicked animation from its first frame.
 void TriggerClickReaction(HWND hwnd) {
     if (g_clickFrames.empty()) {
@@ -243,9 +269,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 if (g_clickIndex >= static_cast<int>(g_clickFrames.size())) {
                     // clicked animation finished: resume the base loop
                     g_state = PetState::Base;
-                    if (!g_baseFrames.empty()) {
-                        PresentFrame(hwnd, g_baseFrames[static_cast<size_t>(g_baseIndex)]);
-                    }
+                    PresentBaseFrame(hwnd);
                 } else {
                     PresentFrame(hwnd, g_clickFrames[static_cast<size_t>(g_clickIndex)]);
                 }
@@ -257,10 +281,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     PresentFrame(hwnd, g_dragFrames[static_cast<size_t>(g_dragIndex)]);
                 }
             } else {  // Base
-                if (!g_baseFrames.empty()) {
-                    g_baseIndex =
-                        (g_baseIndex + 1) % static_cast<int>(g_baseFrames.size());
-                    PresentFrame(hwnd, g_baseFrames[static_cast<size_t>(g_baseIndex)]);
+                if (!g_basePool.empty()) {
+                    const int size = static_cast<int>(
+                        g_basePool[static_cast<size_t>(g_basePoolIndex)].size());
+                    if (size > 0) {
+                        g_baseIndex += 1;
+                        if (g_baseIndex >= size) {
+                            // one idle loop finished: switch to a random idle
+                            g_baseIndex = 0;
+                            if (g_basePool.size() > 1) {
+                                g_basePoolIndex = PickRandomBaseIndex(
+                                    static_cast<int>(g_basePool.size()));
+                            }
+                        }
+                        PresentBaseFrame(hwnd);
+                    }
                 }
             }
         }
@@ -321,9 +356,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             TriggerClickReaction(hwnd);
         } else if (g_dragging) {
             g_state = PetState::Base;
-            if (!g_baseFrames.empty()) {
-                PresentFrame(hwnd, g_baseFrames[static_cast<size_t>(g_baseIndex)]);
-            }
+            PresentBaseFrame(hwnd);
         }
         g_mouseDown = false;
         g_dragging = false;
@@ -356,12 +389,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             DeleteDC(g_memDC);
             g_memDC = nullptr;
         }
-        for (const Frame& frame : g_baseFrames) {
-            if (frame.hbmp != nullptr) {
-                DeleteObject(frame.hbmp);
+        for (const std::vector<Frame>& animation : g_basePool) {
+            for (const Frame& frame : animation) {
+                if (frame.hbmp != nullptr) {
+                    DeleteObject(frame.hbmp);
+                }
             }
         }
-        g_baseFrames.clear();
+        g_basePool.clear();
         for (const Frame& frame : g_clickFrames) {
             if (frame.hbmp != nullptr) {
                 DeleteObject(frame.hbmp);
@@ -386,11 +421,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 }  // namespace
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
-    // Base action name comes from argv[1]; no argument defaults to "idle".
-    std::string actionUtf8 = "idle";
-    if (__argc > 1 && __argv != nullptr && __argv[1] != nullptr) {
-        actionUtf8 = __argv[1];
-    }
+    // argv[1] optionally forces a single base action; with no argument the pet
+    // uses a random idle pool ("idle" + "idle2") and switches between them.
+    const bool explicitAction =
+        (__argc > 1 && __argv != nullptr && __argv[1] != nullptr);
+    std::string actionUtf8 = explicitAction ? __argv[1] : "idle";
     // Optional argv[2] overrides the assets directory name (default
     // "desktop_pet_image"), resolved relative to the executable directory.
     std::string assetsUtf8 = "desktop_pet_image";
@@ -399,10 +434,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     }
 
     // Narrow (UTF-8) arguments -> wide strings via MultiByteToWideChar.
-    std::wstring action = WideFromUtf8(actionUtf8.c_str());
-    if (action.empty()) {
-        action = kDefaultAction;
-    }
     std::wstring assetsDir = WideFromUtf8(assetsUtf8.c_str());
     if (assetsDir.empty()) {
         assetsDir = kAssetsDir;
@@ -415,16 +446,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     }
 
     const std::wstring exeDir = GetExecutableDir();
-    g_baseFrames = LoadFrames(exeDir, assetsDir, action);
 
-    std::printf("[pet] action=%s loaded=%zu/%zu frames\n",
-                actionUtf8.c_str(), g_baseFrames.size(), kMaxFrames);
-
-    if (g_baseFrames.empty()) {
-        std::printf("[pet] no frames found for action '%s' "
-                    "(looked for %s\\%s\\000.png)\n",
-                    actionUtf8.c_str(), assetsUtf8.c_str(), actionUtf8.c_str());
-        return 1;
+    if (explicitAction) {
+        std::wstring action = WideFromUtf8(actionUtf8.c_str());
+        if (action.empty()) {
+            action = kDefaultAction;
+        }
+        std::vector<Frame> frames = LoadFrames(exeDir, assetsDir, action);
+        if (frames.empty()) {
+            std::printf("[pet] no frames found for action '%s' "
+                        "(looked for %s\\%s\\000.png)\n",
+                        actionUtf8.c_str(), assetsUtf8.c_str(), actionUtf8.c_str());
+            return 1;
+        }
+        std::printf("[pet] action=%s loaded=%zu/%zu frames\n",
+                    actionUtf8.c_str(), frames.size(), kMaxFrames);
+        g_basePool.push_back(std::move(frames));
+    } else {
+        for (const char* nameUtf8 : { "idle", "idle2" }) {
+            const std::wstring name = WideFromUtf8(nameUtf8);
+            std::vector<Frame> frames = LoadFrames(exeDir, assetsDir, name);
+            if (frames.empty()) {
+                std::printf("[pet] idle '%s' not found, skipped\n", nameUtf8);
+                continue;
+            }
+            std::printf("[pet] idle '%s' loaded=%zu/%zu frames\n",
+                        nameUtf8, frames.size(), kMaxFrames);
+            g_basePool.push_back(std::move(frames));
+        }
+        if (g_basePool.empty()) {
+            std::printf("[pet] no idle frames found in %s\n", assetsUtf8.c_str());
+            return 1;
+        }
+        g_basePoolIndex = PickRandomBaseIndex(static_cast<int>(g_basePool.size()));
+        std::printf("[pet] random idle enabled across %zu animations\n",
+                    g_basePool.size());
     }
 
     g_clickFrames = LoadFrames(exeDir, assetsDir, L"clicked");
@@ -445,7 +501,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
     // The window size adapts to the first base frame's pixel dimensions.
     BITMAP firstFrame = {};
-    if (GetObjectW(g_baseFrames[0].hbmp, static_cast<int>(sizeof(BITMAP)),
+    if (GetObjectW(g_basePool[0][0].hbmp, static_cast<int>(sizeof(BITMAP)),
                    &firstFrame) == 0 ||
         firstFrame.bmWidth <= 0 || firstFrame.bmHeight <= 0) {
         std::printf("[pet] could not read the first frame's dimensions\n");
@@ -486,7 +542,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
     SetTimer(hwnd, kTimerId, kTimerElapseMs, nullptr);
 
-    PresentFrame(hwnd, g_baseFrames[0]);
+    PresentBaseFrame(hwnd);
     ShowWindow(hwnd, SW_SHOWNOACTIVATE);
     SetFocus(hwnd);
 
