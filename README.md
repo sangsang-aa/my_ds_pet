@@ -10,19 +10,19 @@
 `desktop_pet_image\<动作名>\000.png ...`：
 
 ```
-pet_demo.exe idle      播放 idle 动作（默认动作 = 待机）
-pet_demo.exe walking
-pet_demo.exe happy
-pet_demo.exe busy
-pet_demo.exe thinking
-pet_demo.exe shy
-pet_demo.exe           无参数 = idle（待机）
-pet_demo.exe idle desktop_pet_image_video   # 用第二个参数指定资源目录（默认 desktop_pet_image）
+pet_demo.exe                   无参数 = 随机待机（在 idle / idle2 之间随机切换）
+pet_demo.exe idle              强制单个待机动作，不做随机切换
+pet_demo.exe walking_right     强制播放其它单个动作
+pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录（默认 desktop_pet_image）
 ```
 
-程序启动时会加载**三个动作**：基底动作（循环播放，如 idle）+ 固定的 `clicked`
-动作（被点击时播放一次）+ 固定的 `drag` 动作（被拖拽时循环播放）。`clicked` /
-`drag` 文件夹不存在或为空时打印 `[pet] no 'clicked'/'drag' frames, ... disabled`
+**随机待机**：无参数启动时，程序把 `idle` 和 `idle2` 都加载为「待机动画池」，
+每播放完一轮就随机切换到池中的另一个待机动画；显式传入第一个参数则固定该动作、
+不做随机切换。
+
+程序启动时会加载：待机动画池（1~2 个循环动画）+ 固定的 `clicked` 动作（被点击时
+播放一次）+ 固定的 `drag` 动作（被拖拽时循环播放）。`clicked` / `drag` 文件夹
+不存在或为空时打印 `[pet] no 'clicked'/'drag' frames, ... disabled`
 并禁用对应反应。
 
 操作方式：
@@ -45,8 +45,8 @@ pet_demo.exe idle desktop_pet_image_video   # 用第二个参数指定资源目�
   （例如 `000.png`、`001.png`、`002.png` 存在而 `003.png` 缺失，则循环播放这 3 帧）
 - 最多尝试 120 帧（`000` ~ `119`）
 - 只存在 `000.png` 时程序正常运行，循环播放这一帧
-- 启动时向 stdout 输出类似 `[pet] action=walking loaded=27/120 frames`
-  和 `[pet] clicked loaded=33/120 frames`
+- 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
+  `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`
 
 ## 图片要求
 
