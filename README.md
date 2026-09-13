@@ -6,8 +6,9 @@
 
 ## 运行
 
-把编译产物 `pet_demo.exe` 放在任意目录（或编译输出目录），并保证其同级存在资源目录
-`desktop_pet_image\<动作名>\000.png ...`：
+把 `pet_demo.exe` 放在任意目录，并保证其同级存在资源目录
+`desktop_pet_image\<动作名>\000.png ...`（仓库里已预编译好
+`pet_demo.exe`（x86-64）与 `pet_demo_x86.exe`（32 位））：
 
 ```
 pet_demo.exe                   无参数 = 随机待机（在 idle / idle2 之间随机切换）
@@ -21,15 +22,33 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 不做随机切换。
 
 程序启动时会加载：待机动画池（1~2 个循环动画）+ 固定的 `clicked` 动作（被点击时
-播放一次）+ 固定的 `drag` 动作（被拖拽时循环播放）。`clicked` / `drag` 文件夹
-不存在或为空时打印 `[pet] no 'clicked'/'drag' frames, ... disabled`
-并禁用对应反应。
+播放一次）+ `shy` 动作（鼠标扫过头顶时播放一次）+ 固定的 `drag` 动作（被拖拽时循环
+播放）+ 固定的 `walking_left` / `walking_right` 动作（向右/向左行走）。`clicked` /
+`shy` / `drag` / `walking_*` 文件夹不存在或为空时打印 `... disabled` 并禁用对应行为。
+
+**待机 ↔ 行走状态链**：宠物在待机状态停留一段随机时间（约 3~10 秒）后，随机选择
+向左或向右行走；行走期间循环播放对应方向的行走动画，同时**窗口沿水平方向移动**
+（每 100ms 移动 5px）；走到**屏幕边缘**或行走时长到（约 1.5~4.5 秒）后回到待机，
+如此往复。
+
+**拖拽后等待**：把宠物拖到某个位置松手后，宠物进入约 **2~3 分钟**的"等待"阶段——
+只随机切换 `idle` / `idle2` 待机动画、**不做左右移动**；等待计时结束后再恢复上面的
+待机 ↔ 行走链。等待期间左键单击只会播放 `clicked` 反应并继续等待，不会打断计时；
+再次拖拽会重新计时。
+
+**扫头害羞**：鼠标在宠物**头部（窗口上方约 45%）**左右扫过（累计水平位移超过阈值）
+时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，避免连续触发。
+
+**启动失败会有弹窗**：GUI 程序没有控制台，找不到帧时不再静默退出，而是弹出错误框，
+写明「资源目录、请求的动作、该目录下实际可用的动作」，方便排查（例如动作名拼错、
+资源目录放错位置、素材缺失）。
 
 操作方式：
 
-- 左键单击：播放 `clicked` 反应动画一次，播完回到基底动作
-- 左键按住拖动：移动宠物，同时**循环播放 `drag` 挣扎动画**；松手回到基底动作
+- 左键单击：播放 `clicked` 反应动画一次，播完回到待机/等待
+- 左键按住拖动：移动宠物，同时**循环播放 `drag` 挣扎动画**；松手后进入 2~3 分钟等待
   （位移超过系统拖拽阈值才进入拖动，否则视为点击）
+- 鼠标在头顶左右扫过：播放 `shy` 害羞动画一次
 - 右键单击：退出程序
 - 按 ESC：退出程序
 
@@ -46,7 +65,13 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 最多尝试 120 帧（`000` ~ `119`）
 - 只存在 `000.png` 时程序正常运行，循环播放这一帧
 - 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
-  `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`
+  `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
+  `[pet] walking loaded: left=30 right=27 frames`、`[pet] shy loaded=30/120 frames`
+
+> 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
+> `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`clicked` 33 帧、
+> `drag` 30 帧、`shy` 30 帧、`thinking` 30 帧）。原 `desktop_pet_image_video\`
+> 目录内容与之重复，可删除。
 
 ## 图片要求
 
