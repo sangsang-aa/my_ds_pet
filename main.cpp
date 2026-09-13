@@ -50,6 +50,17 @@ constexpr float kScaleFactor = 0.70f;       // pet renders 30% smaller on screen
 constexpr wchar_t kClassName[] = L"DesktopPetWindowClass";
 constexpr wchar_t kAssetsDir[] = L"desktop_pet_image";
 constexpr wchar_t kDefaultAction[] = L"idle";
+constexpr int kWalkStepPx = 5;          // window movement per tick while walking
+constexpr int kIdleMinTicks = 30;       // idle dwell before walking (~3s)
+constexpr int kIdleMaxTicks = 100;      // ~10s
+constexpr int kWalkMinTicks = 15;       // walk duration (~1.5s)
+constexpr int kWalkMaxTicks = 45;       // ~4.5s
+constexpr int kWaitMinTicks = 1200;     // post-drag idle-only wait (~2 min)
+constexpr int kWaitMaxTicks = 1800;     // ~3 min
+constexpr int kHeadBandPercent = 45;    // top 45% of the pet counts as the "head"
+constexpr int kSweepThresholdPx = 50;   // horizontal travel over the head -> shy
+constexpr int kMaxSweepDeltaPx = 80;    // ignore jumpy deltas (mouse re-entry)
+constexpr int kShyCooldownTicks = 25;   // ~2.5s between shy reactions
 
 struct Frame {
     HBITMAP hbmp = nullptr;
@@ -59,13 +70,28 @@ struct Frame {
 std::vector<std::vector<Frame>> g_basePool;
 std::vector<Frame> g_clickFrames;
 std::vector<Frame> g_dragFrames;
+std::vector<Frame> g_walkLeftFrames;
+std::vector<Frame> g_walkRightFrames;
+std::vector<Frame> g_shyFrames;
 int g_basePoolIndex = 0;
 int g_baseIndex = 0;
 int g_clickIndex = 0;
 int g_dragIndex = 0;
+int g_walkIndex = 0;
+int g_walkDir = 1;  // +1 = right, -1 = left
+int g_shyIndex = 0;
 
-enum class PetState { Base, Clicked, Dragging };
+enum class PetState { Base, Clicked, Dragging, Walking, Shy };
 PetState g_state = PetState::Base;
+
+int g_behaviorTicks = 0;
+int g_behaviorTarget = 0;
+int g_screenW = 0;
+int g_waitTicks = 0;
+int g_headSweepPx = 0;
+int g_lastMouseX = 0;
+int g_lastMouseY = 0;
+int g_shyCooldownTicks = 0;
 
 bool g_mouseDown = false;
 bool g_dragging = false;
@@ -114,6 +140,39 @@ std::wstring GetExecutableDir() {
         dir.resize(slash + 1);
     }
     return dir;
+}
+
+// GUI apps have no console, so a fatal startup error must be shown here to avoid
+// the "double-click does nothing" silent exit.
+void ShowFatalError(const std::wstring& message) {
+    MessageBoxW(nullptr, message.c_str(), L"Desktop Pet",
+                MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+}
+
+// Comma-separated list of action folders under assetsPath that contain 000.png.
+std::wstring AvailableActions(const std::wstring& assetsPath) {
+    std::wstring result;
+    WIN32_FIND_DATAW entry = {};
+    const std::wstring pattern = assetsPath + L"\\*";
+    HANDLE handle = FindFirstFileW(pattern.c_str(), &entry);
+    if (handle == INVALID_HANDLE_VALUE) {
+        return L"(assets folder not found)";
+    }
+    do {
+        if ((entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 &&
+            entry.cFileName[0] != L'.') {
+            const std::wstring first =
+                assetsPath + L"\\" + entry.cFileName + L"\\000.png";
+            if (GetFileAttributesW(first.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                if (!result.empty()) {
+                    result += L", ";
+                }
+                result += entry.cFileName;
+            }
+        }
+    } while (FindNextFileW(handle, &entry) != 0);
+    FindClose(handle);
+    return result.empty() ? L"(none)" : result;
 }
 
 // Narrow UTF-8 string -> wide string, or empty on failure.
@@ -236,14 +295,37 @@ void PresentBaseFrame(HWND hwnd) {
     PresentFrame(hwnd, base[static_cast<size_t>(g_baseIndex) % base.size()]);
 }
 
+std::mt19937& Rng() {
+    static std::mt19937 rng(std::random_device{}());
+    return rng;
+}
+
+int RandomInRange(int lo, int hi) {
+    if (hi <= lo) {
+        return lo;
+    }
+    std::uniform_int_distribution<int> dist(lo, hi);
+    return dist(Rng());
+}
+
 // Random idle: pick the next idle animation in the pool (may repeat).
 int PickRandomBaseIndex(int poolSize) {
-    if (poolSize <= 1) {
-        return 0;
-    }
-    static std::mt19937 rng(std::random_device{}());
-    std::uniform_int_distribution<int> dist(0, poolSize - 1);
-    return dist(rng);
+    return RandomInRange(0, poolSize - 1);
+}
+
+// Return to idle and schedule the next walk after a random dwell.
+void EnterBase(HWND hwnd) {
+    g_state = PetState::Base;
+    g_behaviorTicks = 0;
+    g_behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+    PresentBaseFrame(hwnd);
+}
+
+// After the user drops the pet: idle in place (no walking) for a random 2-3
+// minutes, then resume the normal idle<->walk chain.
+void EnterWaiting(HWND hwnd) {
+    EnterBase(hwnd);
+    g_waitTicks = RandomInRange(kWaitMinTicks, kWaitMaxTicks);
 }
 
 // Restart the one-shot clicked animation from its first frame.
@@ -256,6 +338,17 @@ void TriggerClickReaction(HWND hwnd) {
     PresentFrame(hwnd, g_clickFrames[0]);
 }
 
+// Play the one-shot shy animation (mouse sweeping across the pet's head).
+void TriggerShyReaction(HWND hwnd) {
+    if (g_shyFrames.empty() || g_shyCooldownTicks > 0) {
+        return;
+    }
+    g_state = PetState::Shy;
+    g_shyIndex = 0;
+    g_shyCooldownTicks = kShyCooldownTicks;
+    PresentFrame(hwnd, g_shyFrames[0]);
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
     case WM_CREATE:
@@ -264,14 +357,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
     case WM_TIMER:
         if (wParam == kTimerId) {
+            if (g_shyCooldownTicks > 0) {
+                g_shyCooldownTicks -= 1;
+            }
+            g_headSweepPx -= g_headSweepPx / 2;  // decay, so slow drift never triggers
             if (g_state == PetState::Clicked) {
                 g_clickIndex += 1;
                 if (g_clickIndex >= static_cast<int>(g_clickFrames.size())) {
-                    // clicked animation finished: resume the base loop
-                    g_state = PetState::Base;
-                    PresentBaseFrame(hwnd);
+                    // clicked animation finished: resume the idle loop
+                    EnterBase(hwnd);
                 } else {
                     PresentFrame(hwnd, g_clickFrames[static_cast<size_t>(g_clickIndex)]);
+                }
+            } else if (g_state == PetState::Shy) {
+                g_shyIndex += 1;
+                if (g_shyIndex >= static_cast<int>(g_shyFrames.size())) {
+                    EnterBase(hwnd);
+                } else {
+                    PresentFrame(hwnd, g_shyFrames[static_cast<size_t>(g_shyIndex)]);
                 }
             } else if (g_state == PetState::Dragging) {
                 // drag reaction loops while the pet is being dragged
@@ -279,6 +382,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     g_dragIndex =
                         (g_dragIndex + 1) % static_cast<int>(g_dragFrames.size());
                     PresentFrame(hwnd, g_dragFrames[static_cast<size_t>(g_dragIndex)]);
+                }
+            } else if (g_state == PetState::Walking) {
+                const std::vector<Frame>& walk =
+                    (g_walkDir > 0) ? g_walkRightFrames : g_walkLeftFrames;
+                if (walk.empty()) {
+                    EnterBase(hwnd);
+                } else {
+                    g_walkIndex = (g_walkIndex + 1) % static_cast<int>(walk.size());
+                    PresentFrame(hwnd, walk[static_cast<size_t>(g_walkIndex)]);
+                    RECT rect = {};
+                    GetWindowRect(hwnd, &rect);
+                    const int newX = rect.left + g_walkDir * kWalkStepPx;
+                    const bool atEdge =
+                        (newX < 0) || (newX + g_petW > g_screenW);
+                    if (!atEdge) {
+                        SetWindowPos(hwnd, nullptr, newX, rect.top, 0, 0,
+                                     SWP_NOSIZE | SWP_NOZORDER);
+                    }
+                    g_behaviorTicks += 1;
+                    if (atEdge || g_behaviorTicks >= g_behaviorTarget) {
+                        EnterBase(hwnd);
+                    }
                 }
             } else {  // Base
                 if (!g_basePool.empty()) {
@@ -295,6 +420,37 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                             }
                         }
                         PresentBaseFrame(hwnd);
+                    }
+                    if (g_waitTicks > 0) {
+                        // post-drag waiting: idle animations only, never walk
+                        g_waitTicks -= 1;
+                        if (g_waitTicks == 0) {
+                            g_behaviorTicks = 0;
+                            g_behaviorTarget =
+                                RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+                        }
+                    } else {
+                        const bool haveLeft = !g_walkLeftFrames.empty();
+                        const bool haveRight = !g_walkRightFrames.empty();
+                        g_behaviorTicks += 1;
+                        if ((haveLeft || haveRight) &&
+                            g_behaviorTicks >= g_behaviorTarget) {
+                            // idle dwell elapsed: walk in a random direction
+                            if (haveLeft && haveRight) {
+                                g_walkDir = (RandomInRange(0, 1) == 0) ? -1 : 1;
+                            } else {
+                                g_walkDir = haveRight ? 1 : -1;
+                            }
+                            g_walkIndex = 0;
+                            g_behaviorTicks = 0;
+                            g_behaviorTarget =
+                                RandomInRange(kWalkMinTicks, kWalkMaxTicks);
+                            g_state = PetState::Walking;
+                            const std::vector<Frame>& walk =
+                                (g_walkDir > 0) ? g_walkRightFrames
+                                                : g_walkLeftFrames;
+                            PresentFrame(hwnd, walk[0]);
+                        }
                     }
                 }
             }
@@ -349,14 +505,34 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                          cursor.y - g_dragOffsetY, 0, 0,
                          SWP_NOSIZE | SWP_NOZORDER);
         }
+        // Mouse sweeping horizontally across the head -> shy reaction.
+        {
+            const int mx = static_cast<short>(LOWORD(lParam));
+            const int my = static_cast<short>(HIWORD(lParam));
+            if (!g_mouseDown && my >= 0 &&
+                my < g_petH * kHeadBandPercent / 100 &&
+                mx >= 0 && mx < g_petW) {
+                const int dx = mx - g_lastMouseX;
+                const int dy = my - g_lastMouseY;
+                if (std::abs(dx) <= kMaxSweepDeltaPx &&
+                    std::abs(dx) > std::abs(dy)) {
+                    g_headSweepPx += std::abs(dx);
+                }
+                if (g_headSweepPx >= kSweepThresholdPx) {
+                    g_headSweepPx = 0;
+                    TriggerShyReaction(hwnd);
+                }
+            }
+            g_lastMouseX = mx;
+            g_lastMouseY = my;
+        }
         return 0;
 
     case WM_LBUTTONUP:
         if (g_mouseDown && !g_dragging) {
             TriggerClickReaction(hwnd);
         } else if (g_dragging) {
-            g_state = PetState::Base;
-            PresentBaseFrame(hwnd);
+            EnterWaiting(hwnd);
         }
         g_mouseDown = false;
         g_dragging = false;
@@ -368,7 +544,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         g_mouseDown = false;
         g_dragging = false;
         if (g_state == PetState::Dragging) {
-            g_state = PetState::Base;
+            EnterWaiting(hwnd);
         }
         return 0;
 
@@ -409,6 +585,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             }
         }
         g_dragFrames.clear();
+        for (const Frame& frame : g_walkLeftFrames) {
+            if (frame.hbmp != nullptr) {
+                DeleteObject(frame.hbmp);
+            }
+        }
+        g_walkLeftFrames.clear();
+        for (const Frame& frame : g_walkRightFrames) {
+            if (frame.hbmp != nullptr) {
+                DeleteObject(frame.hbmp);
+            }
+        }
+        g_walkRightFrames.clear();
+        for (const Frame& frame : g_shyFrames) {
+            if (frame.hbmp != nullptr) {
+                DeleteObject(frame.hbmp);
+            }
+        }
+        g_shyFrames.clear();
         PostQuitMessage(0);
         return 0;
 
@@ -441,11 +635,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
     GdiplusSession gdiplus;
     if (!gdiplus.ok()) {
-        std::printf("[pet] GDI+ failed to initialize\n");
+        ShowFatalError(L"GDI+ failed to initialize.");
         return 1;
     }
 
     const std::wstring exeDir = GetExecutableDir();
+    const std::wstring assetsPath = exeDir + assetsDir;
 
     if (explicitAction) {
         std::wstring action = WideFromUtf8(actionUtf8.c_str());
@@ -454,9 +649,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         }
         std::vector<Frame> frames = LoadFrames(exeDir, assetsDir, action);
         if (frames.empty()) {
-            std::printf("[pet] no frames found for action '%s' "
-                        "(looked for %s\\%s\\000.png)\n",
-                        actionUtf8.c_str(), assetsUtf8.c_str(), actionUtf8.c_str());
+            ShowFatalError(
+                L"No frames found for action '" + action + L"'.\n\n"
+                L"Assets folder:\n" + assetsPath + L"\n\n"
+                L"Available actions: " + AvailableActions(assetsPath));
             return 1;
         }
         std::printf("[pet] action=%s loaded=%zu/%zu frames\n",
@@ -475,7 +671,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
             g_basePool.push_back(std::move(frames));
         }
         if (g_basePool.empty()) {
-            std::printf("[pet] no idle frames found in %s\n", assetsUtf8.c_str());
+            ShowFatalError(
+                L"No idle frames found (looked for idle/ and idle2/).\n\n"
+                L"Assets folder:\n" + assetsPath + L"\n\n"
+                L"Available actions: " + AvailableActions(assetsPath));
             return 1;
         }
         g_basePoolIndex = PickRandomBaseIndex(static_cast<int>(g_basePool.size()));
@@ -499,12 +698,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
                     g_dragFrames.size(), kMaxFrames);
     }
 
+    g_walkRightFrames = LoadFrames(exeDir, assetsDir, L"walking_right");
+    g_walkLeftFrames = LoadFrames(exeDir, assetsDir, L"walking_left");
+    if (g_walkRightFrames.empty() && g_walkLeftFrames.empty()) {
+        std::printf("[pet] no walking_left/right frames, walking disabled\n");
+    } else {
+        std::printf("[pet] walking loaded: left=%zu right=%zu frames\n",
+                    g_walkLeftFrames.size(), g_walkRightFrames.size());
+    }
+
+    g_shyFrames = LoadFrames(exeDir, assetsDir, L"shy");
+    if (g_shyFrames.empty()) {
+        std::printf("[pet] no 'shy' frames, head-sweep reaction disabled\n");
+    } else {
+        std::printf("[pet] shy loaded=%zu/%zu frames\n",
+                    g_shyFrames.size(), kMaxFrames);
+    }
+
+    g_behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+
     // The window size adapts to the first base frame's pixel dimensions.
     BITMAP firstFrame = {};
     if (GetObjectW(g_basePool[0][0].hbmp, static_cast<int>(sizeof(BITMAP)),
                    &firstFrame) == 0 ||
         firstFrame.bmWidth <= 0 || firstFrame.bmHeight <= 0) {
-        std::printf("[pet] could not read the first frame's dimensions\n");
+        ShowFatalError(L"Could not read the first frame's dimensions.");
         return 1;
     }
     g_petW = firstFrame.bmWidth;
@@ -517,14 +735,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     windowClass.hCursor = LoadCursorW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW));
     windowClass.lpszClassName = kClassName;
     if (!RegisterClassW(&windowClass)) {
-        std::printf("[pet] RegisterClassW failed (error %lu)\n",
-                    static_cast<unsigned long>(GetLastError()));
+        ShowFatalError(L"RegisterClassW failed (error " +
+                       std::to_wstring(GetLastError()) + L").");
         return 1;
     }
 
-    const int screenW = GetSystemMetrics(SM_CXSCREEN);
+    g_screenW = GetSystemMetrics(SM_CXSCREEN);
     const int screenH = GetSystemMetrics(SM_CYSCREEN);
-    const int startX = (screenW - g_petW) / 2;
+    const int startX = (g_screenW - g_petW) / 2;
     const int startY = (screenH - g_petH) / 2;
 
     HWND hwnd = CreateWindowExW(
@@ -535,8 +753,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         startX, startY, g_petW, g_petH,
         nullptr, nullptr, hInstance, nullptr);
     if (hwnd == nullptr) {
-        std::printf("[pet] CreateWindowExW failed (error %lu)\n",
-                    static_cast<unsigned long>(GetLastError()));
+        ShowFatalError(L"CreateWindowExW failed (error " +
+                       std::to_wstring(GetLastError()) + L").");
         return 1;
     }
 
