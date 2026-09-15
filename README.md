@@ -23,16 +23,22 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 
 程序启动时会加载：待机动画池（1~2 个循环动画）+ 固定的 `clicked` 动作（被点击时
 播放一次）+ `shy` 动作（鼠标扫过头顶时播放一次）+ 固定的 `drag` 动作（被拖拽时循环
-播放）+ 固定的 `walking_left` / `walking_right` 动作（向右/向左行走）。`clicked` /
-`shy` / `drag` / `walking_*` 文件夹不存在或为空时打印 `... disabled` 并禁用对应行为。
+播放）+ 固定的**四方向移动**动作 `walking_left` / `walking_right` / `walking_up` /
+`walking_down`。各文件夹不存在或为空时打印 `... disabled` 并禁用对应行为（移动只有
+部分方向时，只在这些方向里随机）。
 
 **待机 ↔ 行走状态链**：宠物在待机状态停留一段随机时间（约 3~10 秒）后，随机选择
-向左或向右行走；行走期间循环播放对应方向的行走动画，同时**窗口沿水平方向移动**
-（每 100ms 移动 5px）；走到**屏幕边缘**或行走时长到（约 1.5~4.5 秒）后回到待机，
-如此往复。
+**上 / 下 / 左 / 右**四个方向之一移动；移动期间循环播放对应方向的动画，同时**窗口沿
+该方向移动**（每 100ms 移动 5px）；走到**屏幕边缘**或移动时长到（约 1.5~4.5 秒）后
+回到待机，如此往复。
+
+> 上 / 下方向的两个源视频是**单向动作**（起飞 / 降落），首尾姿势不同，直接循环会看到
+> "跳回开头再重播前几帧"。因此 **`walking_up` / `walking_down` 采用来回播放
+> （boomerang：正放一遍再倒放一遍）**，从数学上保证无缝、不跳帧；左 / 右是真正的
+> 循环步态，仍按正常循环播放。
 
 **拖拽后等待**：把宠物拖到某个位置松手后，宠物进入约 **2~3 分钟**的"等待"阶段——
-只随机切换 `idle` / `idle2` 待机动画、**不做左右移动**；等待计时结束后再恢复上面的
+只随机切换 `idle` / `idle2` 待机动画、**不做移动**；等待计时结束后再恢复上面的
 待机 ↔ 行走链。等待期间左键单击只会播放 `clicked` 反应并继续等待，不会打断计时；
 再次拖拽会重新计时。
 
@@ -66,12 +72,13 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 只存在 `000.png` 时程序正常运行，循环播放这一帧
 - 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
   `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
-  `[pet] walking loaded: left=30 right=27 frames`、`[pet] shy loaded=30/120 frames`
+  `[pet] walking loaded: left=30 right=27 up=30 down=30 frames`、
+  `[pet] shy loaded=30/120 frames`
 
 > 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
-> `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`clicked` 33 帧、
-> `drag` 30 帧、`shy` 30 帧、`thinking` 30 帧）。原 `desktop_pet_image_video\`
-> 目录内容与之重复，可删除。
+> `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`walking_up` 30 帧、
+> `walking_down` 30 帧、`clicked` 33 帧、`drag` 30 帧、`shy` 30 帧、`thinking` 30 帧）。
+> 原 `desktop_pet_image_video\` 目录内容与之重复，可删除。
 
 ## 图片要求
 
