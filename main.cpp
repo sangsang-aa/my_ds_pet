@@ -72,13 +72,20 @@ std::vector<Frame> g_clickFrames;
 std::vector<Frame> g_dragFrames;
 std::vector<Frame> g_walkLeftFrames;
 std::vector<Frame> g_walkRightFrames;
+std::vector<Frame> g_walkUpFrames;
+std::vector<Frame> g_walkDownFrames;
 std::vector<Frame> g_shyFrames;
+
+enum class WalkDir { Left, Right, Up, Down };
+
 int g_basePoolIndex = 0;
 int g_baseIndex = 0;
 int g_clickIndex = 0;
 int g_dragIndex = 0;
 int g_walkIndex = 0;
-int g_walkDir = 1;  // +1 = right, -1 = left
+int g_walkStep = 1;  // +1 / -1 frame step for boomerang playback
+bool g_walkBoomerang = false;
+WalkDir g_walkDir = WalkDir::Right;
 int g_shyIndex = 0;
 
 enum class PetState { Base, Clicked, Dragging, Walking, Shy };
@@ -87,6 +94,7 @@ PetState g_state = PetState::Base;
 int g_behaviorTicks = 0;
 int g_behaviorTarget = 0;
 int g_screenW = 0;
+int g_screenH = 0;
 int g_waitTicks = 0;
 int g_headSweepPx = 0;
 int g_lastMouseX = 0;
@@ -313,6 +321,76 @@ int PickRandomBaseIndex(int poolSize) {
     return RandomInRange(0, poolSize - 1);
 }
 
+const std::vector<Frame>& WalkFrames(WalkDir dir) {
+    switch (dir) {
+    case WalkDir::Left:
+        return g_walkLeftFrames;
+    case WalkDir::Up:
+        return g_walkUpFrames;
+    case WalkDir::Down:
+        return g_walkDownFrames;
+    case WalkDir::Right:
+    default:
+        return g_walkRightFrames;
+    }
+}
+
+void WalkStep(WalkDir dir, int& dx, int& dy) {
+    dx = 0;
+    dy = 0;
+    switch (dir) {
+    case WalkDir::Left:
+        dx = -kWalkStepPx;
+        break;
+    case WalkDir::Right:
+        dx = kWalkStepPx;
+        break;
+    case WalkDir::Up:
+        dy = -kWalkStepPx;
+        break;
+    case WalkDir::Down:
+        dy = kWalkStepPx;
+        break;
+    }
+}
+
+// Uniformly pick among the directions that actually have frames loaded.
+WalkDir PickRandomWalkDir() {
+    const WalkDir all[4] = { WalkDir::Left, WalkDir::Right,
+                             WalkDir::Up, WalkDir::Down };
+    WalkDir pool[4];
+    int count = 0;
+    for (WalkDir dir : all) {
+        if (!WalkFrames(dir).empty()) {
+            pool[count++] = dir;
+        }
+    }
+    if (count == 0) {
+        return WalkDir::Right;
+    }
+    return pool[RandomInRange(0, count - 1)];
+}
+
+// Advance the walk frame index. One-way clips (up/down) play as a boomerang
+// (forward then backward) so they loop with no visible jump back to the start.
+void AdvanceWalkIndex(int size) {
+    if (size <= 0) {
+        return;
+    }
+    if (!g_walkBoomerang || size == 1) {
+        g_walkIndex = (g_walkIndex + 1) % size;
+        return;
+    }
+    g_walkIndex += g_walkStep;
+    if (g_walkIndex >= size) {
+        g_walkStep = -1;
+        g_walkIndex = size - 2;
+    } else if (g_walkIndex < 0) {
+        g_walkStep = 1;
+        g_walkIndex = 1;
+    }
+}
+
 // Return to idle and schedule the next walk after a random dwell.
 void EnterBase(HWND hwnd) {
     g_state = PetState::Base;
@@ -384,20 +462,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                     PresentFrame(hwnd, g_dragFrames[static_cast<size_t>(g_dragIndex)]);
                 }
             } else if (g_state == PetState::Walking) {
-                const std::vector<Frame>& walk =
-                    (g_walkDir > 0) ? g_walkRightFrames : g_walkLeftFrames;
+                const std::vector<Frame>& walk = WalkFrames(g_walkDir);
                 if (walk.empty()) {
                     EnterBase(hwnd);
                 } else {
-                    g_walkIndex = (g_walkIndex + 1) % static_cast<int>(walk.size());
+                    AdvanceWalkIndex(static_cast<int>(walk.size()));
                     PresentFrame(hwnd, walk[static_cast<size_t>(g_walkIndex)]);
                     RECT rect = {};
                     GetWindowRect(hwnd, &rect);
-                    const int newX = rect.left + g_walkDir * kWalkStepPx;
+                    int dx = 0;
+                    int dy = 0;
+                    WalkStep(g_walkDir, dx, dy);
+                    const int newLeft = rect.left + dx;
+                    const int newTop = rect.top + dy;
                     const bool atEdge =
-                        (newX < 0) || (newX + g_petW > g_screenW);
+                        (newLeft < 0) || (newLeft + g_petW > g_screenW) ||
+                        (newTop < 0) || (newTop + g_petH > g_screenH);
                     if (!atEdge) {
-                        SetWindowPos(hwnd, nullptr, newX, rect.top, 0, 0,
+                        SetWindowPos(hwnd, nullptr, newLeft, newTop, 0, 0,
                                      SWP_NOSIZE | SWP_NOZORDER);
                     }
                     g_behaviorTicks += 1;
@@ -430,26 +512,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                                 RandomInRange(kIdleMinTicks, kIdleMaxTicks);
                         }
                     } else {
-                        const bool haveLeft = !g_walkLeftFrames.empty();
-                        const bool haveRight = !g_walkRightFrames.empty();
+                        const bool canWalk =
+                            !g_walkLeftFrames.empty() ||
+                            !g_walkRightFrames.empty() ||
+                            !g_walkUpFrames.empty() ||
+                            !g_walkDownFrames.empty();
                         g_behaviorTicks += 1;
-                        if ((haveLeft || haveRight) &&
-                            g_behaviorTicks >= g_behaviorTarget) {
+                        if (canWalk && g_behaviorTicks >= g_behaviorTarget) {
                             // idle dwell elapsed: walk in a random direction
-                            if (haveLeft && haveRight) {
-                                g_walkDir = (RandomInRange(0, 1) == 0) ? -1 : 1;
-                            } else {
-                                g_walkDir = haveRight ? 1 : -1;
-                            }
+                            g_walkDir = PickRandomWalkDir();
+                            g_walkBoomerang = (g_walkDir == WalkDir::Up ||
+                                               g_walkDir == WalkDir::Down);
                             g_walkIndex = 0;
+                            g_walkStep = 1;
                             g_behaviorTicks = 0;
                             g_behaviorTarget =
                                 RandomInRange(kWalkMinTicks, kWalkMaxTicks);
                             g_state = PetState::Walking;
-                            const std::vector<Frame>& walk =
-                                (g_walkDir > 0) ? g_walkRightFrames
-                                                : g_walkLeftFrames;
-                            PresentFrame(hwnd, walk[0]);
+                            PresentFrame(hwnd, WalkFrames(g_walkDir)[0]);
                         }
                     }
                 }
@@ -597,6 +677,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
             }
         }
         g_walkRightFrames.clear();
+        for (const Frame& frame : g_walkUpFrames) {
+            if (frame.hbmp != nullptr) {
+                DeleteObject(frame.hbmp);
+            }
+        }
+        g_walkUpFrames.clear();
+        for (const Frame& frame : g_walkDownFrames) {
+            if (frame.hbmp != nullptr) {
+                DeleteObject(frame.hbmp);
+            }
+        }
+        g_walkDownFrames.clear();
         for (const Frame& frame : g_shyFrames) {
             if (frame.hbmp != nullptr) {
                 DeleteObject(frame.hbmp);
@@ -700,11 +792,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 
     g_walkRightFrames = LoadFrames(exeDir, assetsDir, L"walking_right");
     g_walkLeftFrames = LoadFrames(exeDir, assetsDir, L"walking_left");
-    if (g_walkRightFrames.empty() && g_walkLeftFrames.empty()) {
-        std::printf("[pet] no walking_left/right frames, walking disabled\n");
+    g_walkUpFrames = LoadFrames(exeDir, assetsDir, L"walking_up");
+    g_walkDownFrames = LoadFrames(exeDir, assetsDir, L"walking_down");
+    if (g_walkRightFrames.empty() && g_walkLeftFrames.empty() &&
+        g_walkUpFrames.empty() && g_walkDownFrames.empty()) {
+        std::printf("[pet] no walking_* frames, walking disabled\n");
     } else {
-        std::printf("[pet] walking loaded: left=%zu right=%zu frames\n",
-                    g_walkLeftFrames.size(), g_walkRightFrames.size());
+        std::printf("[pet] walking loaded: left=%zu right=%zu up=%zu down=%zu "
+                    "frames\n",
+                    g_walkLeftFrames.size(), g_walkRightFrames.size(),
+                    g_walkUpFrames.size(), g_walkDownFrames.size());
     }
 
     g_shyFrames = LoadFrames(exeDir, assetsDir, L"shy");
@@ -741,9 +838,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     }
 
     g_screenW = GetSystemMetrics(SM_CXSCREEN);
-    const int screenH = GetSystemMetrics(SM_CYSCREEN);
+    g_screenH = GetSystemMetrics(SM_CYSCREEN);
     const int startX = (g_screenW - g_petW) / 2;
-    const int startY = (screenH - g_petH) / 2;
+    const int startY = (g_screenH - g_petH) / 2;
 
     HWND hwnd = CreateWindowExW(
         WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
