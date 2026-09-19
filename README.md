@@ -117,6 +117,12 @@ python3 /home/zh180/MCPS/convert_rgba.py desktop_pet_image --recursive
 `recursive`、`mode`、`threshold`、`feather`、`backup`、`delete_source`、`force`、
 `dry_run`。返回逐文件日志 + 汇总行。
 
+**GIF 支持**：输入也可以是**动图 GIF**。对多帧 GIF，会**逐帧抠图**并输出成
+**PNG 帧序列**到一个同名同级文件夹（去扩展名），例如
+`视频文件/pet_parachute_down.new.gif` → `视频文件/pet_parachute_down.new/000.png … 023.png`，
+保留完整 alpha（GIF 本身只有 1-bit 透明，故不做透明 GIF，改用 PNG 帧）。已含透明通道的
+GIF 会被跳过（可用 `force` 强制处理）。
+
 > 实现要点：MCP stdio 用 stdout 传输 JSON-RPC，而抠图函数会 print 到 stdout，
 > 因此 server 用 `contextlib.redirect_stdout` 把输出重定向到缓冲区再作为工具结果返回，
 > 避免污染协议。
