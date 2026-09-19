@@ -1,0 +1,6 @@
+# Backups, temp output, and OS metadata are not part of the asset set.
+walking_down.bak/
+tmp/
+__pycache__/
+*.orig
+*:Zone.Identifier
