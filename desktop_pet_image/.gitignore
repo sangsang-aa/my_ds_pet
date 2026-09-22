@@ -3,6 +3,7 @@ walking_down.bak/
 tmp/
 __pycache__/
 *.orig
+*~RF*.TMP
 *:Zone.Identifier
 
 # Emoji stickers are fetched locally (third-party art) and intentionally not committed.
