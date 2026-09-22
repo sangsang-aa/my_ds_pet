@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "bubble_logic.h"
+#include "walk_logic.h"
 
 #ifdef _MSC_VER
 #pragma comment(lib, "gdiplus.lib")
@@ -87,6 +88,7 @@ int g_dragIndex = 0;
 int g_walkIndex = 0;
 int g_walkStep = 1;  // +1 / -1 frame step for boomerang playback
 bool g_walkBoomerang = false;
+bool g_walkFinishing = false;
 WalkDir g_walkDir = WalkDir::Right;
 int g_shyIndex = 0;
 
@@ -496,7 +498,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                                      SWP_NOSIZE | SWP_NOZORDER);
                     }
                     g_behaviorTicks += 1;
-                    if (atEdge || g_behaviorTicks >= g_behaviorTarget) {
+                    const bool walkDone =
+                        atEdge || g_behaviorTicks >= g_behaviorTarget;
+                    if (walkDone && g_walkBoomerang) {
+                        // One-way vertical clips must play out to a grounded
+                        // boundary before returning to idle, otherwise the pet
+                        // snaps back to a standing pose from mid-air.
+                        g_walkFinishing = true;
+                    }
+                    const bool safeToStop =
+                        !g_walkBoomerang ||
+                        pet_walk::AtCycleBoundary(
+                            g_walkIndex, static_cast<int>(walk.size()));
+                    if (walkDone && safeToStop) {
                         EnterBase(hwnd);
                     }
                 }
@@ -538,6 +552,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
                                                g_walkDir == WalkDir::Down);
                             g_walkIndex = 0;
                             g_walkStep = 1;
+                            g_walkFinishing = false;
                             g_behaviorTicks = 0;
                             g_behaviorTarget =
                                 RandomInRange(kWalkMinTicks, kWalkMaxTicks);
