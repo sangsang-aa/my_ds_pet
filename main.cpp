@@ -750,7 +750,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 constexpr wchar_t kBubbleClassName[] = L"DesktopPetBubbleClass";
 constexpr UINT_PTR kBubbleTimerId = 2;
 constexpr UINT kBubbleTimerElapseMs = 100;
-constexpr int kBubbleEmojiSizePx = 120;  // emoji is scaled to fit this box
+constexpr int kBubbleEmojiSizePx = 220;  // emoji is scaled to fit this box
 constexpr int kBubblePadPx = 10;         // padding between emoji and bubble edge
 constexpr int kBubbleRadiusPx = 10;      // rounded corner radius
 constexpr int kBubbleTailW = 18;         // tail width at its base

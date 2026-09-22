@@ -83,7 +83,7 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
   `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
   `[pet] walking loaded: left=30 right=27 up=30 down=30 frames`、
   `[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
-  `[pet] bubble enabled (140x152, 6 stickers)`
+  `[pet] bubble enabled (240x252, 6 stickers)`
 
 > 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
 > `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`walking_up` 30 帧、
