@@ -109,7 +109,9 @@ python3 /home/zh180/MCPS/convert_rgba.py desktop_pet_image --recursive
 - `--mode chroma`：抠掉所有与背景色接近的像素（更激进，肢体间缝隙也会抠掉，但可能误伤角色浅色部位）
 - `--threshold 60`：背景色判定阈值（RGB 距离）；`--feather 25`：边缘羽化宽度
 - `--backup`：覆盖前把原图复制为 `<文件>.orig`；`--delete-source`：转换后删除非 PNG 源文件
-- 已透明的 RGBA 图自动跳过（幂等），补新帧后重跑即可
+- `--clear-corners`：抠图后**擦掉四角的小块孤立残留**（会移动的 AI 水印）；角色是超大连通域、不会被误擦。
+  `--corner-size WxH`（默认 `96x48`）决定角框大小，`--corner-max-px N`（默认 `2000`）是「多大算角色」的下限
+- 已透明的 RGBA 图自动跳过（幂等），补新帧后重跑即可；**带 `--clear-corners` 时例外**——这类图跳过抠图、只擦四角水印
 - 输出始终为同名 `.png`，与程序帧加载约定（`<action>/NNN.png`）一致
 
 补帧流程：把新帧图放进 `desktop_pet_image/<action>/` → 跑一遍上面的命令 → 重开 demo。
