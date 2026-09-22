@@ -29,9 +29,7 @@ struct Pet {
     int clickIndex = 0;
     int dragIndex = 0;
     int walkIndex = 0;
-    int walkStep = 1;  // +1 / -1 frame step for boomerang playback
-    bool walkBoomerang = false;
-    bool walkFinishing = false;
+    bool walkFullCycle = false;
     WalkDir walkDir = WalkDir::Right;
     int shyIndex = 0;
 

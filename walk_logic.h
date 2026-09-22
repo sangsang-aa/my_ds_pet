@@ -5,10 +5,11 @@
 
 namespace pet_walk {
 
-// Whether `index` is an animation boundary (first or last frame) — a pose that
-// is safe to leave a one-way walk clip from. Size <= 1 is always a boundary.
-inline bool AtCycleBoundary(int index, int size) {
-    return size <= 1 || index <= 0 || index >= size - 1;
+// Whether `index` is the last frame of the clip — the grounded pose a one-way
+// vertical walk must reach before returning to idle (leaving mid-air, or at the
+// pre-takeoff frame, would snap the pet). Size <= 1 is always the end.
+inline bool AtEndFrame(int index, int size) {
+    return size <= 1 || index >= size - 1;
 }
 
 }  // namespace pet_walk

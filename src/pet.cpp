@@ -197,24 +197,11 @@ WalkDir Pet::PickRandomWalkDir() const {
     return pool[RandomInRange(0, count - 1)];
 }
 
-// Advance the walk frame index. One-way clips (up/down) play as a boomerang
-// (forward then backward) so they loop with no visible jump back to the start.
 void Pet::AdvanceWalkIndex(int size) {
     if (size <= 0) {
         return;
     }
-    if (!walkBoomerang || size == 1) {
-        walkIndex = (walkIndex + 1) % size;
-        return;
-    }
-    walkIndex += walkStep;
-    if (walkIndex >= size) {
-        walkStep = -1;
-        walkIndex = size - 2;
-    } else if (walkIndex < 0) {
-        walkStep = 1;
-        walkIndex = 1;
-    }
+    walkIndex = (walkIndex + 1) % size;
 }
 
 // Return to idle and schedule the next walk after a random dwell.
@@ -302,16 +289,12 @@ void Pet::OnTimer(HWND hwnd) {
             }
             behaviorTicks += 1;
             const bool walkDone = atEdge || behaviorTicks >= behaviorTarget;
-            if (walkDone && walkBoomerang) {
-                // One-way vertical clips must play out to a grounded boundary
-                // before returning to idle, otherwise the pet snaps back to a
-                // standing pose from mid-air.
-                walkFinishing = true;
-            }
+            // A full-cycle vertical clip (takeoff..landing) must reach its last,
+            // grounded frame before returning to idle; stopping mid-air — or on
+            // the pre-takeoff frame — reads as a jump or a missing landing.
             const bool safeToStop =
-                !walkBoomerang ||
-                pet_walk::AtCycleBoundary(
-                    walkIndex, static_cast<int>(walk.size()));
+                !walkFullCycle ||
+                pet_walk::AtEndFrame(walkIndex, static_cast<int>(walk.size()));
             if (walkDone && safeToStop) {
                 EnterBase(hwnd);
             }
@@ -348,11 +331,9 @@ void Pet::OnTimer(HWND hwnd) {
                 if (canWalk && behaviorTicks >= behaviorTarget) {
                     // idle dwell elapsed: walk in a random direction
                     walkDir = PickRandomWalkDir();
-                    walkBoomerang = (walkDir == WalkDir::Up ||
+                    walkFullCycle = (walkDir == WalkDir::Up ||
                                      walkDir == WalkDir::Down);
                     walkIndex = 0;
-                    walkStep = 1;
-                    walkFinishing = false;
                     behaviorTicks = 0;
                     behaviorTarget = RandomInRange(kWalkMinTicks, kWalkMaxTicks);
                     state = PetState::Walking;
