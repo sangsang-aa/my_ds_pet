@@ -45,6 +45,12 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 **扫头害羞**：鼠标在宠物**头部（窗口上方约 45%）**左右扫过（累计水平位移超过阈值）
 时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，避免连续触发。
 
+**气泡表情包**：程序会**不定期（约 20~60 秒）**在宠物头顶弹出一个气泡，随机显示
+`desktop_pet_image\emoji\emoji_NN.png` 中的一张表情包，约 3 秒后消失。气泡是**独立的
+分层窗口**，用 `WS_EX_TRANSPARENT` 实现**点击穿透**（不挡宠物的点击/拖拽），并持续跟随
+宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能。
+表情包素材用 `MCPS/fetch_emoji.py` 抓取（见文末）。
+
 **启动失败会有弹窗**：GUI 程序没有控制台，找不到帧时不再静默退出，而是弹出错误框，
 写明「资源目录、请求的动作、该目录下实际可用的动作」，方便排查（例如动作名拼错、
 资源目录放错位置、素材缺失）。
@@ -73,7 +79,8 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
   `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
   `[pet] walking loaded: left=30 right=27 up=30 down=30 frames`、
-  `[pet] shy loaded=30/120 frames`
+  `[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
+  `[pet] bubble enabled (140x152, 6 stickers)`
 
 > 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
 > `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`walking_up` 30 帧、

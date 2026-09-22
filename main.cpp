@@ -26,6 +26,8 @@
 #include <string>
 #include <vector>
 
+#include "bubble_logic.h"
+
 #ifdef _MSC_VER
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "user32.lib")
@@ -110,6 +112,17 @@ int g_dragOffsetY = 0;
 HDC g_memDC = nullptr;
 int g_petW = 0;
 int g_petH = 0;
+
+std::vector<std::wstring> g_emojiPaths;
+HWND g_petHwnd = nullptr;
+HWND g_bubbleHwnd = nullptr;
+HDC g_bubbleDC = nullptr;
+HBITMAP g_bubbleHbmp = nullptr;
+int g_bubbleW = 0;
+int g_bubbleH = 0;
+int g_bubbleCountdown = 0;
+int g_bubbleShowLeft = 0;
+bool g_bubbleVisible = false;
 
 // RAII wrapper for the GdiplusStartup / GdiplusShutdown pair.
 class GdiplusSession {
@@ -640,6 +653,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         break;
 
     case WM_DESTROY:
+        // Tear the bubble down first: its own WM_DESTROY frees g_bubbleDC and
+        // g_bubbleHbmp.
+        if (g_bubbleHwnd != nullptr) {
+            DestroyWindow(g_bubbleHwnd);
+        }
         // Delete the DC first so no frame HBITMAP is still selected into it.
         if (g_memDC != nullptr) {
             DeleteDC(g_memDC);
@@ -696,6 +714,240 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
         }
         g_shyFrames.clear();
         PostQuitMessage(0);
+        return 0;
+
+    default:
+        break;
+    }
+    return DefWindowProcW(hwnd, message, wParam, lParam);
+}
+
+// -------------------------------------------------------------------------------
+// Speech-bubble emoji module
+//
+// A second, independent layered window shows a random sticker from
+// desktop_pet_image\emoji\emoji_NN.png above the pet's head every so often.
+// It runs on its own timer and follows the pet by polling its window rect, so
+// the pet's own timer and state machine are never touched. WS_EX_TRANSPARENT
+// makes the bubble click-through, so mouse input still reaches the pet.
+// -------------------------------------------------------------------------------
+
+constexpr wchar_t kBubbleClassName[] = L"DesktopPetBubbleClass";
+constexpr UINT_PTR kBubbleTimerId = 2;
+constexpr UINT kBubbleTimerElapseMs = 100;
+constexpr int kBubbleEmojiSizePx = 120;  // emoji is scaled to fit this box
+constexpr int kBubblePadPx = 10;         // padding between emoji and bubble edge
+constexpr int kBubbleRadiusPx = 10;      // rounded corner radius
+constexpr int kBubbleTailW = 18;         // tail width at its base
+constexpr int kBubbleTailH = 12;         // tail height (points down at the pet)
+constexpr int kBubbleGapPx = 4;          // gap between tail tip and the pet
+constexpr int kBubbleMinTicks = 200;     // ~20s at 100ms per tick
+constexpr int kBubbleMaxTicks = 600;     // ~60s
+constexpr int kBubbleShowTicks = 30;     // ~3s visible
+
+std::wstring EmojiName(int index) {
+    std::wstring name = std::to_wstring(index);
+    if (name.size() == 1) {
+        name = L"0" + name;
+    }
+    return L"emoji_" + name + L".png";
+}
+
+// emoji/emoji_01.png .. emoji_NN.png (stop at the first missing file).
+std::vector<std::wstring> LoadEmojiPaths(const std::wstring& exeDir,
+                                         const std::wstring& assetsDir) {
+    std::vector<std::wstring> paths;
+    for (int i = 1; i <= static_cast<int>(kMaxFrames); ++i) {
+        const std::wstring path =
+            exeDir + assetsDir + L"\\emoji\\" + EmojiName(i);
+        if (GetFileAttributesW(path.c_str()) == INVALID_FILE_ATTRIBUTES) {
+            break;
+        }
+        paths.push_back(path);
+    }
+    return paths;
+}
+
+void AddRoundedRect(gdi::GraphicsPath& path, int x, int y, int w, int h,
+                    int radius) {
+    const int d = radius * 2;
+    path.AddArc(x, y, d, d, 180.0f, 90.0f);
+    path.AddArc(x + w - d, y, d, d, 270.0f, 90.0f);
+    path.AddArc(x + w - d, y + h - d, d, d, 0.0f, 90.0f);
+    path.AddArc(x, y + h - d, d, d, 90.0f, 90.0f);
+    path.CloseFigure();
+}
+
+// Render the bubble (rounded body + downward tail + emoji) into g_bubbleHbmp.
+void RenderBubble(const std::wstring& emojiPath) {
+    if (g_bubbleDC == nullptr) {
+        return;
+    }
+    gdi::Bitmap canvas(g_bubbleW, g_bubbleH, PixelFormat32bppARGB);
+    if (canvas.GetLastStatus() != gdi::Ok) {
+        return;
+    }
+    const int bodyW = g_bubbleW;
+    const int bodyH = g_bubbleH - kBubbleTailH;
+    {
+        gdi::Graphics graphics(&canvas);
+        graphics.SetSmoothingMode(gdi::SmoothingModeAntiAlias);
+        graphics.SetInterpolationMode(gdi::InterpolationModeHighQualityBicubic);
+
+        gdi::SolidBrush fill(gdi::Color(255, 255, 255, 255));
+        gdi::Pen border(gdi::Color(255, 130, 130, 130), 1.0f);
+        gdi::GraphicsPath body;
+        AddRoundedRect(body, 0, 0, bodyW - 1, bodyH - 1, kBubbleRadiusPx);
+        graphics.FillPath(&fill, &body);
+        graphics.DrawPath(&border, &body);
+
+        const int cx = bodyW / 2;
+        gdi::Point tail[3] = {
+            gdi::Point(cx - kBubbleTailW / 2, bodyH - 2),
+            gdi::Point(cx + kBubbleTailW / 2, bodyH - 2),
+            gdi::Point(cx, g_bubbleH - 1),
+        };
+        graphics.FillPolygon(&fill, tail, 3);
+        graphics.DrawLine(&border, tail[0].X, tail[0].Y, tail[2].X, tail[2].Y);
+        graphics.DrawLine(&border, tail[1].X, tail[1].Y, tail[2].X, tail[2].Y);
+
+        gdi::Bitmap emoji(emojiPath.c_str());
+        if (emoji.GetLastStatus() == gdi::Ok) {
+            const int emojiW = std::max(1, static_cast<int>(emoji.GetWidth()));
+            const int emojiH = std::max(1, static_cast<int>(emoji.GetHeight()));
+            const double scale = std::min(
+                static_cast<double>(kBubbleEmojiSizePx) / emojiW,
+                static_cast<double>(kBubbleEmojiSizePx) / emojiH);
+            const int drawW =
+                std::max(1, static_cast<int>(std::lround(emojiW * scale)));
+            const int drawH =
+                std::max(1, static_cast<int>(std::lround(emojiH * scale)));
+            graphics.DrawImage(&emoji, (bodyW - drawW) / 2, (bodyH - drawH) / 2,
+                               drawW, drawH);
+        }
+    }
+    HBITMAP hbmp = nullptr;
+    if (canvas.GetHBITMAP(gdi::Color(0, 0, 0, 0), &hbmp) == gdi::Ok &&
+        hbmp != nullptr) {
+        if (g_bubbleHbmp != nullptr) {
+            DeleteObject(g_bubbleHbmp);
+        }
+        g_bubbleHbmp = hbmp;
+    }
+}
+
+// Push the rendered bubble to the layered window at (x, y).
+void PresentBubble(int x, int y) {
+    if (g_bubbleDC == nullptr || g_bubbleHbmp == nullptr ||
+        g_bubbleHwnd == nullptr) {
+        return;
+    }
+    POINT destPos = { x, y };
+    SIZE size = { g_bubbleW, g_bubbleH };
+    POINT srcPos = { 0, 0 };
+    BLENDFUNCTION blend = {};
+    blend.BlendOp = AC_SRC_OVER;
+    blend.BlendFlags = 0;
+    blend.SourceConstantAlpha = 255;
+    blend.AlphaFormat = AC_SRC_ALPHA;
+    const HGDIOBJ previous = SelectObject(g_bubbleDC, g_bubbleHbmp);
+    UpdateLayeredWindow(g_bubbleHwnd, nullptr, &destPos, &size, g_bubbleDC,
+                        &srcPos, 0, &blend, ULW_ALPHA);
+    SelectObject(g_bubbleDC, previous);
+}
+
+pet_bubble::Rect PetRect() {
+    RECT rect = {};
+    GetWindowRect(g_petHwnd, &rect);
+    return pet_bubble::Rect{ rect.left, rect.top, g_petW, g_petH };
+}
+
+void FollowBubble() {
+    if (!g_bubbleVisible || g_bubbleHwnd == nullptr) {
+        return;
+    }
+    const pet_bubble::Point at = pet_bubble::PlaceBubble(
+        PetRect(), g_bubbleW, g_bubbleH, g_screenW, g_screenH, kBubbleGapPx);
+    PresentBubble(at.x, at.y);
+}
+
+void HideBubble() {
+    if (g_bubbleHwnd != nullptr) {
+        ShowWindow(g_bubbleHwnd, SW_HIDE);
+    }
+    g_bubbleVisible = false;
+}
+
+int NextBubbleInterval() {
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    return pet_bubble::NextIntervalTicks(kBubbleMinTicks, kBubbleMaxTicks,
+                                         dist(Rng()));
+}
+
+void ShowBubble() {
+    if (g_emojiPaths.empty() || g_bubbleHwnd == nullptr) {
+        return;
+    }
+    const int pick = RandomInRange(0, static_cast<int>(g_emojiPaths.size()) - 1);
+    RenderBubble(g_emojiPaths[static_cast<size_t>(pick)]);
+    const pet_bubble::Point at = pet_bubble::PlaceBubble(
+        PetRect(), g_bubbleW, g_bubbleH, g_screenW, g_screenH, kBubbleGapPx);
+    PresentBubble(at.x, at.y);
+    ShowWindow(g_bubbleHwnd, SW_SHOWNOACTIVATE);
+    g_bubbleVisible = true;
+    g_bubbleShowLeft = kBubbleShowTicks;
+}
+
+void BubbleTick() {
+    if (g_bubbleVisible) {
+        g_bubbleShowLeft -= 1;
+        if (g_bubbleShowLeft <= 0) {
+            HideBubble();
+            g_bubbleCountdown = NextBubbleInterval();
+        } else {
+            FollowBubble();
+        }
+    } else {
+        g_bubbleCountdown -= 1;
+        if (g_bubbleCountdown <= 0) {
+            ShowBubble();
+        }
+    }
+}
+
+LRESULT CALLBACK BubbleWndProc(HWND hwnd, UINT message, WPARAM wParam,
+                               LPARAM lParam) {
+    switch (message) {
+    case WM_CREATE:
+        g_bubbleDC = CreateCompatibleDC(nullptr);
+        return 0;
+
+    case WM_TIMER:
+        if (wParam == kBubbleTimerId) {
+            BubbleTick();
+        }
+        return 0;
+
+    case WM_PAINT: {
+        PAINTSTRUCT paint = {};
+        BeginPaint(hwnd, &paint);
+        EndPaint(hwnd, &paint);
+        return 0;
+    }
+
+    case WM_ERASEBKGND:
+        return 1;  // layered window: there is no background to erase
+
+    case WM_DESTROY:
+        if (g_bubbleDC != nullptr) {
+            DeleteDC(g_bubbleDC);
+            g_bubbleDC = nullptr;
+        }
+        if (g_bubbleHbmp != nullptr) {
+            DeleteObject(g_bubbleHbmp);
+            g_bubbleHbmp = nullptr;
+        }
+        g_bubbleHwnd = nullptr;
         return 0;
 
     default:
@@ -812,6 +1064,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
                     g_shyFrames.size(), kMaxFrames);
     }
 
+    g_emojiPaths = LoadEmojiPaths(exeDir, assetsDir);
+    if (g_emojiPaths.empty()) {
+        std::printf("[pet] no emoji stickers, bubble disabled\n");
+    } else {
+        std::printf("[pet] emoji loaded=%zu stickers\n", g_emojiPaths.size());
+    }
+
     g_behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
 
     // The window size adapts to the first base frame's pixel dimensions.
@@ -837,6 +1096,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         return 1;
     }
 
+    bool bubbleClassReady = false;
+    {
+        WNDCLASSW bubbleClass = {};
+        bubbleClass.style = CS_HREDRAW | CS_VREDRAW;
+        bubbleClass.lpfnWndProc = BubbleWndProc;
+        bubbleClass.hInstance = hInstance;
+        bubbleClass.hCursor =
+            LoadCursorW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW));
+        bubbleClass.lpszClassName = kBubbleClassName;
+        bubbleClassReady = RegisterClassW(&bubbleClass) != 0;
+    }
+
     g_screenW = GetSystemMetrics(SM_CXSCREEN);
     g_screenH = GetSystemMetrics(SM_CYSCREEN);
     const int startX = (g_screenW - g_petW) / 2;
@@ -856,6 +1127,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     }
 
     SetTimer(hwnd, kTimerId, kTimerElapseMs, nullptr);
+
+    // Speech-bubble emoji window: an independent layered window owned by the pet.
+    g_petHwnd = hwnd;
+    if (bubbleClassReady && !g_emojiPaths.empty()) {
+        g_bubbleW = kBubbleEmojiSizePx + 2 * kBubblePadPx;
+        g_bubbleH = kBubbleEmojiSizePx + 2 * kBubblePadPx + kBubbleTailH;
+        g_bubbleHwnd = CreateWindowExW(
+            WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW |
+                WS_EX_NOACTIVATE | WS_EX_TRANSPARENT,
+            kBubbleClassName, L"Desktop Pet Bubble", WS_POPUP, 0, 0, g_bubbleW,
+            g_bubbleH, hwnd, nullptr, hInstance, nullptr);
+        if (g_bubbleHwnd != nullptr) {
+            SetTimer(g_bubbleHwnd, kBubbleTimerId, kBubbleTimerElapseMs, nullptr);
+            g_bubbleCountdown = NextBubbleInterval();
+            std::printf("[pet] bubble enabled (%dx%d, %zu stickers)\n",
+                        g_bubbleW, g_bubbleH, g_emojiPaths.size());
+        } else {
+            std::printf("[pet] bubble window create failed, bubble disabled\n");
+        }
+    }
 
     PresentBaseFrame(hwnd);
     ShowWindow(hwnd, SW_SHOWNOACTIVATE);
