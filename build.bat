@@ -15,7 +15,7 @@ cd /d "%~dp0"
 
 where cl >nul 2>nul
 if %errorlevel%==0 (
-    cl /nologo /EHsc /std:c++17 /O2 main.cpp gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
+    cl /nologo /EHsc /std:c++17 /O2 src\*.cpp /I src gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
     if not errorlevel 1 (
         echo [pet] build OK: pet_demo.exe (cl)
         exit /b 0

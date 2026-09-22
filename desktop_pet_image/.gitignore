@@ -1,0 +1,9 @@
+# Backups, temp output, and OS metadata are not part of the asset set.
+walking_down.bak/
+tmp/
+__pycache__/
+*.orig
+*:Zone.Identifier
+
+# Emoji stickers are fetched locally (third-party art) and intentionally not committed.
+emoji/

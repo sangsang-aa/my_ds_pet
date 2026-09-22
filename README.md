@@ -36,6 +36,9 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 > "跳回开头再重播前几帧"。因此 **`walking_up` / `walking_down` 采用来回播放
 > （boomerang：正放一遍再倒放一遍）**，从数学上保证无缝、不跳帧；左 / 右是真正的
 > 循环步态，仍按正常循环播放。
+>
+> 竖向走动在**时长到 / 撞边缘**后不会立刻切回待机，而是**继续播到落地帧**（第 0 帧或
+> 末帧）再回待机——否则宠物会在半空中突然变回站立姿势，看起来像瞬移。
 
 **拖拽后等待**：把宠物拖到某个位置松手后，宠物进入约 **2~3 分钟**的"等待"阶段——
 只随机切换 `idle` / `idle2` 待机动画、**不做移动**；等待计时结束后再恢复上面的
@@ -44,6 +47,12 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 
 **扫头害羞**：鼠标在宠物**头部（窗口上方约 45%）**左右扫过（累计水平位移超过阈值）
 时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，避免连续触发。
+
+**气泡表情包**：程序会**不定期（约 20~60 秒）**在宠物头顶弹出一个气泡，随机显示
+`desktop_pet_image\emoji\emoji_NN.png` 中的一张表情包，约 3 秒后消失。气泡是**独立的
+分层窗口**，用 `WS_EX_TRANSPARENT` 实现**点击穿透**（不挡宠物的点击/拖拽），并持续跟随
+宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能。
+表情包素材用 `MCPS/fetch_emoji.py` 抓取（见文末）。
 
 **启动失败会有弹窗**：GUI 程序没有控制台，找不到帧时不再静默退出，而是弹出错误框，
 写明「资源目录、请求的动作、该目录下实际可用的动作」，方便排查（例如动作名拼错、
@@ -73,7 +82,8 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
   `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
   `[pet] walking loaded: left=30 right=27 up=30 down=30 frames`、
-  `[pet] shy loaded=30/120 frames`
+  `[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
+  `[pet] bubble enabled (240x252, 6 stickers)`
 
 > 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
 > `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`walking_up` 30 帧、
@@ -84,7 +94,7 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 
 - 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
 - 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
-  （源图 384x384 → 屏幕上约 269x269）；嫌大/嫌小改 `main.cpp` 里的常量即可
+  （源图 384x384 → 屏幕上约 269x269）；嫌大/嫌小改 `src/config.h` 里的常量即可
 
 ## 去背景工具（RGB → RGBA）
 
@@ -127,6 +137,24 @@ GIF 会被跳过（可用 `force` 强制处理）。
 > 因此 server 用 `contextlib.redirect_stdout` 把输出重定向到缓冲区再作为工具结果返回，
 > 避免污染协议。
 
+## 代码结构
+
+源码在 `src/`，按职责分模块：
+
+| 文件 | 职责 |
+|------|------|
+| `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
+| `src/config.h` | 所有可调常量（窗口 / 行为 / 气泡） |
+| `src/util.*` | 路径、报错弹窗、UTF-8 转换、随机数 |
+| `src/assets.*` | `Frame` 与帧加载（`LoadFrames` / emoji 列表） |
+| `src/render.*` | GDI+ 初始化 + 分层窗口绘制 `render::PresentLayered` |
+| `src/pet.*` | 宠物：动画池 + 待机/行走/点击/拖拽/害羞状态机（`struct Pet`） |
+| `src/bubble.*` | 气泡表情包窗口（`struct Bubble`，独立定时器 + 点击穿透） |
+| `bubble_logic.h` · `walk_logic.h` | 纯逻辑（不含 Win32），配 `tests/` 单测 |
+
+新增功能（例如「培养」）建议加一个 `src/<feature>.*` 模块，尽量只依赖 `config.h` / `util.h`，
+不要直接改 `pet.*`。
+
 ## 编译
 
 ### 方法一：MSVC 一行命令（推荐）
@@ -141,7 +169,7 @@ build.bat
 或直接手动执行等价命令：
 
 ```
-cl /nologo /EHsc /std:c++17 /O2 main.cpp gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
+cl /nologo /EHsc /std:c++17 /O2 src\*.cpp /I src gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
 ```
 
 `build.bat` 优先尝试上面的 `cl` 命令；若当前环境没有 `cl`（不在开发者命令行里），
@@ -164,13 +192,13 @@ cmake --build build --config Release
 64 位（x86-64）：
 
 ```
-x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows main.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows src/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 32 位（x86）：
 
 ```
-i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows main.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows src/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 或使用 CMake + MinGW Makefiles：
