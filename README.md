@@ -94,7 +94,7 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 
 - 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
 - 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
-  （源图 384x384 → 屏幕上约 269x269）；嫌大/嫌小改 `main.cpp` 里的常量即可
+  （源图 384x384 → 屏幕上约 269x269）；嫌大/嫌小改 `src/config.h` 里的常量即可
 
 ## 去背景工具（RGB → RGBA）
 
@@ -137,6 +137,24 @@ GIF 会被跳过（可用 `force` 强制处理）。
 > 因此 server 用 `contextlib.redirect_stdout` 把输出重定向到缓冲区再作为工具结果返回，
 > 避免污染协议。
 
+## 代码结构
+
+源码在 `src/`，按职责分模块：
+
+| 文件 | 职责 |
+|------|------|
+| `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
+| `src/config.h` | 所有可调常量（窗口 / 行为 / 气泡） |
+| `src/util.*` | 路径、报错弹窗、UTF-8 转换、随机数 |
+| `src/assets.*` | `Frame` 与帧加载（`LoadFrames` / emoji 列表） |
+| `src/render.*` | GDI+ 初始化 + 分层窗口绘制 `render::PresentLayered` |
+| `src/pet.*` | 宠物：动画池 + 待机/行走/点击/拖拽/害羞状态机（`struct Pet`） |
+| `src/bubble.*` | 气泡表情包窗口（`struct Bubble`，独立定时器 + 点击穿透） |
+| `bubble_logic.h` · `walk_logic.h` | 纯逻辑（不含 Win32），配 `tests/` 单测 |
+
+新增功能（例如「培养」）建议加一个 `src/<feature>.*` 模块，尽量只依赖 `config.h` / `util.h`，
+不要直接改 `pet.*`。
+
 ## 编译
 
 ### 方法一：MSVC 一行命令（推荐）
@@ -151,7 +169,7 @@ build.bat
 或直接手动执行等价命令：
 
 ```
-cl /nologo /EHsc /std:c++17 /O2 main.cpp gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
+cl /nologo /EHsc /std:c++17 /O2 src\*.cpp /I src gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
 ```
 
 `build.bat` 优先尝试上面的 `cl` 命令；若当前环境没有 `cl`（不在开发者命令行里），
@@ -174,13 +192,13 @@ cmake --build build --config Release
 64 位（x86-64）：
 
 ```
-x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows main.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows src/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 32 位（x86）：
 
 ```
-i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows main.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows src/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 或使用 CMake + MinGW Makefiles：
