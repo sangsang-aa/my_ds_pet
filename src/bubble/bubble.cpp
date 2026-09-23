@@ -4,12 +4,12 @@
 #include <cmath>
 #include <cstdio>
 
-#include "../bubble_logic.h"
-#include "assets.h"
-#include "config.h"
-#include "gdi.h"
-#include "render.h"
-#include "util.h"
+#include "bubble_logic.h"
+#include "core/assets.h"
+#include "core/config.h"
+#include "core/gdi.h"
+#include "core/render.h"
+#include "core/util.h"
 
 namespace {
 
@@ -23,8 +23,8 @@ void AddRoundedRect(gdi::GraphicsPath& path, int x, int y, int w, int h,
     path.CloseFigure();
 }
 
-// Render the bubble (rounded body + downward tail + emoji) into b.hbmp.
-void RenderBubble(Bubble& b, const std::wstring& emojiPath) {
+// Render the bubble (rounded body + tail + emoji) into b.hbmp.
+void RenderBubble(Bubble& b, const std::wstring& emojiPath, bool tailUp) {
     if (b.dc == nullptr) {
         return;
     }
@@ -34,6 +34,7 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath) {
     }
     const int bodyW = b.w;
     const int bodyH = b.h - kBubbleTailH;
+    const int bodyTop = tailUp ? kBubbleTailH : 0;
     {
         gdi::Graphics graphics(&canvas);
         graphics.SetSmoothingMode(gdi::SmoothingModeAntiAlias);
@@ -42,16 +43,21 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath) {
         gdi::SolidBrush fill(gdi::Color(255, 255, 255, 255));
         gdi::Pen border(gdi::Color(255, 130, 130, 130), 1.0f);
         gdi::GraphicsPath body;
-        AddRoundedRect(body, 0, 0, bodyW - 1, bodyH - 1, kBubbleRadiusPx);
+        AddRoundedRect(body, 0, bodyTop, bodyW - 1, bodyH - 1, kBubbleRadiusPx);
         graphics.FillPath(&fill, &body);
         graphics.DrawPath(&border, &body);
 
         const int cx = bodyW / 2;
-        gdi::Point tail[3] = {
-            gdi::Point(cx - kBubbleTailW / 2, bodyH - 2),
-            gdi::Point(cx + kBubbleTailW / 2, bodyH - 2),
-            gdi::Point(cx, b.h - 1),
-        };
+        gdi::Point tail[3];
+        if (tailUp) {
+            tail[0] = gdi::Point(cx - kBubbleTailW / 2, bodyTop + 1);
+            tail[1] = gdi::Point(cx + kBubbleTailW / 2, bodyTop + 1);
+            tail[2] = gdi::Point(cx, 0);
+        } else {
+            tail[0] = gdi::Point(cx - kBubbleTailW / 2, bodyTop + bodyH - 2);
+            tail[1] = gdi::Point(cx + kBubbleTailW / 2, bodyTop + bodyH - 2);
+            tail[2] = gdi::Point(cx, b.h - 1);
+        }
         graphics.FillPolygon(&fill, tail, 3);
         graphics.DrawLine(&border, tail[0].X, tail[0].Y, tail[2].X, tail[2].Y);
         graphics.DrawLine(&border, tail[1].X, tail[1].Y, tail[2].X, tail[2].Y);
@@ -68,7 +74,7 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath) {
             const int drawH =
                 std::max(1, static_cast<int>(std::lround(emojiH * scale)));
             graphics.DrawImage(&emoji, (bodyW - drawW) / 2,
-                               (bodyH - drawH) / 2, drawW, drawH);
+                               bodyTop + (bodyH - drawH) / 2, drawW, drawH);
         }
     }
     HBITMAP hbmp = nullptr;
@@ -79,6 +85,8 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath) {
         }
         b.hbmp = hbmp;
     }
+    b.tailUp = tailUp;
+    b.shownEmoji = emojiPath;
 }
 
 void PresentBubble(Bubble& b, int x, int y) {
@@ -96,10 +104,14 @@ void FollowBubble(Bubble& b) {
     if (!b.visible || b.hwnd == nullptr) {
         return;
     }
-    const pet_bubble::Point at = pet_bubble::PlaceBubble(
+    const pet_bubble::Placement place = pet_bubble::PlaceBubble(
         BubblePetRect(b), b.w, b.h, GetSystemMetrics(SM_CXSCREEN),
         GetSystemMetrics(SM_CYSCREEN), kBubbleGapPx);
-    PresentBubble(b, at.x, at.y);
+    const bool tailUp = place.side == pet_bubble::Side::Below;
+    if (tailUp != b.tailUp && !b.shownEmoji.empty()) {
+        RenderBubble(b, b.shownEmoji, tailUp);
+    }
+    PresentBubble(b, place.at.x, place.at.y);
 }
 
 void HideBubble(Bubble& b) {
@@ -121,11 +133,12 @@ void ShowBubble(Bubble& b) {
         return;
     }
     const int pick = RandomInRange(0, static_cast<int>(b.emojiPaths.size()) - 1);
-    RenderBubble(b, b.emojiPaths[static_cast<size_t>(pick)]);
-    const pet_bubble::Point at = pet_bubble::PlaceBubble(
+    const std::wstring& emoji = b.emojiPaths[static_cast<size_t>(pick)];
+    const pet_bubble::Placement place = pet_bubble::PlaceBubble(
         BubblePetRect(b), b.w, b.h, GetSystemMetrics(SM_CXSCREEN),
         GetSystemMetrics(SM_CYSCREEN), kBubbleGapPx);
-    PresentBubble(b, at.x, at.y);
+    RenderBubble(b, emoji, place.side == pet_bubble::Side::Below);
+    PresentBubble(b, place.at.x, place.at.y);
     ShowWindow(b.hwnd, SW_SHOWNOACTIVATE);
     b.visible = true;
     b.showLeft = kBubbleShowTicks;

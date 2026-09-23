@@ -1,6 +1,6 @@
 // Unit tests for walk_logic.h — pure logic, no Windows.
 // Build & run:  g++ -std=c++17 -Wall -Wextra -O2 tests/walk_logic_test.cpp -o /tmp/walk_test && /tmp/walk_test
-#include "../walk_logic.h"
+#include "../src/pet/walk_logic.h"
 
 #include <cassert>
 #include <cstdio>

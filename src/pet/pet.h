@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "assets.h"
-#include "config.h"
+#include "core/assets.h"
+#include "core/config.h"
 
 enum class WalkDir { Left, Right, Up, Down };
 enum class PetState { Base, Clicked, Dragging, Walking, Shy };

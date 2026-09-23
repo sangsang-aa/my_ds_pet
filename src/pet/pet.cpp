@@ -4,9 +4,9 @@
 #include <cmath>
 #include <cstdio>
 
-#include "../walk_logic.h"
-#include "render.h"
-#include "util.h"
+#include "walk_logic.h"
+#include "core/render.h"
+#include "core/util.h"
 
 namespace {
 

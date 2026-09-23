@@ -16,7 +16,7 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 
 ## Build
 - Windows: `build.bat` (tries `cl`, else CMake). MinGW:
-  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows src/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
+  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/*.cpp src/*/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
 - **Close the running pet first** or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
   `taskkill /IM pet_demo.exe /F 2>nul`
@@ -34,12 +34,14 @@ python3 -m pytest /home/zh180/MCPS/test_convert_rgba.py /home/zh180/MCPS/test_fe
 Behaviour/visual changes can only be verified by the user on Windows.
 
 ## Architecture (not visible from filenames)
-- `src/main.cpp` is WinMain wiring only. Behaviour is in modules: `config.h` (all
-  constants) · `util.*` · `assets.*` (`Frame`, `LoadFrames`) · `render.*`
-  (`render::PresentLayered`) · `pet.*` (`struct Pet`: idle↔walk state machine, input) ·
-  `bubble.*` (`struct Bubble`: own window + timer, click-through, follows the pet HWND).
-- `bubble_logic.h` / `walk_logic.h` are deliberately **pure (no `<windows.h>`)** — keep
-  new testable logic there so `tests/` can run on Linux.
+- `src/main.cpp` is WinMain wiring only; `src/` is grouped by feature: `core/` (shared:
+  `config.h` constants · `util.*` · `assets.*` (`Frame`, `LoadFrames`) · `render.*`
+  (`render::PresentLayered`)) · `pet/` (`struct Pet`: idle↔walk state machine, input,
+  + `walk_logic.h`) · `bubble/` (`struct Bubble`: own window + timer, click-through,
+  follows the pet HWND, + `bubble_logic.h`). Cross-module includes go through `-Isrc`
+  (e.g. `#include "core/config.h"`).
+- `src/pet/walk_logic.h` / `src/bubble/bubble_logic.h` are deliberately **pure (no
+  `<windows.h>`)** — keep new testable logic there so `tests/` can run on Linux.
 - **GDI+ decodes png/jpg/gif/bmp only — never WebP.** Convert webp to PNG for assets.
 - Frames: `desktop_pet_image/<action>/NNN.png`; loading stops at the first missing frame
   (max 120); scaled by `kScaleFactor = 0.70`. Paths resolve relative to the **exe dir**,

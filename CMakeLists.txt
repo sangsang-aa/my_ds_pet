@@ -9,11 +9,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # WIN32 => GUI subsystem (no console window) on both MSVC and MinGW-w64.
 add_executable(pet_demo WIN32
     src/main.cpp
-    src/util.cpp
-    src/assets.cpp
-    src/render.cpp
-    src/pet.cpp
-    src/bubble.cpp)
+    src/core/util.cpp
+    src/core/assets.cpp
+    src/core/render.cpp
+    src/pet/pet.cpp
+    src/bubble/bubble.cpp)
 
 target_include_directories(pet_demo PRIVATE src)
 

@@ -22,20 +22,29 @@ struct Point {
     int y = 0;
 };
 
-// Where to put a bubbleW x bubbleH bubble so its bottom-center tail points at
-// the top-center of the pet, offset by gapPx. Prefers above the pet; if that
-// would clip the top of the screen, flips below. The result is clamped to
-// [0, screenW - bubbleW] x [0, screenH - bubbleH].
-inline Point PlaceBubble(const Rect& pet, int bubbleW, int bubbleH,
-                         int screenW, int screenH, int gapPx) {
+enum class Side { Above, Below };
+
+struct Placement {
+    Side side = Side::Above;
+    Point at;
+};
+
+// Where to put a bubbleW x bubbleH bubble so its tail points at the pet, offset
+// by gapPx. Prefers above the pet; if that would clip the top of the screen it
+// flips below, and `side` tells the renderer which way the tail must face. The
+// result is clamped to [0, screenW - bubbleW] x [0, screenH - bubbleH].
+inline Placement PlaceBubble(const Rect& pet, int bubbleW, int bubbleH,
+                             int screenW, int screenH, int gapPx) {
     int x = pet.x + (pet.w - bubbleW) / 2;
     int y = pet.y - bubbleH - gapPx;
+    Side side = Side::Above;
     if (y < 0) {
         y = pet.y + pet.h + gapPx;
+        side = Side::Below;
     }
     x = std::max(0, std::min(x, screenW - bubbleW));
     y = std::max(0, std::min(y, screenH - bubbleH));
-    return Point{ x, y };
+    return Placement{ side, Point{ x, y } };
 }
 
 // Number of ticks until the next bubble. `rand01` must be uniform in [0, 1).

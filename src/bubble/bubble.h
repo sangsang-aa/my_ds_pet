@@ -14,6 +14,8 @@
 
 struct Bubble {
     std::vector<std::wstring> emojiPaths;
+    std::wstring shownEmoji;
+    bool tailUp = false;
     HWND hwnd = nullptr;
     HWND petHwnd = nullptr;
     HDC dc = nullptr;

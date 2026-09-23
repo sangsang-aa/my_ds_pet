@@ -17,11 +17,11 @@
 
 #include <string>
 
-#include "bubble.h"
-#include "config.h"
-#include "pet.h"
-#include "render.h"
-#include "util.h"
+#include "bubble/bubble.h"
+#include "core/config.h"
+#include "core/render.h"
+#include "core/util.h"
+#include "pet/pet.h"
 
 // __argc / __argv are exported by both the MSVC and the MinGW-w64 CRT, so the
 // GUI entry point can still see the (narrow) command-line arguments.
