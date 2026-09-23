@@ -15,8 +15,9 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - Tooling lives **outside** the repo in `/home/zh180/MCPS/` (that dir is NOT a git repo).
 
 ## Build
-- Windows: `build.bat` (tries `cl`, else CMake). MinGW:
-  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/*.cpp src/*/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
+- Windows: `build.bat` (tries `cl`, then `g++`, then CMake). MinGW one-liner
+  (cmd.exe does **not** expand globs and g++ doesn't either — list the files):
+  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
 - **Close the running pet first** or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
   `taskkill /IM pet_demo.exe /F 2>nul`

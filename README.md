@@ -189,14 +189,19 @@ cmake --build build --config Release
 64 位（x86-64）：
 
 ```
-x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/*.cpp src/*/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 32 位（x86）：
 
 ```
-i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/*.cpp src/*/*.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
+
+> ⚠️ 上面两条**逐个列出源文件**是为了兼容 Windows `cmd`：cmd **不展开通配符**，`g++` 自己也不展开，
+> 写成 `src/*.cpp src/*/*.cpp` 会把字面量原样传给编译器并报 `Invalid argument`。
+> 只有在 **POSIX shell**（WSL / Git-Bash / MSYS）里才可以用通配符 `src/*.cpp src/*/*.cpp`。
+> 省事可直接跑 `build.bat`（自动探测 `cl` / `g++` / `cmake`）。
 
 或使用 CMake + MinGW Makefiles：
 
