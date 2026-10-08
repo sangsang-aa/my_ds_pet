@@ -21,6 +21,9 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - **Close the running pet first** or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
   `taskkill /IM pet_demo.exe /F 2>nul`
+- `build.bat`'s g++ path writes the source list to `build\sources.txt` with **forward
+  slashes** and passes it as `@build\sources.txt`: g++ treats `\` inside an `@file` as an
+  escape and would mangle `E:\pet_demo\src\main.cpp` into `E:pet_demosrcmain.cpp`.
 - This WSL box has **no mingw / cmake / wine** installed — only g++, so nothing here can
   build or run the GUI as-is. A rootless cross-toolchain lives at `~/.local/mingw/root/`
   (extract via `apt-get download` + `dpkg -x`; use `root/usr/bin/x86_64-w64-mingw32-g++-posix`

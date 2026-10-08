@@ -10,12 +10,14 @@ rem    shell where cl.exe is on PATH.
 rem
 rem  Path (b) - MinGW-w64:
 rem    x86_64-w64-mingw32-g++ (or g++) on PATH. cmd.exe does NOT expand
-rem    wildcards and g++ does not either, so the source list is generated
-rem    with `dir /b /s` and passed via an @response file.
+rem    wildcards and g++ does not either, so the source list is written to an
+rem    @response file. Paths there MUST use forward slashes: g++ treats `\` in an
+rem    @file as an escape (\p, \s, ...) and turns `E:\pet_demo\src\main.cpp` into
+rem    `E:pet_demosrcmain.cpp`.
 rem
-rem  Path (c) - fallback: CMake with the Visual Studio generator.
+rem  Path (c) - fallback: CMake (Visual Studio generator, then MinGW Makefiles).
 rem ============================================================
-setlocal
+setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
 where cl >nul 2>nul
@@ -31,7 +33,12 @@ if %errorlevel%==0 (
 where g++ >nul 2>nul
 if %errorlevel%==0 (
     if not exist build mkdir build
-    dir /b /s src\*.cpp > build\sources.txt
+    > build\sources.txt (
+        for /f "delims=" %%f in ('dir /b /s src\*.cpp') do (
+            set "p=%%f"
+            echo !p:\=/!
+        )
+    )
     g++ -std=c++17 -O2 -mwindows -Isrc @build\sources.txt -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
     if not errorlevel 1 (
         echo [pet] build OK: pet_demo.exe via g++
@@ -45,10 +52,20 @@ where cmake >nul 2>nul
 if errorlevel 1 goto :nobuild
 
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+if not errorlevel 1 (
+    cmake --build build --config Release
+    if not errorlevel 1 (
+        echo [pet] build OK: build\Release\pet_demo.exe
+        exit /b 0
+    )
+)
+
+echo [pet] visual studio generator failed, trying MinGW Makefiles...
+cmake -S . -B build-mingw -G "MinGW Makefiles"
 if errorlevel 1 goto :fail
-cmake --build build --config Release
+cmake --build build-mingw
 if errorlevel 1 goto :fail
-echo [pet] build OK: build\Release\pet_demo.exe
+echo [pet] build OK: build-mingw\pet_demo.exe
 exit /b 0
 
 :nobuild
