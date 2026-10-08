@@ -1,5 +1,5 @@
-// The pet itself: animation pools, the idle<->walk behaviour state machine,
-// drag/click/shy reactions, and its window procedure.
+// The pet: an idle pool plus a registry-driven behavior player, input handling,
+// and its window procedure.
 #ifndef PET_PET_H
 #define PET_PET_H
 
@@ -8,30 +8,29 @@
 #include <string>
 #include <vector>
 
+#include "behavior.h"
 #include "core/assets.h"
 #include "core/config.h"
 
-enum class WalkDir { Left, Right, Up, Down };
-enum class PetState { Base, Clicked, Dragging, Walking, Shy };
+enum class PetState { Base, Acting };
 
 struct Pet {
-    std::vector<std::vector<Frame>> basePool;
-    std::vector<Frame> clickFrames;
-    std::vector<Frame> dragFrames;
-    std::vector<Frame> walkLeftFrames;
-    std::vector<Frame> walkRightFrames;
-    std::vector<Frame> walkUpFrames;
-    std::vector<Frame> walkDownFrames;
-    std::vector<Frame> shyFrames;
+    struct Clip {
+        const pet_behavior::Spec* spec = nullptr;
+        std::vector<Frame> frames;
+    };
+
+    std::vector<std::vector<Frame>> basePool;  // idle / idle2 pool
+    std::vector<Clip> clips;                   // one per registry spec
+    std::vector<int> cooldowns;                // per-spec cooldown ticks
 
     int basePoolIndex = 0;
     int baseIndex = 0;
-    int clickIndex = 0;
-    int dragIndex = 0;
-    int walkIndex = 0;
-    bool walkFullCycle = false;
-    WalkDir walkDir = WalkDir::Right;
-    int shyIndex = 0;
+
+    int activeClip = -1;
+    int activeIndex = 0;
+    int activeTicks = 0;
+    int activeTarget = 0;  // 0 => no time limit (ended by an event)
 
     PetState state = PetState::Base;
 
@@ -43,7 +42,6 @@ struct Pet {
     int headSweepPx = 0;
     int lastMouseX = 0;
     int lastMouseY = 0;
-    int shyCooldownTicks = 0;
 
     bool mouseDown = false;
     bool dragging = false;
@@ -55,8 +53,8 @@ struct Pet {
     int petW = 0;
     int petH = 0;
 
-    // Load every animation relative to (exeDir, assetsDir). On failure returns
-    // false and fills `error` with the message to show the user.
+    // Load every behavior in the registry (plus the idle pool) relative to
+    // (exeDir, assetsDir). On failure returns false and fills `error`.
     bool Load(const std::wstring& exeDir, const std::wstring& assetsDir,
               bool explicitAction, const std::string& actionUtf8,
               std::wstring& error);
@@ -75,15 +73,12 @@ struct Pet {
     void DestroyResources();
 
 private:
-    const std::vector<Frame>& WalkFrames(WalkDir dir) const;
-    WalkDir PickRandomWalkDir() const;
+    int PickNextAuto() const;
+    bool CanStart(int clipIndex) const;
+    void StartBehavior(HWND hwnd, int clipIndex);
     int PickRandomBaseIndex(int poolSize) const;
-    void WalkStep(WalkDir dir, int& dx, int& dy) const;
-    void AdvanceWalkIndex(int size);
     void EnterBase(HWND hwnd);
     void EnterWaiting(HWND hwnd);
-    void TriggerClickReaction(HWND hwnd);
-    void TriggerShyReaction(HWND hwnd);
 };
 
 LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,

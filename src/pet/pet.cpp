@@ -1,12 +1,13 @@
 #include "pet.h"
 
-#include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <random>
 
-#include "walk_logic.h"
+#include "behaviors.h"
 #include "core/render.h"
 #include "core/util.h"
+#include "walk_logic.h"
 
 namespace {
 
@@ -17,6 +18,10 @@ void FreeFrames(std::vector<Frame>& frames) {
         }
     }
     frames.clear();
+}
+
+bool IsMoving(const pet_behavior::Spec& spec) {
+    return spec.dx != 0 || spec.dy != 0;
 }
 
 }  // namespace
@@ -64,43 +69,16 @@ bool Pet::Load(const std::wstring& exeDir, const std::wstring& assetsDir,
                     basePool.size());
     }
 
-    clickFrames = LoadFrames(exeDir, assetsDir, L"clicked");
-    if (clickFrames.empty()) {
-        std::printf("[pet] no 'clicked' frames, click reaction disabled\n");
-    } else {
-        std::printf("[pet] clicked loaded=%zu/%zu frames\n", clickFrames.size(),
-                    kMaxFrames);
+    clips.clear();
+    for (const pet_behavior::Spec& spec : DefaultBehaviors()) {
+        Clip clip;
+        clip.spec = &spec;
+        clip.frames = LoadFrames(exeDir, assetsDir, spec.action);
+        std::printf("[pet] %ls loaded=%zu/%zu frames\n", spec.action.c_str(),
+                    clip.frames.size(), kMaxFrames);
+        clips.push_back(std::move(clip));
     }
-
-    dragFrames = LoadFrames(exeDir, assetsDir, L"drag");
-    if (dragFrames.empty()) {
-        std::printf("[pet] no 'drag' frames, drag animation disabled\n");
-    } else {
-        std::printf("[pet] drag loaded=%zu/%zu frames\n", dragFrames.size(),
-                    kMaxFrames);
-    }
-
-    walkRightFrames = LoadFrames(exeDir, assetsDir, L"walking_right");
-    walkLeftFrames = LoadFrames(exeDir, assetsDir, L"walking_left");
-    walkUpFrames = LoadFrames(exeDir, assetsDir, L"walking_up");
-    walkDownFrames = LoadFrames(exeDir, assetsDir, L"walking_down");
-    if (walkRightFrames.empty() && walkLeftFrames.empty() &&
-        walkUpFrames.empty() && walkDownFrames.empty()) {
-        std::printf("[pet] no walking_* frames, walking disabled\n");
-    } else {
-        std::printf("[pet] walking loaded: left=%zu right=%zu up=%zu down=%zu "
-                    "frames\n",
-                    walkLeftFrames.size(), walkRightFrames.size(),
-                    walkUpFrames.size(), walkDownFrames.size());
-    }
-
-    shyFrames = LoadFrames(exeDir, assetsDir, L"shy");
-    if (shyFrames.empty()) {
-        std::printf("[pet] no 'shy' frames, head-sweep reaction disabled\n");
-    } else {
-        std::printf("[pet] shy loaded=%zu/%zu frames\n", shyFrames.size(),
-                    kMaxFrames);
-    }
+    cooldowns.assign(clips.size(), 0);
 
     behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
     return true;
@@ -147,64 +125,40 @@ int Pet::PickRandomBaseIndex(int poolSize) const {
     return RandomInRange(0, poolSize - 1);
 }
 
-const std::vector<Frame>& Pet::WalkFrames(WalkDir dir) const {
-    switch (dir) {
-    case WalkDir::Left:
-        return walkLeftFrames;
-    case WalkDir::Up:
-        return walkUpFrames;
-    case WalkDir::Down:
-        return walkDownFrames;
-    case WalkDir::Right:
-    default:
-        return walkRightFrames;
+// Pick the next autonomous behavior by weight; -1 when none is available
+// (frames missing, or gated during the post-drag wait).
+int Pet::PickNextAuto() const {
+    const std::vector<pet_behavior::Spec>& specs = DefaultBehaviors();
+    std::vector<bool> eligible(specs.size(), false);
+    for (size_t i = 0; i < specs.size(); ++i) {
+        eligible[i] = specs[i].trigger == pet_behavior::Trigger::Auto &&
+                      !clips[i].frames.empty() &&
+                      (!specs[i].gatedByWait || waitTicks == 0);
     }
+    std::uniform_real_distribution<double> dist(0.0, 1.0);
+    return pet_behavior::PickAuto(specs, eligible, dist(Rng()));
 }
 
-void Pet::WalkStep(WalkDir dir, int& dx, int& dy) const {
-    dx = 0;
-    dy = 0;
-    switch (dir) {
-    case WalkDir::Left:
-        dx = -kWalkStepPx;
-        break;
-    case WalkDir::Right:
-        dx = kWalkStepPx;
-        break;
-    case WalkDir::Up:
-        dy = -kWalkStepPx;
-        break;
-    case WalkDir::Down:
-        dy = kWalkStepPx;
-        break;
-    }
+bool Pet::CanStart(int clipIndex) const {
+    return clipIndex >= 0 && clipIndex < static_cast<int>(clips.size()) &&
+           !clips[static_cast<size_t>(clipIndex)].frames.empty() &&
+           cooldowns[static_cast<size_t>(clipIndex)] <= 0;
 }
 
-// Uniformly pick among the directions that actually have frames loaded.
-WalkDir Pet::PickRandomWalkDir() const {
-    const WalkDir all[4] = { WalkDir::Left, WalkDir::Right, WalkDir::Up,
-                             WalkDir::Down };
-    WalkDir pool[4];
-    int count = 0;
-    for (WalkDir dir : all) {
-        if (!WalkFrames(dir).empty()) {
-            pool[count++] = dir;
-        }
-    }
-    if (count == 0) {
-        return WalkDir::Right;
-    }
-    return pool[RandomInRange(0, count - 1)];
+void Pet::StartBehavior(HWND hwnd, int clipIndex) {
+    const Clip& clip = clips[static_cast<size_t>(clipIndex)];
+    const pet_behavior::Spec& spec = *clip.spec;
+    state = PetState::Acting;
+    activeClip = clipIndex;
+    activeIndex = 0;
+    activeTicks = 0;
+    activeTarget = spec.maxTicks > 0 ? RandomInRange(spec.minTicks, spec.maxTicks)
+                                     : 0;
+    cooldowns[static_cast<size_t>(clipIndex)] = spec.minTicks;
+    PresentFrame(hwnd, clip.frames[0]);
 }
 
-void Pet::AdvanceWalkIndex(int size) {
-    if (size <= 0) {
-        return;
-    }
-    walkIndex = (walkIndex + 1) % size;
-}
-
-// Return to idle and schedule the next walk after a random dwell.
+// Return to idle and schedule the next autonomous behavior after a random dwell.
 void Pet::EnterBase(HWND hwnd) {
     state = PetState::Base;
     behaviorTicks = 0;
@@ -212,133 +166,111 @@ void Pet::EnterBase(HWND hwnd) {
     PresentBase(hwnd);
 }
 
-// After the user drops the pet: idle in place (no walking) for a random 2-3
-// minutes, then resume the normal idle<->walk chain.
+// After the user drops the pet: idle in place (no autonomous behaviors) for a
+// random 2-3 minutes, then resume the normal chain.
 void Pet::EnterWaiting(HWND hwnd) {
     EnterBase(hwnd);
     waitTicks = RandomInRange(kWaitMinTicks, kWaitMaxTicks);
 }
 
-// Restart the one-shot clicked animation from its first frame.
-void Pet::TriggerClickReaction(HWND hwnd) {
-    if (clickFrames.empty()) {
-        return;  // click reaction was disabled at startup
-    }
-    state = PetState::Clicked;
-    clickIndex = 0;
-    PresentFrame(hwnd, clickFrames[0]);
-}
-
-// Play the one-shot shy animation (mouse sweeping across the pet's head).
-void Pet::TriggerShyReaction(HWND hwnd) {
-    if (shyFrames.empty() || shyCooldownTicks > 0) {
-        return;
-    }
-    state = PetState::Shy;
-    shyIndex = 0;
-    shyCooldownTicks = kShyCooldownTicks;
-    PresentFrame(hwnd, shyFrames[0]);
-}
-
 void Pet::OnTimer(HWND hwnd) {
-    if (shyCooldownTicks > 0) {
-        shyCooldownTicks -= 1;
+    for (int& cooldown : cooldowns) {
+        if (cooldown > 0) {
+            cooldown -= 1;
+        }
     }
     headSweepPx -= headSweepPx / 2;  // decay, so slow drift never triggers
-    if (state == PetState::Clicked) {
-        clickIndex += 1;
-        if (clickIndex >= static_cast<int>(clickFrames.size())) {
-            // clicked animation finished: resume the idle loop
+
+    if (state == PetState::Acting) {
+        const Clip& clip = clips[static_cast<size_t>(activeClip)];
+        const std::vector<Frame>& frames = clip.frames;
+        const pet_behavior::Spec& spec = *clip.spec;
+        const int size = static_cast<int>(frames.size());
+        if (size <= 0) {
             EnterBase(hwnd);
-        } else {
-            PresentFrame(hwnd, clickFrames[static_cast<size_t>(clickIndex)]);
+            return;
         }
-    } else if (state == PetState::Shy) {
-        shyIndex += 1;
-        if (shyIndex >= static_cast<int>(shyFrames.size())) {
-            EnterBase(hwnd);
-        } else {
-            PresentFrame(hwnd, shyFrames[static_cast<size_t>(shyIndex)]);
+
+        activeIndex += 1;
+        bool ended = false;
+        if (activeIndex >= size) {
+            if (spec.playback == pet_behavior::Playback::OneShot) {
+                ended = true;  // the last frame was shown on the previous tick
+            } else {
+                activeIndex %= size;
+            }
         }
-    } else if (state == PetState::Dragging) {
-        // drag reaction loops while the pet is being dragged
-        if (!dragFrames.empty()) {
-            dragIndex = (dragIndex + 1) % static_cast<int>(dragFrames.size());
-            PresentFrame(hwnd, dragFrames[static_cast<size_t>(dragIndex)]);
+        if (!ended) {
+            PresentFrame(hwnd, frames[static_cast<size_t>(activeIndex)]);
         }
-    } else if (state == PetState::Walking) {
-        const std::vector<Frame>& walk = WalkFrames(walkDir);
-        if (walk.empty()) {
-            EnterBase(hwnd);
-        } else {
-            AdvanceWalkIndex(static_cast<int>(walk.size()));
-            PresentFrame(hwnd, walk[static_cast<size_t>(walkIndex)]);
+
+        bool atEdge = false;
+        if (IsMoving(spec)) {
             RECT rect = {};
             GetWindowRect(hwnd, &rect);
-            int dx = 0;
-            int dy = 0;
-            WalkStep(walkDir, dx, dy);
-            const int newLeft = rect.left + dx;
-            const int newTop = rect.top + dy;
-            const bool atEdge =
-                (newLeft < 0) || (newLeft + petW > screenW) ||
-                (newTop < 0) || (newTop + petH > screenH);
+            const int newLeft = rect.left + spec.dx;
+            const int newTop = rect.top + spec.dy;
+            atEdge = (newLeft < 0) || (newLeft + petW > screenW) ||
+                     (newTop < 0) || (newTop + petH > screenH);
             if (!atEdge) {
                 SetWindowPos(hwnd, nullptr, newLeft, newTop, 0, 0,
                              SWP_NOSIZE | SWP_NOZORDER);
             }
-            behaviorTicks += 1;
-            const bool walkDone = atEdge || behaviorTicks >= behaviorTarget;
-            // A full-cycle vertical clip (takeoff..landing) must reach its last,
-            // grounded frame before returning to idle; stopping mid-air — or on
-            // the pre-takeoff frame — reads as a jump or a missing landing.
+        }
+
+        activeTicks += 1;
+        if (ended) {
+            EnterBase(hwnd);
+            return;
+        }
+        if (activeTarget > 0) {
+            const bool done = (IsMoving(spec) && atEdge) ||
+                              activeTicks >= activeTarget;
+            // A full-cycle clip (takeoff..landing) must reach its last, grounded
+            // frame before returning to idle; stopping mid-air — or on the
+            // pre-takeoff frame — reads as a jump or a missing landing.
             const bool safeToStop =
-                !walkFullCycle ||
-                pet_walk::AtEndFrame(walkIndex, static_cast<int>(walk.size()));
-            if (walkDone && safeToStop) {
+                spec.playback != pet_behavior::Playback::FullCycle ||
+                pet_walk::AtEndFrame(activeIndex, size);
+            if (done && safeToStop) {
                 EnterBase(hwnd);
             }
         }
-    } else {  // Base
-        if (!basePool.empty()) {
-            const int size = static_cast<int>(
-                basePool[static_cast<size_t>(basePoolIndex)].size());
-            if (size > 0) {
-                baseIndex += 1;
-                if (baseIndex >= size) {
-                    // one idle loop finished: switch to a random idle
-                    baseIndex = 0;
-                    if (basePool.size() > 1) {
-                        basePoolIndex = PickRandomBaseIndex(
-                            static_cast<int>(basePool.size()));
-                    }
-                }
-                PresentBase(hwnd);
+        return;
+    }
+
+    // Base: play the idle pool and, once the dwell elapses, start a behavior.
+    if (basePool.empty()) {
+        return;
+    }
+    const int size = static_cast<int>(
+        basePool[static_cast<size_t>(basePoolIndex)].size());
+    if (size > 0) {
+        baseIndex += 1;
+        if (baseIndex >= size) {
+            // one idle loop finished: switch to a random idle
+            baseIndex = 0;
+            if (basePool.size() > 1) {
+                basePoolIndex = PickRandomBaseIndex(
+                    static_cast<int>(basePool.size()));
             }
-            if (waitTicks > 0) {
-                // post-drag waiting: idle animations only, never walk
-                waitTicks -= 1;
-                if (waitTicks == 0) {
-                    behaviorTicks = 0;
-                    behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
-                }
-            } else {
-                const bool canWalk = !walkLeftFrames.empty() ||
-                                     !walkRightFrames.empty() ||
-                                     !walkUpFrames.empty() ||
-                                     !walkDownFrames.empty();
-                behaviorTicks += 1;
-                if (canWalk && behaviorTicks >= behaviorTarget) {
-                    // idle dwell elapsed: walk in a random direction
-                    walkDir = PickRandomWalkDir();
-                    walkFullCycle = (walkDir == WalkDir::Up ||
-                                     walkDir == WalkDir::Down);
-                    walkIndex = 0;
-                    behaviorTicks = 0;
-                    behaviorTarget = RandomInRange(kWalkMinTicks, kWalkMaxTicks);
-                    state = PetState::Walking;
-                    PresentFrame(hwnd, WalkFrames(walkDir)[0]);
-                }
+        }
+        PresentBase(hwnd);
+    }
+    if (waitTicks > 0) {
+        // post-drag waiting: idle animations only, never wander
+        waitTicks -= 1;
+        if (waitTicks == 0) {
+            behaviorTicks = 0;
+            behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+        }
+    } else {
+        behaviorTicks += 1;
+        if (behaviorTicks >= behaviorTarget) {
+            const int pick = PickNextAuto();
+            if (pick >= 0) {
+                behaviorTicks = 0;
+                StartBehavior(hwnd, pick);
             }
         }
     }
@@ -367,11 +299,10 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
             GetWindowRect(hwnd, &windowRect);
             dragOffsetX = cursor.x - windowRect.left;
             dragOffsetY = cursor.y - windowRect.top;
-            // start the drag reaction from its first frame
-            if (!dragFrames.empty()) {
-                state = PetState::Dragging;
-                dragIndex = 0;
-                PresentFrame(hwnd, dragFrames[0]);
+            const int dragClip = pet_behavior::FindByTrigger(
+                DefaultBehaviors(), pet_behavior::Trigger::OnDragStart);
+            if (CanStart(dragClip)) {
+                StartBehavior(hwnd, dragClip);
             }
         }
     }
@@ -395,7 +326,11 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
             }
             if (headSweepPx >= kSweepThresholdPx) {
                 headSweepPx = 0;
-                TriggerShyReaction(hwnd);
+                const int shyClip = pet_behavior::FindByTrigger(
+                    DefaultBehaviors(), pet_behavior::Trigger::HeadSweep);
+                if (CanStart(shyClip)) {
+                    StartBehavior(hwnd, shyClip);
+                }
             }
         }
         lastMouseX = mx;
@@ -405,7 +340,11 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
 
 void Pet::OnLButtonUp(HWND hwnd) {
     if (mouseDown && !dragging) {
-        TriggerClickReaction(hwnd);
+        const int clickClip = pet_behavior::FindByTrigger(
+            DefaultBehaviors(), pet_behavior::Trigger::OnClick);
+        if (CanStart(clickClip)) {
+            StartBehavior(hwnd, clickClip);
+        }
     } else if (dragging) {
         EnterWaiting(hwnd);
     }
@@ -418,7 +357,9 @@ void Pet::OnCaptureChanged(HWND hwnd) {
     // Capture was lost (released or stolen): cancel any in-flight drag.
     mouseDown = false;
     dragging = false;
-    if (state == PetState::Dragging) {
+    if (state == PetState::Acting && activeClip >= 0 &&
+        clips[static_cast<size_t>(activeClip)].spec->trigger ==
+            pet_behavior::Trigger::OnDragStart) {
         EnterWaiting(hwnd);
     }
 }
@@ -433,13 +374,11 @@ void Pet::DestroyResources() {
         FreeFrames(animation);
     }
     basePool.clear();
-    FreeFrames(clickFrames);
-    FreeFrames(dragFrames);
-    FreeFrames(walkLeftFrames);
-    FreeFrames(walkRightFrames);
-    FreeFrames(walkUpFrames);
-    FreeFrames(walkDownFrames);
-    FreeFrames(shyFrames);
+    for (Clip& clip : clips) {
+        FreeFrames(clip.frames);
+    }
+    clips.clear();
+    cooldowns.clear();
 }
 
 LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,

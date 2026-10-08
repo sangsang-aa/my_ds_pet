@@ -80,8 +80,8 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 只存在 `000.png` 时程序正常运行，循环播放这一帧
 - 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
   `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
-  `[pet] walking loaded: left=30 right=27 up=30 down=30 frames`、
-  `[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
+  `[pet] walking_left loaded=30/120 frames`、`[pet] walking_up loaded=30/120 frames`、
+  `[pet] clicked loaded=16/120 frames`、`[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
   `[pet] bubble enabled (240x252, 6 stickers)`
 
 > 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
@@ -146,7 +146,7 @@ GIF 会被跳过（可用 `force` 强制处理）。
 |------|------|
 | `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
 | `src/core/` | **基础功能**：`config.h` 常量 · `gdi.h` · `util.*`（路径/报错/随机）· `assets.*`（帧加载）· `render.*`（分层窗口绘制） |
-| `src/pet/` | **桌宠本体**：`pet.*`（动画池 + 待机/行走/点击/拖拽/害羞状态机）· `walk_logic.h`（纯逻辑） |
+| `src/pet/` | **桌宠本体**：`behavior.h` + `behaviors.cpp`（**行为注册表**）· `pet.*`（注册表驱动的行为播放器）· `walk_logic.h`（纯逻辑） |
 | `src/bubble/` | **发表情包**：`bubble.*`（气泡窗口，独立定时器 + 点击穿透）· `bubble_logic.h`（纯逻辑） |
 
 新增功能（例如「培养」）建议加一个 `src/<feature>.*` 模块，尽量只依赖 `config.h` / `util.h`，
@@ -189,13 +189,13 @@ cmake --build build --config Release
 64 位（x86-64）：
 
 ```
-x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 32 位（x86）：
 
 ```
-i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
 ```
 
 > ⚠️ 上面两条**逐个列出源文件**是为了兼容 Windows `cmd`：cmd **不展开通配符**，`g++` 自己也不展开，

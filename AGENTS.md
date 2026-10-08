@@ -17,18 +17,20 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 ## Build
 - Windows: `build.bat` (tries `cl`, then `g++`, then CMake). MinGW one-liner
   (cmd.exe does **not** expand globs and g++ doesn't either — list the files):
-  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
+  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
 - **Close the running pet first** or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
   `taskkill /IM pet_demo.exe /F 2>nul`
 - This WSL box has **no mingw / cmake / wine** installed — only g++, so nothing here can
-  build or run the GUI as-is. Cross-compiling is possible with a throwaway rootless
-  toolchain (`apt-get download` + `dpkg -x` into `/tmp`); it does not survive a `/tmp` wipe.
+  build or run the GUI as-is. A rootless cross-toolchain lives at `~/.local/mingw/root/`
+  (extract via `apt-get download` + `dpkg -x`; use `root/usr/bin/x86_64-w64-mingw32-g++-posix`
+  with `-Isrc`). Prefer it over `/tmp` — `/tmp` has been wiped mid-session.
 
 ## Tests
 Pure-logic assert programs (no framework); they exercise the `<windows.h>`-free headers:
 ```
-g++ -std=c++17 -Wall -Wextra -O2 tests/bubble_logic_test.cpp -o /tmp/bt && /tmp/bt
+g++ -std=c++17 -Wall -Wextra -O2 tests/behavior_test.cpp     -o /tmp/bt && /tmp/bt
+g++ -std=c++17 -Wall -Wextra -O2 tests/bubble_logic_test.cpp -o /tmp/bu && /tmp/bu
 g++ -std=c++17 -Wall -Wextra -O2 tests/walk_logic_test.cpp   -o /tmp/wt && /tmp/wt
 python3 -m pytest /home/zh180/MCPS/test_convert_rgba.py /home/zh180/MCPS/test_fetch_emoji.py
 ```
@@ -37,12 +39,17 @@ Behaviour/visual changes can only be verified by the user on Windows.
 ## Architecture (not visible from filenames)
 - `src/main.cpp` is WinMain wiring only; `src/` is grouped by feature: `core/` (shared:
   `config.h` constants · `util.*` · `assets.*` (`Frame`, `LoadFrames`) · `render.*`
-  (`render::PresentLayered`)) · `pet/` (`struct Pet`: idle↔walk state machine, input,
-  + `walk_logic.h`) · `bubble/` (`struct Bubble`: own window + timer, click-through,
-  follows the pet HWND, + `bubble_logic.h`). Cross-module includes go through `-Isrc`
-  (e.g. `#include "core/config.h"`).
-- `src/pet/walk_logic.h` / `src/bubble/bubble_logic.h` are deliberately **pure (no
-  `<windows.h>`)** — keep new testable logic there so `tests/` can run on Linux.
+  (`render::PresentLayered`)) · `pet/` (`behavior.h` + `behaviors.cpp` = the **behavior
+  registry**; `struct Pet` = a registry-driven behavior player; `walk_logic.h`) ·
+  `bubble/` (`struct Bubble`: own window + timer, click-through, follows the pet HWND,
+  + `bubble_logic.h`). Cross-module includes go through `-Isrc` (`#include "core/config.h"`).
+- **To add a pet behavior: append one `pet_behavior::Spec` to `DefaultBehaviors()` in
+  `behaviors.cpp` and drop a matching `desktop_pet_image/<action>/NNN.png` folder.** The
+  core loop in `pet.cpp` needs no change; `Trigger` / `Playback` / weight / timing / window
+  delta are all data.
+- `src/pet/behavior.h` · `src/pet/walk_logic.h` · `src/bubble/bubble_logic.h` are
+  deliberately **pure (no `<windows.h>`)** — keep new testable logic there so `tests/`
+  can run on Linux.
 - **GDI+ decodes png/jpg/gif/bmp only — never WebP.** Convert webp to PNG for assets.
 - Frames: `desktop_pet_image/<action>/NNN.png`; loading stops at the first missing frame
   (max 120); scaled by `kScaleFactor = 0.70`. Paths resolve relative to the **exe dir**,
