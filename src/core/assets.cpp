@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "gdi.h"
+#include "settings.h"
 
 std::wstring FrameName(int index) {
     std::wstring name = std::to_wstring(index);
@@ -36,11 +37,11 @@ std::vector<Frame> LoadFrames(const std::wstring& exeDir,
         }
         gdi::Bitmap* frameBitmap = &source;
         std::unique_ptr<gdi::Bitmap> scaled;
-        if (kScaleFactor != 1.0f) {
+        if (GetSettings().scaleFactor != 1.0f) {
             const int scaledW = std::max(
-                1, static_cast<int>(std::lround(source.GetWidth() * kScaleFactor)));
+                1, static_cast<int>(std::lround(source.GetWidth() * GetSettings().scaleFactor)));
             const int scaledH = std::max(
-                1, static_cast<int>(std::lround(source.GetHeight() * kScaleFactor)));
+                1, static_cast<int>(std::lround(source.GetHeight() * GetSettings().scaleFactor)));
             // Scale in the source's alpha mode: RGB frames stay opaque (no
             // alpha bits), RGBA frames keep per-pixel alpha.
             scaled.reset(new gdi::Bitmap(

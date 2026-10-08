@@ -6,6 +6,7 @@
 
 #include "behaviors.h"
 #include "core/render.h"
+#include "core/settings.h"
 #include "core/util.h"
 #include "walk_logic.h"
 
@@ -70,7 +71,7 @@ bool Pet::Load(const std::wstring& exeDir, const std::wstring& assetsDir,
     }
 
     clips.clear();
-    for (const pet_behavior::Spec& spec : DefaultBehaviors()) {
+    for (const pet_behavior::Spec& spec : Behaviors()) {
         Clip clip;
         clip.spec = &spec;
         clip.frames = LoadFrames(exeDir, assetsDir, spec.action);
@@ -80,7 +81,8 @@ bool Pet::Load(const std::wstring& exeDir, const std::wstring& assetsDir,
     }
     cooldowns.assign(clips.size(), 0);
 
-    behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+    behaviorTarget = RandomInRange(GetSettings().idleMinTicks,
+                                   GetSettings().idleMaxTicks);
     return true;
 }
 
@@ -128,7 +130,7 @@ int Pet::PickRandomBaseIndex(int poolSize) const {
 // Pick the next autonomous behavior by weight; -1 when none is available
 // (frames missing, or gated during the post-drag wait).
 int Pet::PickNextAuto() const {
-    const std::vector<pet_behavior::Spec>& specs = DefaultBehaviors();
+    const std::vector<pet_behavior::Spec>& specs = Behaviors();
     std::vector<bool> eligible(specs.size(), false);
     for (size_t i = 0; i < specs.size(); ++i) {
         eligible[i] = specs[i].trigger == pet_behavior::Trigger::Auto &&
@@ -162,7 +164,8 @@ void Pet::StartBehavior(HWND hwnd, int clipIndex) {
 void Pet::EnterBase(HWND hwnd) {
     state = PetState::Base;
     behaviorTicks = 0;
-    behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+    behaviorTarget = RandomInRange(GetSettings().idleMinTicks,
+                                   GetSettings().idleMaxTicks);
     PresentBase(hwnd);
 }
 
@@ -170,7 +173,8 @@ void Pet::EnterBase(HWND hwnd) {
 // random 2-3 minutes, then resume the normal chain.
 void Pet::EnterWaiting(HWND hwnd) {
     EnterBase(hwnd);
-    waitTicks = RandomInRange(kWaitMinTicks, kWaitMaxTicks);
+    waitTicks = RandomInRange(GetSettings().waitMinTicks,
+                              GetSettings().waitMaxTicks);
 }
 
 void Pet::OnTimer(HWND hwnd) {
@@ -262,7 +266,8 @@ void Pet::OnTimer(HWND hwnd) {
         waitTicks -= 1;
         if (waitTicks == 0) {
             behaviorTicks = 0;
-            behaviorTarget = RandomInRange(kIdleMinTicks, kIdleMaxTicks);
+            behaviorTarget = RandomInRange(GetSettings().idleMinTicks,
+                                           GetSettings().idleMaxTicks);
         }
     } else {
         behaviorTicks += 1;
@@ -300,7 +305,7 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
             dragOffsetX = cursor.x - windowRect.left;
             dragOffsetY = cursor.y - windowRect.top;
             const int dragClip = pet_behavior::FindByTrigger(
-                DefaultBehaviors(), pet_behavior::Trigger::OnDragStart);
+                Behaviors(), pet_behavior::Trigger::OnDragStart);
             if (CanStart(dragClip)) {
                 StartBehavior(hwnd, dragClip);
             }
@@ -316,18 +321,19 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
     {
         const int mx = static_cast<short>(LOWORD(lParam));
         const int my = static_cast<short>(HIWORD(lParam));
-        if (!mouseDown && my >= 0 && my < petH * kHeadBandPercent / 100 &&
-            mx >= 0 && mx < petW) {
+        if (!mouseDown && my >= 0 &&
+            my < petH * GetSettings().headBandPercent / 100 && mx >= 0 &&
+            mx < petW) {
             const int dx = mx - lastMouseX;
             const int dy = my - lastMouseY;
-            if (std::abs(dx) <= kMaxSweepDeltaPx &&
+            if (std::abs(dx) <= GetSettings().maxSweepDeltaPx &&
                 std::abs(dx) > std::abs(dy)) {
                 headSweepPx += std::abs(dx);
             }
-            if (headSweepPx >= kSweepThresholdPx) {
+            if (headSweepPx >= GetSettings().sweepThresholdPx) {
                 headSweepPx = 0;
                 const int shyClip = pet_behavior::FindByTrigger(
-                    DefaultBehaviors(), pet_behavior::Trigger::HeadSweep);
+                    Behaviors(), pet_behavior::Trigger::HeadSweep);
                 if (CanStart(shyClip)) {
                     StartBehavior(hwnd, shyClip);
                 }
@@ -341,7 +347,7 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
 void Pet::OnLButtonUp(HWND hwnd) {
     if (mouseDown && !dragging) {
         const int clickClip = pet_behavior::FindByTrigger(
-            DefaultBehaviors(), pet_behavior::Trigger::OnClick);
+            Behaviors(), pet_behavior::Trigger::OnClick);
         if (CanStart(clickClip)) {
             StartBehavior(hwnd, clickClip);
         }

@@ -9,6 +9,7 @@
 #include "core/config.h"
 #include "core/gdi.h"
 #include "core/render.h"
+#include "core/settings.h"
 #include "core/util.h"
 
 namespace {
@@ -33,8 +34,8 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath, bool tailUp) {
         return;
     }
     const int bodyW = b.w;
-    const int bodyH = b.h - kBubbleTailH;
-    const int bodyTop = tailUp ? kBubbleTailH : 0;
+    const int bodyH = b.h - GetSettings().bubbleTailH;
+    const int bodyTop = tailUp ? GetSettings().bubbleTailH : 0;
     {
         gdi::Graphics graphics(&canvas);
         graphics.SetSmoothingMode(gdi::SmoothingModeAntiAlias);
@@ -43,19 +44,19 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath, bool tailUp) {
         gdi::SolidBrush fill(gdi::Color(255, 255, 255, 255));
         gdi::Pen border(gdi::Color(255, 130, 130, 130), 1.0f);
         gdi::GraphicsPath body;
-        AddRoundedRect(body, 0, bodyTop, bodyW - 1, bodyH - 1, kBubbleRadiusPx);
+        AddRoundedRect(body, 0, bodyTop, bodyW - 1, bodyH - 1, GetSettings().bubbleRadiusPx);
         graphics.FillPath(&fill, &body);
         graphics.DrawPath(&border, &body);
 
         const int cx = bodyW / 2;
         gdi::Point tail[3];
         if (tailUp) {
-            tail[0] = gdi::Point(cx - kBubbleTailW / 2, bodyTop + 1);
-            tail[1] = gdi::Point(cx + kBubbleTailW / 2, bodyTop + 1);
+            tail[0] = gdi::Point(cx - GetSettings().bubbleTailW / 2, bodyTop + 1);
+            tail[1] = gdi::Point(cx + GetSettings().bubbleTailW / 2, bodyTop + 1);
             tail[2] = gdi::Point(cx, 0);
         } else {
-            tail[0] = gdi::Point(cx - kBubbleTailW / 2, bodyTop + bodyH - 2);
-            tail[1] = gdi::Point(cx + kBubbleTailW / 2, bodyTop + bodyH - 2);
+            tail[0] = gdi::Point(cx - GetSettings().bubbleTailW / 2, bodyTop + bodyH - 2);
+            tail[1] = gdi::Point(cx + GetSettings().bubbleTailW / 2, bodyTop + bodyH - 2);
             tail[2] = gdi::Point(cx, b.h - 1);
         }
         graphics.FillPolygon(&fill, tail, 3);
@@ -67,8 +68,8 @@ void RenderBubble(Bubble& b, const std::wstring& emojiPath, bool tailUp) {
             const int emojiW = std::max(1, static_cast<int>(emoji.GetWidth()));
             const int emojiH = std::max(1, static_cast<int>(emoji.GetHeight()));
             const double scale = std::min(
-                static_cast<double>(kBubbleEmojiSizePx) / emojiW,
-                static_cast<double>(kBubbleEmojiSizePx) / emojiH);
+                static_cast<double>(GetSettings().bubbleEmojiSizePx) / emojiW,
+                static_cast<double>(GetSettings().bubbleEmojiSizePx) / emojiH);
             const int drawW =
                 std::max(1, static_cast<int>(std::lround(emojiW * scale)));
             const int drawH =
@@ -106,7 +107,7 @@ void FollowBubble(Bubble& b) {
     }
     const pet_bubble::Placement place = pet_bubble::PlaceBubble(
         BubblePetRect(b), b.w, b.h, GetSystemMetrics(SM_CXSCREEN),
-        GetSystemMetrics(SM_CYSCREEN), kBubbleGapPx);
+        GetSystemMetrics(SM_CYSCREEN), GetSettings().bubbleGapPx);
     const bool tailUp = place.side == pet_bubble::Side::Below;
     if (tailUp != b.tailUp && !b.shownEmoji.empty()) {
         RenderBubble(b, b.shownEmoji, tailUp);
@@ -124,7 +125,7 @@ void HideBubble(Bubble& b) {
 int NextBubbleInterval(Bubble& b) {
     (void)b;
     std::uniform_real_distribution<double> dist(0.0, 1.0);
-    return pet_bubble::NextIntervalTicks(kBubbleMinTicks, kBubbleMaxTicks,
+    return pet_bubble::NextIntervalTicks(GetSettings().bubbleMinTicks, GetSettings().bubbleMaxTicks,
                                          dist(Rng()));
 }
 
@@ -136,12 +137,12 @@ void ShowBubble(Bubble& b) {
     const std::wstring& emoji = b.emojiPaths[static_cast<size_t>(pick)];
     const pet_bubble::Placement place = pet_bubble::PlaceBubble(
         BubblePetRect(b), b.w, b.h, GetSystemMetrics(SM_CXSCREEN),
-        GetSystemMetrics(SM_CYSCREEN), kBubbleGapPx);
+        GetSystemMetrics(SM_CYSCREEN), GetSettings().bubbleGapPx);
     RenderBubble(b, emoji, place.side == pet_bubble::Side::Below);
     PresentBubble(b, place.at.x, place.at.y);
     ShowWindow(b.hwnd, SW_SHOWNOACTIVATE);
     b.visible = true;
-    b.showLeft = kBubbleShowTicks;
+    b.showLeft = GetSettings().bubbleShowTicks;
 }
 
 }  // namespace
@@ -167,8 +168,8 @@ bool Bubble::Init(HINSTANCE hInstance, HWND petWindow,
         return false;
     }
 
-    w = kBubbleEmojiSizePx + 2 * kBubblePadPx;
-    h = kBubbleEmojiSizePx + 2 * kBubblePadPx + kBubbleTailH;
+    w = GetSettings().bubbleEmojiSizePx + 2 * GetSettings().bubblePadPx;
+    h = GetSettings().bubbleEmojiSizePx + 2 * GetSettings().bubblePadPx + GetSettings().bubbleTailH;
     hwnd = CreateWindowExW(
         WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE |
             WS_EX_TRANSPARENT,

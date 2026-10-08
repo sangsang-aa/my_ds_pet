@@ -12,6 +12,7 @@ add_executable(pet_demo WIN32
     src/core/util.cpp
     src/core/assets.cpp
     src/core/render.cpp
+    src/core/settings.cpp
     src/pet/behaviors.cpp
     src/pet/pet.cpp
     src/bubble/bubble.cpp)

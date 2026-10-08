@@ -43,10 +43,14 @@ Behaviour/visual changes can only be verified by the user on Windows.
   registry**; `struct Pet` = a registry-driven behavior player; `walk_logic.h`) ·
   `bubble/` (`struct Bubble`: own window + timer, click-through, follows the pet HWND,
   + `bubble_logic.h`). Cross-module includes go through `-Isrc` (`#include "core/config.h"`).
-- **To add a pet behavior: append one `pet_behavior::Spec` to `DefaultBehaviors()` in
+- **To add a pet behavior: append one `pet_behavior::Spec` to `MutableBehaviors()` in
   `behaviors.cpp` and drop a matching `desktop_pet_image/<action>/NNN.png` folder.** The
   core loop in `pet.cpp` needs no change; `Trigger` / `Playback` / weight / timing / window
   delta are all data.
+- **Tunables are externalized**: an optional `desktop_pet_image/pet.ini` overrides the
+  `core/config.h` defaults — `[pet]` / `[bubble]` for globals, plus one section per behavior
+  action (e.g. `[walking_up] min_ticks=… weight=… dy=…`). Parsed by `core/inifile.h`, applied
+  by `core/settings.*` at startup; absent file ⇒ all defaults (zero behaviour change).
 - `src/pet/behavior.h` · `src/pet/walk_logic.h` · `src/bubble/bubble_logic.h` are
   deliberately **pure (no `<windows.h>`)** — keep new testable logic there so `tests/`
   can run on Linux.

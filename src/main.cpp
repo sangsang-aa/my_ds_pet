@@ -20,6 +20,7 @@
 #include "bubble/bubble.h"
 #include "core/config.h"
 #include "core/render.h"
+#include "core/settings.h"
 #include "core/util.h"
 #include "pet/pet.h"
 
@@ -54,6 +55,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     }
 
     const std::wstring exeDir = GetExecutableDir();
+
+    ApplySettingsFile(exeDir + assetsDir + L"\\pet.ini");
 
     Pet pet;
     std::wstring error;

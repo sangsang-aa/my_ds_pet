@@ -145,12 +145,47 @@ GIF 会被跳过（可用 `force` 强制处理）。
 | 文件 | 职责 |
 |------|------|
 | `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
-| `src/core/` | **基础功能**：`config.h` 常量 · `gdi.h` · `util.*`（路径/报错/随机）· `assets.*`（帧加载）· `render.*`（分层窗口绘制） |
+| `src/core/` | **基础功能**：`config.h`（默认值）· `settings.*` + `inifile.h`（`pet.ini` 覆盖）· `gdi.h` · `util.*`（路径/报错/随机）· `assets.*`（帧加载）· `render.*`（分层窗口绘制） |
 | `src/pet/` | **桌宠本体**：`behavior.h` + `behaviors.cpp`（**行为注册表**）· `pet.*`（注册表驱动的行为播放器）· `walk_logic.h`（纯逻辑） |
 | `src/bubble/` | **发表情包**：`bubble.*`（气泡窗口，独立定时器 + 点击穿透）· `bubble_logic.h`（纯逻辑） |
 
 新增功能（例如「培养」）建议加一个 `src/<feature>.*` 模块，尽量只依赖 `config.h` / `util.h`，
 不要直接改 `pet.*`。
+
+## 参数配置（`pet.ini`，可选）
+
+在资源目录放一个 `desktop_pet_image/pet.ini` 就能**不重编译**调参数；文件不存在则全部用
+`src/core/config.h` 里的默认值。格式是极简 INI（`#` / `;` 注释；写错的值忽略并回退默认）：
+
+```ini
+[pet]
+idle_min_ticks    = 30      ; 待机停留（tick，10/s）
+idle_max_ticks    = 100
+wait_min_ticks    = 1200    ; 拖拽后等待（仅待机，不游走）
+wait_max_ticks    = 1800
+head_band_percent = 45      ; 头顶扫过的判定带
+sweep_threshold_px = 50
+max_sweep_delta_px = 80
+scale_factor      = 0.70    ; 宠物缩放
+
+[bubble]
+emoji_size_px = 220         ; 气泡表情尺寸
+pad_px        = 10
+radius_px     = 10
+tail_w        = 18
+tail_h        = 12
+gap_px        = 4
+min_ticks     = 200         ; 弹出间隔
+max_ticks     = 600
+show_ticks    = 30
+
+# 每个行为一个 section（名字 = desktop_pet_image/<action>），可覆盖该行为：
+[walking_up]
+min_ticks = 15
+max_ticks = 45
+weight    = 1
+dy        = -5
+```
 
 ## 编译
 
