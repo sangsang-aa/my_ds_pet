@@ -41,7 +41,9 @@ Behaviour/visual changes can only be verified by the user on Windows.
 
 ## Architecture (not visible from filenames)
 - `src/main.cpp` is WinMain wiring only; `src/` is grouped by feature: `core/` (shared:
-  `config.h` constants · `util.*` · `assets.*` (`Frame`, `LoadFrames`) · `render.*`
+  `config.h` constants · `util.*` · `assets.*` (`Frame`, `LoadFrames`, `bounds.txt`) ·
+  `bounds.*` (the current frame's subject box, read by the bubble / head-sweep band) ·
+  `render.*`
   (`render::PresentLayered`)) · `pet/` (`behavior.h` + `behaviors.cpp` = the **behavior
   registry**; `struct Pet` = a registry-driven behavior player; `walk_logic.h`) ·
   `bubble/` (`struct Bubble`: own window + timer, click-through, follows the pet HWND,
