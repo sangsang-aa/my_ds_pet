@@ -12,6 +12,12 @@ inline bool AtEndFrame(int index, int size) {
     return size <= 1 || index >= size - 1;
 }
 
+// Whether `index` is either end of the clip (first or last frame) — the poses a
+// boomerang clip (forward then backward) is safe to leave from.
+inline bool AtCycleBoundary(int index, int size) {
+    return size <= 1 || index <= 0 || index >= size - 1;
+}
+
 }  // namespace pet_walk
 
 #endif  // PET_WALK_LOGIC_H

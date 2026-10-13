@@ -27,6 +27,7 @@ constexpr int kWaitMaxTicks = 1800;     // ~3 min
 
 // Reactions
 constexpr int kHeadBandPercent = 45;    // top 45% of the pet counts as the "head"
+constexpr int kHeadBandTopPercent = 11; // skip the empty margin above the head
 constexpr int kSweepThresholdPx = 50;   // horizontal travel over the head -> shy
 constexpr int kMaxSweepDeltaPx = 80;    // ignore jumpy deltas (mouse re-entry)
 constexpr int kShyCooldownTicks = 25;   // ~2.5s between shy reactions

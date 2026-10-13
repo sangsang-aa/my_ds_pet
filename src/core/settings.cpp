@@ -10,7 +10,8 @@ namespace {
 
 Settings g_settings = {
     kIdleMinTicks,      kIdleMaxTicks,     kWaitMinTicks,   kWaitMaxTicks,
-    kHeadBandPercent,   kSweepThresholdPx, kMaxSweepDeltaPx, kScaleFactor,
+    kHeadBandPercent,   kHeadBandTopPercent,
+    kSweepThresholdPx,  kMaxSweepDeltaPx,  kScaleFactor,
     kBubbleEmojiSizePx, kBubblePadPx,      kBubbleRadiusPx, kBubbleTailW,
     kBubbleTailH,       kBubbleGapPx,      kBubbleMinTicks, kBubbleMaxTicks,
     kBubbleShowTicks,
@@ -52,6 +53,7 @@ void ApplySettingsText(const std::string& iniText) {
     set_int("pet", "wait_min_ticks", settings.waitMinTicks);
     set_int("pet", "wait_max_ticks", settings.waitMaxTicks);
     set_int("pet", "head_band_percent", settings.headBandPercent);
+    set_int("pet", "head_band_top_percent", settings.headBandTopPercent);
     set_int("pet", "sweep_threshold_px", settings.sweepThresholdPx);
     set_int("pet", "max_sweep_delta_px", settings.maxSweepDeltaPx);
     if (const std::string* value = pet_ini::Find(ini, "pet", "scale_factor")) {

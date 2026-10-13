@@ -93,7 +93,7 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 
 - 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
 - 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
-  （源图 384x384 → 屏幕上约 269x269）；嫌大/嫌小改 `src/core/config.h` 里的常量即可
+  （源图 384x456 → 屏幕上约 269x319，上方留白给飞行/跳跃动作）；嫌大/嫌小改 `src/core/config.h` 里的常量即可
 
 ## 去背景工具（RGB → RGBA）
 

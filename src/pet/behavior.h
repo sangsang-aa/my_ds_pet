@@ -10,7 +10,7 @@
 namespace pet_behavior {
 
 enum class Trigger { Auto, OnClick, OnDragStart, OnDragEnd, HeadSweep };
-enum class Playback { Loop, OneShot, FullCycle };
+enum class Playback { Loop, OneShot, FullCycle, Boomerang };
 
 struct Spec {
     std::wstring action;                 // asset folder under desktop_pet_image/

@@ -29,6 +29,7 @@ struct Pet {
 
     int activeClip = -1;
     int activeIndex = 0;
+    int activeStep = 1;
     int activeTicks = 0;
     int activeTarget = 0;  // 0 => no time limit (ended by an event)
 

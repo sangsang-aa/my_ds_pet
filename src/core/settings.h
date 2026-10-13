@@ -12,6 +12,7 @@ struct Settings {
     int waitMinTicks;
     int waitMaxTicks;
     int headBandPercent;
+    int headBandTopPercent;
     int sweepThresholdPx;
     int maxSweepDeltaPx;
     double scaleFactor;

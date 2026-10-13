@@ -155,6 +155,7 @@ void Pet::StartBehavior(HWND hwnd, int clipIndex) {
     state = PetState::Acting;
     activeClip = clipIndex;
     activeIndex = 0;
+    activeStep = 1;
     activeTicks = 0;
     activeTarget = spec.maxTicks > 0 ? RandomInRange(spec.minTicks, spec.maxTicks)
                                      : 0;
@@ -197,13 +198,26 @@ void Pet::OnTimer(HWND hwnd) {
             return;
         }
 
-        activeIndex += 1;
         bool ended = false;
-        if (activeIndex >= size) {
-            if (spec.playback == pet_behavior::Playback::OneShot) {
-                ended = true;  // the last frame was shown on the previous tick
-            } else {
-                activeIndex %= size;
+        if (spec.playback == pet_behavior::Playback::Boomerang && size > 2) {
+            // Forward then backward, so the clip loops with no jump back to the
+            // start (one-way takeoff/landing clips).
+            activeIndex += activeStep;
+            if (activeIndex >= size) {
+                activeStep = -1;
+                activeIndex = size - 2;
+            } else if (activeIndex < 0) {
+                activeStep = 1;
+                activeIndex = 1;
+            }
+        } else {
+            activeIndex += 1;
+            if (activeIndex >= size) {
+                if (spec.playback == pet_behavior::Playback::OneShot) {
+                    ended = true;  // the last frame was shown on the previous tick
+                } else {
+                    activeIndex %= size;
+                }
             }
         }
         if (!ended) {
@@ -236,8 +250,11 @@ void Pet::OnTimer(HWND hwnd) {
             // frame before returning to idle; stopping mid-air — or on the
             // pre-takeoff frame — reads as a jump or a missing landing.
             const bool safeToStop =
-                spec.playback != pet_behavior::Playback::FullCycle ||
-                pet_walk::AtEndFrame(activeIndex, size);
+                spec.playback == pet_behavior::Playback::Loop ||
+                (spec.playback == pet_behavior::Playback::FullCycle &&
+                 pet_walk::AtEndFrame(activeIndex, size)) ||
+                (spec.playback == pet_behavior::Playback::Boomerang &&
+                 pet_walk::AtCycleBoundary(activeIndex, size));
             if (done && safeToStop) {
                 EnterBase(hwnd);
             }
@@ -323,7 +340,7 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
     {
         const int mx = static_cast<short>(LOWORD(lParam));
         const int my = static_cast<short>(HIWORD(lParam));
-        if (!mouseDown && my >= 0 &&
+        if (!mouseDown && my >= petH * GetSettings().headBandTopPercent / 100 &&
             my < petH * GetSettings().headBandPercent / 100 && mx >= 0 &&
             mx < petW) {
             const int dx = mx - lastMouseX;
