@@ -48,7 +48,9 @@ bool Pet::Load(const std::wstring& exeDir, const std::wstring& assetsDir,
                     frames.size(), kMaxFrames);
         basePool.push_back(std::move(frames));
     } else {
-        for (const char* nameUtf8 : { "idle", "idle2" }) {
+        // idle2 is deliberately disabled for now, while its V2 animation is
+        // being evaluated; drop the extra name here to bring it back.
+        for (const char* nameUtf8 : { "idle" }) {
             const std::wstring name = WideFromUtf8(nameUtf8);
             std::vector<Frame> frames = LoadFrames(exeDir, assetsDir, name);
             if (frames.empty()) {
