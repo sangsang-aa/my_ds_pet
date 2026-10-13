@@ -92,6 +92,8 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 ## 图片要求
 
 - 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
+- **所有动作必须同一画布尺寸**（当前 `384x456`：人物约 355 高 + 上方留白给飞行/跳跃）；窗口大小取自第一帧
+- 每个动作可带一个 `bounds.txt`（每行一帧的 `x y w h`，人物在该帧里的实际边界，由 `MCPS/prepare_action.py` 生成）——气泡与扫头判定会跟随它，而不是整块画布
 - 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
   （源图 384x456 → 屏幕上约 269x319，上方留白给飞行/跳跃动作）；嫌大/嫌小改 `src/core/config.h` 里的常量即可
 
@@ -145,7 +147,7 @@ GIF 会被跳过（可用 `force` 强制处理）。
 | 文件 | 职责 |
 |------|------|
 | `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
-| `src/core/` | **基础功能**：`config.h`（默认值）· `settings.*` + `inifile.h`（`pet.ini` 覆盖）· `gdi.h` · `util.*`（路径/报错/随机）· `assets.*`（帧加载）· `render.*`（分层窗口绘制） |
+| `src/core/` | **基础功能**：`config.h`（默认值）· `settings.*` + `inifile.h`（`pet.ini` 覆盖）· `bounds.*`（当前帧人物边界，气泡/扫头判定用）· `gdi.h` · `util.*` · `assets.*`（帧加载 + `bounds.txt`）· `render.*`（分层窗口绘制） |
 | `src/pet/` | **桌宠本体**：`behavior.h` + `behaviors.cpp`（**行为注册表**）· `pet.*`（注册表驱动的行为播放器）· `walk_logic.h`（纯逻辑） |
 | `src/bubble/` | **发表情包**：`bubble.*`（气泡窗口，独立定时器 + 点击穿透）· `bubble_logic.h`（纯逻辑） |
 

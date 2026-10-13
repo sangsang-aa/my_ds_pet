@@ -11,6 +11,7 @@ add_executable(pet_demo WIN32
     src/main.cpp
     src/core/util.cpp
     src/core/assets.cpp
+    src/core/bounds.cpp
     src/core/render.cpp
     src/core/settings.cpp
     src/pet/behaviors.cpp

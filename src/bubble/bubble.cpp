@@ -6,6 +6,7 @@
 
 #include "bubble_logic.h"
 #include "core/assets.h"
+#include "core/bounds.h"
 #include "core/config.h"
 #include "core/gdi.h"
 #include "core/render.h"
@@ -95,6 +96,10 @@ void PresentBubble(Bubble& b, int x, int y) {
 }
 
 pet_bubble::Rect BubblePetRect(const Bubble& b) {
+    const SubjectBounds bounds = GetSubjectBounds();
+    if (bounds.valid && bounds.w > 0 && bounds.h > 0) {
+        return pet_bubble::Rect{ bounds.x, bounds.y, bounds.w, bounds.h };
+    }
     RECT rect = {};
     GetWindowRect(b.petHwnd, &rect);
     return pet_bubble::Rect{ rect.left, rect.top, rect.right - rect.left,

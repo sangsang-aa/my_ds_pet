@@ -5,6 +5,7 @@
 #include <random>
 
 #include "behaviors.h"
+#include "core/bounds.h"
 #include "core/render.h"
 #include "core/settings.h"
 #include "core/util.h"
@@ -111,6 +112,12 @@ void Pet::PresentFrame(HWND hwnd, const Frame& frame) {
     GetWindowRect(hwnd, &windowRect);
     render::PresentLayered(hwnd, memDC, frame.hbmp, windowRect.left,
                            windowRect.top, petW, petH, frame.hasAlpha);
+    SetSubjectBounds(frame.bw > 0 && frame.bh > 0
+                         ? SubjectBounds{ windowRect.left + frame.bx,
+                                          windowRect.top + frame.by, frame.bw,
+                                          frame.bh, true }
+                         : SubjectBounds{ windowRect.left, windowRect.top, petW,
+                                          petH, true });
 }
 
 void Pet::PresentBase(HWND hwnd) {
@@ -336,13 +343,22 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
         SetWindowPos(hwnd, nullptr, cursor.x - dragOffsetX,
                      cursor.y - dragOffsetY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     }
-    // Mouse sweeping horizontally across the head -> shy reaction.
+    // Mouse sweeping horizontally across the head -> shy reaction. The band is
+    // taken from the subject's own box, not the full canvas frame.
     {
         const int mx = static_cast<short>(LOWORD(lParam));
         const int my = static_cast<short>(HIWORD(lParam));
-        if (!mouseDown && my >= petH * GetSettings().headBandTopPercent / 100 &&
-            my < petH * GetSettings().headBandPercent / 100 && mx >= 0 &&
-            mx < petW) {
+        const SubjectBounds bounds = GetSubjectBounds();
+        RECT windowRect = {};
+        GetWindowRect(hwnd, &windowRect);
+        const int bx = bounds.valid ? bounds.x - windowRect.left : 0;
+        const int by = bounds.valid ? bounds.y - windowRect.top : 0;
+        const int bw = bounds.valid && bounds.w > 0 ? bounds.w : petW;
+        const int bh = bounds.valid && bounds.h > 0 ? bounds.h : petH;
+        if (!mouseDown &&
+            my >= by + bh * GetSettings().headBandTopPercent / 100 &&
+            my < by + bh * GetSettings().headBandPercent / 100 && mx >= bx &&
+            mx < bx + bw) {
             const int dx = mx - lastMouseX;
             const int dy = my - lastMouseY;
             if (std::abs(dx) <= GetSettings().maxSweepDeltaPx &&

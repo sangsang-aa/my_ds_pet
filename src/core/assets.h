@@ -10,6 +10,10 @@
 struct Frame {
     HBITMAP hbmp = nullptr;
     bool hasAlpha = false;  // source PNG had an alpha channel?
+    int bx = 0;             // subject box inside the frame (0,0,0,0 = unknown)
+    int by = 0;
+    int bw = 0;
+    int bh = 0;
 };
 
 std::wstring FrameName(int index);
