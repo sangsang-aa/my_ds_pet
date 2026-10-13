@@ -8,3 +8,6 @@ __pycache__/
 
 # Emoji stickers are fetched locally (third-party art) and intentionally not committed.
 emoji/
+
+# V2 source videos plus their staging frames and old-frame backups: local only.
+视频文件V2/
