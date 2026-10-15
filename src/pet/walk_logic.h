@@ -14,8 +14,11 @@ inline bool AtEndFrame(int index, int size) {
 
 // Whether `index` is either end of the clip (first or last frame) — the poses a
 // boomerang clip (forward then backward) is safe to leave from.
-inline bool AtCycleBoundary(int index, int size) {
-    return size <= 1 || index <= 0 || index >= size - 1;
+// A boomerang clip plays forward to the last frame and back again, so it may
+// only stop once it is back on its first frame; stopping at the far end would
+// leave the subject mid-air with the backward half never shown.
+inline bool AtStartFrame(int index) {
+    return index <= 0;
 }
 
 }  // namespace pet_walk

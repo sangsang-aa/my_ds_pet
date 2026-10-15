@@ -24,14 +24,12 @@ void test_empty_clip_is_always_at_end() {
     assert(pet_walk::AtEndFrame(0, 0));
 }
 
-void test_cycle_boundary_covers_both_ends() {
-    assert(pet_walk::AtCycleBoundary(0, 30));
-    assert(pet_walk::AtCycleBoundary(29, 30));
-    assert(!pet_walk::AtCycleBoundary(1, 30));
-    assert(!pet_walk::AtCycleBoundary(15, 30));
-    assert(!pet_walk::AtCycleBoundary(28, 30));
-    assert(pet_walk::AtCycleBoundary(0, 1));
-    assert(pet_walk::AtCycleBoundary(0, 0));
+void test_start_frame_is_only_the_first_frame() {
+    assert(pet_walk::AtStartFrame(0));
+    assert(!pet_walk::AtStartFrame(1));
+    assert(!pet_walk::AtStartFrame(15));
+    assert(!pet_walk::AtStartFrame(28));
+    assert(!pet_walk::AtStartFrame(29));
 }
 
 }  // namespace
@@ -40,7 +38,7 @@ int main() {
     test_last_frame_is_the_end();
     test_other_frames_are_not_the_end();
     test_empty_clip_is_always_at_end();
-    test_cycle_boundary_covers_both_ends();
+    test_start_frame_is_only_the_first_frame();
     std::printf("walk_logic: all tests passed\n");
     return 0;
 }

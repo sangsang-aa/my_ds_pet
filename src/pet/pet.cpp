@@ -9,6 +9,7 @@
 #include "core/render.h"
 #include "core/settings.h"
 #include "core/util.h"
+#include "drag_logic.h"
 #include "walk_logic.h"
 
 namespace {
@@ -255,13 +256,15 @@ void Pet::OnTimer(HWND hwnd) {
                               activeTicks >= activeTarget;
             // A full-cycle clip (takeoff..landing) must reach its last, grounded
             // frame before returning to idle; stopping mid-air — or on the
-            // pre-takeoff frame — reads as a jump or a missing landing.
+            // pre-takeoff frame — reads as a jump or a missing landing. A
+            // boomerang must instead return to its first frame, so its backward
+            // half is never cut off at the far end.
             const bool safeToStop =
                 spec.playback == pet_behavior::Playback::Loop ||
                 (spec.playback == pet_behavior::Playback::FullCycle &&
                  pet_walk::AtEndFrame(activeIndex, size)) ||
                 (spec.playback == pet_behavior::Playback::Boomerang &&
-                 pet_walk::AtCycleBoundary(activeIndex, size));
+                 pet_walk::AtStartFrame(activeIndex));
             if (done && safeToStop) {
                 EnterBase(hwnd);
             }
@@ -340,8 +343,13 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
     if (dragging) {
         POINT cursor = {};
         GetCursorPos(&cursor);
-        SetWindowPos(hwnd, nullptr, cursor.x - dragOffsetX,
-                     cursor.y - dragOffsetY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        int x = cursor.x - dragOffsetX;
+        int y = cursor.y - dragOffsetY;
+        // Never drop the pet off-screen: a window that is already past the
+        // border makes the walk edge check cancel every move, so the pet looks
+        // frozen there (and can be dragged out of reach entirely).
+        pet_drag::ClampToScreen(x, y, petW, petH, screenW, screenH);
+        SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     }
     // Mouse sweeping horizontally across the head -> shy reaction. The band is
     // taken from the subject's own box, not the full canvas frame.
