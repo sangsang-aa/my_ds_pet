@@ -40,6 +40,7 @@ struct Pet {
     int screenW = 0;
     int screenH = 0;
     int waitTicks = 0;
+    int topmostTicks = 0;
     int headSweepPx = 0;
     int lastMouseX = 0;
     int lastMouseY = 0;

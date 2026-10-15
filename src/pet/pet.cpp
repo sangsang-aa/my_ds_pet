@@ -189,6 +189,13 @@ void Pet::EnterWaiting(HWND hwnd) {
 }
 
 void Pet::OnTimer(HWND hwnd) {
+    // Re-assert topmost so the pet cannot stay buried behind another topmost or
+    // full-screen window (see kTopmostReassertTicks).
+    if (++topmostTicks >= kTopmostReassertTicks) {
+        topmostTicks = 0;
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
     for (int& cooldown : cooldowns) {
         if (cooldown > 0) {
             cooldown -= 1;

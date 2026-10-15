@@ -10,6 +10,9 @@
 // Window / timer
 constexpr UINT_PTR kTimerId = 1;
 constexpr UINT kTimerElapseMs = 100;        // ~10 fps
+// WS_EX_TOPMOST is only set at creation; other topmost/full-screen windows can
+// push the pet down and nothing restores it, so re-assert topmost periodically.
+constexpr int kTopmostReassertTicks = 10;   // ~1s at kTimerElapseMs
 constexpr size_t kMaxFrames = 120;          // convention: 000.png .. 119.png
 constexpr float kScaleFactor = 0.70f;       // pet renders 30% smaller on screen
 constexpr wchar_t kClassName[] = L"DesktopPetWindowClass";
