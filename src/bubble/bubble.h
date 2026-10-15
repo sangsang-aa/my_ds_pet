@@ -12,10 +12,12 @@
 #include <string>
 #include <vector>
 
+#include "bubble_logic.h"
+
 struct Bubble {
     std::vector<std::wstring> emojiPaths;
     std::wstring shownEmoji;
-    bool tailUp = false;
+    pet_bubble::Side side = pet_bubble::Side::Above;
     HWND hwnd = nullptr;
     HWND petHwnd = nullptr;
     HDC dc = nullptr;
