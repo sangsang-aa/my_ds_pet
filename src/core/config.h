@@ -22,6 +22,11 @@ constexpr int kIdleMinTicks = 30;       // idle dwell before walking (~3s)
 constexpr int kIdleMaxTicks = 100;      // ~10s
 constexpr int kWalkMinTicks = 15;       // walk duration (~1.5s)
 constexpr int kWalkMaxTicks = 45;       // ~4.5s
+// walking_up is a boomerang, so its natural length is one round trip:
+// 2 * frames - 2 ticks (27 frames -> 52 ticks, ~5.2s). Pin it there so it never
+// stops earlier — or later — than the single round trip the clip was cut for.
+constexpr int kWalkUpMinTicks = 52;
+constexpr int kWalkUpMaxTicks = 52;
 constexpr int kWaitMinTicks = 1200;     // post-drag idle-only wait (~2 min)
 constexpr int kWaitMaxTicks = 1800;     // ~3 min
 
