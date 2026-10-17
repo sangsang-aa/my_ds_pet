@@ -201,7 +201,7 @@ void Pet::OnTimer(HWND hwnd) {
             cooldown -= 1;
         }
     }
-    headSweepPx -= headSweepPx / 2;  // decay, so slow drift never triggers
+    pet_sweep::Idle(sweep, kSweepResetTicks);
 
     if (state == PetState::Acting) {
         const Clip& clip = clips[static_cast<size_t>(activeClip)];
@@ -370,22 +370,25 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
         const int by = bounds.valid ? bounds.y - windowRect.top : 0;
         const int bw = bounds.valid && bounds.w > 0 ? bounds.w : petW;
         const int bh = bounds.valid && bounds.h > 0 ? bounds.h : petH;
-        if (!mouseDown &&
-            my >= by + bh * GetSettings().headBandTopPercent / 100 &&
-            my < by + bh * GetSettings().headBandPercent / 100 && mx >= bx &&
+        const int bandTop = by + bh * GetSettings().headBandTopPercent / 100;
+        int bandBottom = by + bh * GetSettings().headBandPercent / 100 -
+                         kHeadBandBottomInsetPx;
+        if (bandBottom < bandTop) {
+            bandBottom = bandTop;
+        }
+        if (!mouseDown && my >= bandTop && my < bandBottom && mx >= bx &&
             mx < bx + bw) {
             const int dx = mx - lastMouseX;
             const int dy = my - lastMouseY;
             if (std::abs(dx) <= GetSettings().maxSweepDeltaPx &&
                 std::abs(dx) > std::abs(dy)) {
-                headSweepPx += std::abs(dx);
-            }
-            if (headSweepPx >= GetSettings().sweepThresholdPx) {
-                headSweepPx = 0;
-                const int shyClip = pet_behavior::FindByTrigger(
-                    Behaviors(), pet_behavior::Trigger::HeadSweep);
-                if (CanStart(shyClip)) {
-                    StartBehavior(hwnd, shyClip);
+                if (pet_sweep::Feed(sweep, dx, GetSettings().sweepThresholdPx,
+                                    kSweepPassesToTrigger)) {
+                    const int shyClip = pet_behavior::FindByTrigger(
+                        Behaviors(), pet_behavior::Trigger::HeadSweep);
+                    if (CanStart(shyClip)) {
+                        StartBehavior(hwnd, shyClip);
+                    }
                 }
             }
         }

@@ -35,6 +35,7 @@ Pure-logic assert programs (no framework); they exercise the `<windows.h>`-free 
 g++ -std=c++17 -Wall -Wextra -O2 tests/behavior_test.cpp     -o /tmp/bt && /tmp/bt
 g++ -std=c++17 -Wall -Wextra -O2 tests/bubble_logic_test.cpp -o /tmp/bu && /tmp/bu
 g++ -std=c++17 -Wall -Wextra -O2 tests/walk_logic_test.cpp   -o /tmp/wt && /tmp/wt
+g++ -std=c++17 -Wall -Wextra -O2 tests/sweep_logic_test.cpp  -o /tmp/st && /tmp/st
 python3 -m pytest /home/zh180/MCPS/test_convert_rgba.py /home/zh180/MCPS/test_fetch_emoji.py
 ```
 Behaviour/visual changes can only be verified by the user on Windows.

@@ -11,6 +11,7 @@
 #include "behavior.h"
 #include "core/assets.h"
 #include "core/config.h"
+#include "sweep_logic.h"
 
 enum class PetState { Base, Acting };
 
@@ -41,7 +42,7 @@ struct Pet {
     int screenH = 0;
     int waitTicks = 0;
     int topmostTicks = 0;
-    int headSweepPx = 0;
+    pet_sweep::State sweep;
     int lastMouseX = 0;
     int lastMouseY = 0;
 

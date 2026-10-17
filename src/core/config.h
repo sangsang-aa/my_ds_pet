@@ -36,8 +36,11 @@ constexpr int kWaitMaxTicks = 1800;     // ~3 min
 // Reactions
 constexpr int kHeadBandPercent = 45;    // top 45% of the pet counts as the "head"
 constexpr int kHeadBandTopPercent = 0;  // skip this much of the subject's top
-constexpr int kSweepThresholdPx = 50;   // horizontal travel over the head -> shy
+constexpr int kHeadBandBottomInsetPx = 100;  // raise the band's bottom edge
+constexpr int kSweepThresholdPx = 50;   // horizontal travel of one stroke -> counts
 constexpr int kMaxSweepDeltaPx = 80;    // ignore jumpy deltas (mouse re-entry)
+constexpr int kSweepPassesToTrigger = 2;  // two back-and-forth strokes -> shy
+constexpr int kSweepResetTicks = 20;      // ~2s idle before the gesture is dropped
 constexpr int kShyCooldownTicks = 25;   // ~2.5s between shy reactions
 
 // Speech-bubble emoji
