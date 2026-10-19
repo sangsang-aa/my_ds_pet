@@ -71,6 +71,22 @@ void test_idle_drops_a_stale_gesture() {
     assert(s.passes == 0);
 }
 
+void test_head_band_keeps_its_shape_at_every_scale() {
+    assert(pet_sweep::HeadBandBottom(0, 100, 0, 45, 25) == 20);
+    assert(pet_sweep::HeadBandBottom(0, 251, 0, 45, 25) -
+               pet_sweep::HeadBandTop(0, 251, 0) == 50);
+    assert(pet_sweep::HeadBandBottom(0, 107, 0, 45, 25) -
+               pet_sweep::HeadBandTop(0, 107, 0) == 22);
+    assert(pet_sweep::HeadBandBottom(0, 537, 0, 45, 25) -
+               pet_sweep::HeadBandTop(0, 537, 0) == 107);
+}
+
+void test_head_band_honours_top_percent_and_clamps() {
+    assert(pet_sweep::HeadBandTop(0, 100, 10) == 10);
+    assert(pet_sweep::HeadBandBottom(0, 100, 10, 45, 25) == 20);
+    assert(pet_sweep::HeadBandBottom(0, 100, 10, 45, 60) == 10);
+}
+
 }  // namespace
 
 int main() {
@@ -81,6 +97,8 @@ int main() {
     test_reversal_without_enough_travel_is_not_a_pass();
     test_zero_delta_is_ignored();
     test_idle_drops_a_stale_gesture();
+    test_head_band_keeps_its_shape_at_every_scale();
+    test_head_band_honours_top_percent_and_clamps();
     std::printf("sweep_logic: all tests passed\n");
     return 0;
 }

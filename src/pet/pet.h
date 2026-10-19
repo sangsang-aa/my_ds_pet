@@ -75,7 +75,17 @@ struct Pet {
     void OnCaptureChanged(HWND hwnd);
     void DestroyResources();
 
+    // Re-scale every frame: reload all bitmaps at `scale`, re-derive the
+    // window size and move the window so it still fits on screen.
+    bool SetScale(HWND hwnd, double scale, std::wstring& error);
+
 private:
+    std::wstring exeDir_;
+    std::wstring assetsDir_;
+    bool explicitAction_ = false;
+    std::string actionUtf8_;
+
+    void FreeFrameBitmaps();
     int PickNextAuto() const;
     bool CanStart(int clipIndex) const;
     void StartBehavior(HWND hwnd, int clipIndex);

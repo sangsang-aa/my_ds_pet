@@ -17,7 +17,7 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 ## Build
 - Windows: `build.bat` (tries `cl`, then `g++`, then CMake). MinGW one-liner
   (cmd.exe does **not** expand globs and g++ doesn't either — list the files):
-  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
+  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp src/tray/tray.cpp src/tray/scale_dialog.cpp -lgdiplus -luser32 -lgdi32 -lcomctl32 -o pet_demo.exe`
 - **Close the running pet first** or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
   `taskkill /IM pet_demo.exe /F 2>nul`
@@ -36,6 +36,7 @@ g++ -std=c++17 -Wall -Wextra -O2 tests/behavior_test.cpp     -o /tmp/bt && /tmp/
 g++ -std=c++17 -Wall -Wextra -O2 tests/bubble_logic_test.cpp -o /tmp/bu && /tmp/bu
 g++ -std=c++17 -Wall -Wextra -O2 tests/walk_logic_test.cpp   -o /tmp/wt && /tmp/wt
 g++ -std=c++17 -Wall -Wextra -O2 tests/sweep_logic_test.cpp  -o /tmp/st && /tmp/st
+g++ -std=c++17 -Wall -Wextra -O2 tests/tray_logic_test.cpp   -o /tmp/tt && /tmp/tt
 python3 -m pytest /home/zh180/MCPS/test_convert_rgba.py /home/zh180/MCPS/test_fetch_emoji.py
 ```
 Behaviour/visual changes can only be verified by the user on Windows.

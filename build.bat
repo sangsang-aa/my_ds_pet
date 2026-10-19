@@ -22,7 +22,7 @@ cd /d "%~dp0"
 
 where cl >nul 2>nul
 if %errorlevel%==0 (
-    cl /nologo /EHsc /std:c++17 /O2 src\*.cpp src\core\*.cpp src\pet\*.cpp src\bubble\*.cpp /I src gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
+    cl /nologo /EHsc /std:c++17 /O2 src\*.cpp src\core\*.cpp src\pet\*.cpp src\bubble\*.cpp src\tray\tray.cpp src\tray\scale_dialog.cpp /I src gdiplus.lib user32.lib gdi32.lib comctl32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
     if not errorlevel 1 (
         echo [pet] build OK: pet_demo.exe via cl
         exit /b 0
@@ -39,7 +39,7 @@ if %errorlevel%==0 (
             echo !p:\=/!
         )
     )
-    g++ -std=c++17 -O2 -mwindows -Isrc @build\sources.txt -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
+    g++ -std=c++17 -O2 -mwindows -Isrc @build\sources.txt -lgdiplus -luser32 -lgdi32 -lcomctl32 -o pet_demo.exe
     if not errorlevel 1 (
         echo [pet] build OK: pet_demo.exe via g++
         del build\sources.txt

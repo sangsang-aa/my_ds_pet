@@ -35,8 +35,10 @@ std::string ReadTextFile(const std::wstring& path) {
 }
 
 // `bounds.txt` holds one `x y w h` subject box per frame, written by
-// MCPS/prepare_action.py; without it every frame counts as fully opaque.
-void LoadFrameBounds(const std::wstring& path, std::vector<Frame>& frames) {
+// MCPS/prepare_action.py; without it every frame counts as fully opaque. Boxes
+// describe the source PNG, so they must shrink/grow with the frame's scale.
+void LoadFrameBounds(const std::wstring& path, std::vector<Frame>& frames,
+                     double scale) {
     const std::string text = ReadTextFile(path);
     if (text.empty()) {
         return;
@@ -54,10 +56,10 @@ void LoadFrameBounds(const std::wstring& path, std::vector<Frame>& frames) {
         int bh = 0;
         if (std::sscanf(line.c_str(), "%d %d %d %d", &bx, &by, &bw, &bh) == 4 &&
             bw > 0 && bh > 0) {
-            frames[index].bx = bx;
-            frames[index].by = by;
-            frames[index].bw = bw;
-            frames[index].bh = bh;
+            frames[index].bx = static_cast<int>(std::lround(bx * scale));
+            frames[index].by = static_cast<int>(std::lround(by * scale));
+            frames[index].bw = static_cast<int>(std::lround(bw * scale));
+            frames[index].bh = static_cast<int>(std::lround(bh * scale));
             index += 1;
         }
     }
@@ -127,7 +129,8 @@ std::vector<Frame> LoadFrames(const std::wstring& exeDir,
         frame.hasAlpha = (frameBitmap->GetPixelFormat() & PixelFormatAlpha) != 0;
         frames.push_back(frame);
     }
-    LoadFrameBounds(exeDir + assetsDir + L"\\" + action + L"\\bounds.txt", frames);
+    LoadFrameBounds(exeDir + assetsDir + L"\\" + action + L"\\bounds.txt", frames,
+                    GetSettings().scaleFactor);
     return frames;
 }
 

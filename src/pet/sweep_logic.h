@@ -37,6 +37,24 @@ inline bool Feed(State& s, int dx, int thresholdPx, int passesNeeded) {
     return false;
 }
 
+inline int HeadBandTop(int top, int height, int topPercent) {
+    return top + height * topPercent / 100;
+}
+
+// Bottom edge of the head band: the top `bottomPercent` of the subject minus a
+// proportional inset, and never above the band's own top edge. The inset is a
+// percentage of the subject so the band keeps the same shape at every scale.
+inline int HeadBandBottom(int top, int height, int topPercent,
+                          int bottomPercent, int insetPercent) {
+    const int bandTop = top + height * topPercent / 100;
+    int bottom = top + height * bottomPercent / 100 -
+                 height * insetPercent / 100;
+    if (bottom < bandTop) {
+        bottom = bandTop;
+    }
+    return bottom;
+}
+
 // Once per pet tick: decay a half-finished stroke and drop a gesture that has
 // been idle for longer than `resetTicks`, so two casual strokes minutes apart
 // do not add up.

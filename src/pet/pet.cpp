@@ -10,6 +10,7 @@
 #include "core/settings.h"
 #include "core/util.h"
 #include "drag_logic.h"
+#include "tray/tray.h"
 #include "walk_logic.h"
 
 namespace {
@@ -32,6 +33,10 @@ bool IsMoving(const pet_behavior::Spec& spec) {
 bool Pet::Load(const std::wstring& exeDir, const std::wstring& assetsDir,
                bool explicitAction, const std::string& actionUtf8,
                std::wstring& error) {
+    exeDir_ = exeDir;
+    assetsDir_ = assetsDir;
+    explicitAction_ = explicitAction;
+    actionUtf8_ = actionUtf8;
     const std::wstring assetsPath = exeDir + assetsDir;
 
     if (explicitAction) {
@@ -370,12 +375,11 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
         const int by = bounds.valid ? bounds.y - windowRect.top : 0;
         const int bw = bounds.valid && bounds.w > 0 ? bounds.w : petW;
         const int bh = bounds.valid && bounds.h > 0 ? bounds.h : petH;
-        const int bandTop = by + bh * GetSettings().headBandTopPercent / 100;
-        int bandBottom = by + bh * GetSettings().headBandPercent / 100 -
-                         kHeadBandBottomInsetPx;
-        if (bandBottom < bandTop) {
-            bandBottom = bandTop;
-        }
+        const int bandTop =
+            pet_sweep::HeadBandTop(by, bh, GetSettings().headBandTopPercent);
+        const int bandBottom = pet_sweep::HeadBandBottom(
+            by, bh, GetSettings().headBandTopPercent,
+            GetSettings().headBandPercent, kHeadBandBottomInsetPercent);
         if (!mouseDown && my >= bandTop && my < bandBottom && mx >= bx &&
             mx < bx + bw) {
             const int dx = mx - lastMouseX;
@@ -429,6 +433,13 @@ void Pet::DestroyResources() {
         DeleteDC(memDC);
         memDC = nullptr;
     }
+    FreeFrameBitmaps();
+    cooldowns.clear();
+}
+
+void Pet::FreeFrameBitmaps() {
+    // memDC is deliberately left alone: after a resize the same DC is reused
+    // and nothing is selected into it between PresentFrame calls.
     for (std::vector<Frame>& animation : basePool) {
         FreeFrames(animation);
     }
@@ -437,7 +448,31 @@ void Pet::DestroyResources() {
         FreeFrames(clip.frames);
     }
     clips.clear();
+}
+
+bool Pet::SetScale(HWND hwnd, double scale, std::wstring& error) {
+    if (scale <= 0.0) {
+        return false;
+    }
+    MutableSettings().scaleFactor = scale;
+    FreeFrameBitmaps();
     cooldowns.clear();
+    state = PetState::Base;
+    activeClip = -1;
+    if (!Load(exeDir_, assetsDir_, explicitAction_, actionUtf8_, error)) {
+        return false;
+    }
+    if (!InitGeometry(screenW, screenH, error)) {
+        return false;
+    }
+    RECT windowRect = {};
+    GetWindowRect(hwnd, &windowRect);
+    int x = windowRect.left;
+    int y = windowRect.top;
+    pet_drag::ClampToScreen(x, y, petW, petH, screenW, screenH);
+    SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    PresentBase(hwnd);
+    return true;
 }
 
 LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,
@@ -460,6 +495,10 @@ LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,
         if (wParam == kTimerId && pet != nullptr) {
             pet->OnTimer(hwnd);
         }
+        return 0;
+
+    case kTrayCallbackMessage:
+        tray::OnCallback(hwnd, lParam);
         return 0;
 
     case WM_PAINT: {

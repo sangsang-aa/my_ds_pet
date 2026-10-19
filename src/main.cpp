@@ -14,15 +14,21 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
+#include <commctrl.h>
 
+#include <cmath>
 #include <string>
 
 #include "bubble/bubble.h"
+#include "core/assets.h"
 #include "core/config.h"
 #include "core/render.h"
 #include "core/settings.h"
 #include "core/util.h"
 #include "pet/pet.h"
+#include "tray/scale_dialog.h"
+#include "tray/tray.h"
+#include "tray/tray_logic.h"
 
 // __argc / __argv are exported by both the MSVC and the MinGW-w64 CRT, so the
 // GUI entry point can still see the (narrow) command-line arguments.
@@ -32,6 +38,9 @@ extern char** __argv;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
+    INITCOMMONCONTROLSEX icc{ sizeof(icc), ICC_BAR_CLASSES };
+    InitCommonControlsEx(&icc);
+
     // argv[1] optionally forces a single base action; with no argument the pet
     // uses a random idle pool ("idle" + "idle2") and switches between them.
     const bool explicitAction =
@@ -105,11 +114,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     ShowWindow(hwnd, SW_SHOWNOACTIVATE);
     SetFocus(hwnd);
 
+    const std::wstring trayIcon = exeDir + assetsDir + L"\\" + kTrayIconAction +
+                                  L"\\" + FrameName(kTrayIconFrame);
+    tray::Init(hwnd, hInstance, trayIcon,
+               tray::Callbacks{
+                   [hwnd, hInstance, &pet] {
+                       const int pct = static_cast<int>(
+                           std::lround(GetSettings().scaleFactor * 100.0));
+                       tray::ShowScaleDialog(
+                           hwnd, hInstance, pct,
+                           [hwnd, &pet](int percent) {
+                               std::wstring error;
+                               pet.SetScale(
+                                   hwnd,
+                                   tray_logic::ScaleFactorFromPercent(percent),
+                                   error);
+                           });
+                   },
+                   [hwnd] { DestroyWindow(hwnd); }});
+
     MSG message = {};
     while (GetMessageW(&message, nullptr, 0, 0) > 0) {
         TranslateMessage(&message);
         DispatchMessageW(&message);
     }
+
+    tray::Destroy();
 
     return static_cast<int>(message.wParam);
 }
