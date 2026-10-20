@@ -1,0 +1,482 @@
+{
+  "parts": [
+    {
+      "name": "tail_trunk",
+      "size": [
+        290,
+        175
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_base",
+      "size": [
+        614,
+        484
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_screen_left_outer",
+      "size": [
+        349,
+        415
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_screen_right_outer",
+      "size": [
+        367,
+        418
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "boot_screen_left",
+      "size": [
+        114,
+        95
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "boot_screen_right",
+      "size": [
+        118,
+        93
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "coat_torso",
+      "size": [
+        466,
+        345
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "collar",
+      "size": [
+        324,
+        103
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hand_screen_left",
+      "size": [
+        40,
+        48
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hand_screen_right",
+      "size": [
+        40,
+        48
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "sleeve_screen_left",
+      "size": [
+        143,
+        175
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "sleeve_screen_right",
+      "size": [
+        143,
+        175
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_screen_left",
+      "size": [
+        50,
+        50
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_screen_right",
+      "size": [
+        46,
+        53
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "pompom_screen_left",
+      "size": [
+        58,
+        55
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "pompom_screen_right",
+      "size": [
+        60,
+        55
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "chest_bow",
+      "size": [
+        135,
+        70
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 2
+    },
+    {
+      "name": "chest_star",
+      "size": [
+        61,
+        62
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "front_hair_cap",
+      "size": [
+        487,
+        261
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "face_base",
+      "size": [
+        322,
+        324
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "eye_screen_left",
+      "size": [
+        103,
+        85
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "eye_screen_right",
+      "size": [
+        107,
+        79
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "mouth",
+      "size": [
+        16,
+        9
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fin_screen_left",
+      "size": [
+        102,
+        117
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fin_screen_right",
+      "size": [
+        142,
+        102
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "side_hair_screen_left",
+      "size": [
+        145,
+        427
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "side_hair_screen_right",
+      "size": [
+        156,
+        381
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fringe_screen_left",
+      "size": [
+        144,
+        262
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fringe_center",
+      "size": [
+        151,
+        282
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fringe_screen_right",
+      "size": [
+        132,
+        259
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "ahoge",
+      "size": [
+        168,
+        103
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "headband",
+      "size": [
+        548,
+        319
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "snowflake",
+      "size": [
+        77,
+        88
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "head_bow_screen_right",
+      "size": [
+        78,
+        71
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    }
+  ],
+  "psd_pixel_roundtrip": "passed",
+  "setup_json": "references and dimensions checked; not opened in Spine"
+}

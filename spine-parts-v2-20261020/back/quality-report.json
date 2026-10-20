@@ -1,0 +1,11 @@
+{
+  "part_count": 21,
+  "padding_px": 2,
+  "padding_all_pass": true,
+  "merged_parts": {
+    "hair_loop_left": "hair_left",
+    "hair_loop_right": "hair_right"
+  },
+  "visual_qa": "Dark, checker, white assembly, and each attachment at 200% were inspected.",
+  "restoration_source": "Existing back-restoration.png; no new API generation request."
+}

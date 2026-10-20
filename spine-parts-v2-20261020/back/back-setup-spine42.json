@@ -1,0 +1,479 @@
+{
+  "skeleton": {
+    "spine": "4.2.00",
+    "x": -341.5,
+    "y": -30,
+    "width": 683,
+    "height": 1052,
+    "images": "./parts/",
+    "audio": ""
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "x": 0,
+      "y": 296.12
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "x": 0,
+      "y": 157.8
+    },
+    {
+      "name": "coat_back",
+      "parent": "body",
+      "x": 2.5,
+      "y": 65.88
+    },
+    {
+      "name": "boot_left",
+      "parent": "coat_back",
+      "x": -67,
+      "y": -211
+    },
+    {
+      "name": "boot_right",
+      "parent": "coat_back",
+      "x": 61,
+      "y": -213
+    },
+    {
+      "name": "tail_trunk",
+      "parent": "body",
+      "x": 10.5,
+      "y": -103.12
+    },
+    {
+      "name": "tail_fluke_down",
+      "parent": "tail_trunk",
+      "x": 119,
+      "y": -93
+    },
+    {
+      "name": "tail_fluke_right",
+      "parent": "tail_trunk",
+      "x": 119,
+      "y": -91
+    },
+    {
+      "name": "coat_hem",
+      "parent": "coat_back",
+      "x": 0,
+      "y": -141
+    },
+    {
+      "name": "hair_cap",
+      "parent": "head",
+      "x": 1.5,
+      "y": 322.08
+    },
+    {
+      "name": "headband",
+      "parent": "hair_cap",
+      "x": -1,
+      "y": 148
+    },
+    {
+      "name": "side_fin_left",
+      "parent": "headband",
+      "x": -223,
+      "y": -229
+    },
+    {
+      "name": "side_fin_right",
+      "parent": "headband",
+      "x": 218,
+      "y": -230
+    },
+    {
+      "name": "hair_left",
+      "parent": "hair_cap",
+      "x": -162,
+      "y": -79
+    },
+    {
+      "name": "hair_right",
+      "parent": "hair_cap",
+      "x": 175,
+      "y": -79
+    },
+    {
+      "name": "hair_center",
+      "parent": "hair_cap",
+      "x": -14,
+      "y": -218
+    },
+    {
+      "name": "whale_hair_accessory",
+      "parent": "hair_cap",
+      "x": 0,
+      "y": 122
+    },
+    {
+      "name": "cord_left",
+      "parent": "headband",
+      "x": -223,
+      "y": -227
+    },
+    {
+      "name": "cord_right",
+      "parent": "headband",
+      "x": 213,
+      "y": -226
+    },
+    {
+      "name": "bow_left",
+      "parent": "headband",
+      "x": -224,
+      "y": -207
+    },
+    {
+      "name": "bow_right",
+      "parent": "headband",
+      "x": 217,
+      "y": -207
+    },
+    {
+      "name": "pompom_left",
+      "parent": "cord_left",
+      "x": 0,
+      "y": -92
+    },
+    {
+      "name": "pompom_right",
+      "parent": "cord_right",
+      "x": 3,
+      "y": -93
+    }
+  ],
+  "slots": [
+    {
+      "name": "boot_left",
+      "bone": "boot_left",
+      "attachment": "boot_left"
+    },
+    {
+      "name": "boot_right",
+      "bone": "boot_right",
+      "attachment": "boot_right"
+    },
+    {
+      "name": "tail_trunk",
+      "bone": "tail_trunk",
+      "attachment": "tail_trunk"
+    },
+    {
+      "name": "tail_fluke_down",
+      "bone": "tail_fluke_down",
+      "attachment": "tail_fluke_down"
+    },
+    {
+      "name": "tail_fluke_right",
+      "bone": "tail_fluke_right",
+      "attachment": "tail_fluke_right"
+    },
+    {
+      "name": "coat_back",
+      "bone": "coat_back",
+      "attachment": "coat_back"
+    },
+    {
+      "name": "coat_hem",
+      "bone": "coat_hem",
+      "attachment": "coat_hem"
+    },
+    {
+      "name": "side_fin_left",
+      "bone": "side_fin_left",
+      "attachment": "side_fin_left"
+    },
+    {
+      "name": "side_fin_right",
+      "bone": "side_fin_right",
+      "attachment": "side_fin_right"
+    },
+    {
+      "name": "hair_cap",
+      "bone": "hair_cap",
+      "attachment": "hair_cap"
+    },
+    {
+      "name": "hair_left",
+      "bone": "hair_left",
+      "attachment": "hair_left"
+    },
+    {
+      "name": "hair_right",
+      "bone": "hair_right",
+      "attachment": "hair_right"
+    },
+    {
+      "name": "hair_center",
+      "bone": "hair_center",
+      "attachment": "hair_center"
+    },
+    {
+      "name": "headband",
+      "bone": "headband",
+      "attachment": "headband"
+    },
+    {
+      "name": "whale_hair_accessory",
+      "bone": "whale_hair_accessory",
+      "attachment": "whale_hair_accessory"
+    },
+    {
+      "name": "cord_left",
+      "bone": "cord_left",
+      "attachment": "cord_left"
+    },
+    {
+      "name": "cord_right",
+      "bone": "cord_right",
+      "attachment": "cord_right"
+    },
+    {
+      "name": "bow_left",
+      "bone": "bow_left",
+      "attachment": "bow_left"
+    },
+    {
+      "name": "bow_right",
+      "bone": "bow_right",
+      "attachment": "bow_right"
+    },
+    {
+      "name": "pompom_left",
+      "bone": "pompom_left",
+      "attachment": "pompom_left"
+    },
+    {
+      "name": "pompom_right",
+      "bone": "pompom_right",
+      "attachment": "pompom_right"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "boot_left": {
+          "boot_left": {
+            "type": "region",
+            "path": "boot_left",
+            "x": -3.5,
+            "y": -15.0,
+            "width": 119,
+            "height": 130
+          }
+        },
+        "boot_right": {
+          "boot_right": {
+            "type": "region",
+            "path": "boot_right",
+            "x": 10.5,
+            "y": -13.0,
+            "width": 119,
+            "height": 130
+          }
+        },
+        "tail_trunk": {
+          "tail_trunk": {
+            "type": "region",
+            "path": "tail_trunk",
+            "x": 36.0,
+            "y": -56.5,
+            "width": 192,
+            "height": 139
+          }
+        },
+        "tail_fluke_down": {
+          "tail_fluke_down": {
+            "type": "region",
+            "path": "tail_fluke_down",
+            "x": -5.0,
+            "y": -55.5,
+            "width": 84,
+            "height": 103
+          }
+        },
+        "tail_fluke_right": {
+          "tail_fluke_right": {
+            "type": "region",
+            "path": "tail_fluke_right",
+            "x": 57.0,
+            "y": -11.5,
+            "width": 148,
+            "height": 65
+          }
+        },
+        "coat_back": {
+          "coat_back": {
+            "type": "region",
+            "path": "coat_back",
+            "x": 4.5,
+            "y": 12.5,
+            "width": 487,
+            "height": 319
+          }
+        },
+        "coat_hem": {
+          "coat_hem": {
+            "type": "region",
+            "path": "coat_hem",
+            "x": 2.0,
+            "y": 8.5,
+            "width": 546,
+            "height": 147
+          }
+        },
+        "side_fin_left": {
+          "side_fin_left": {
+            "type": "region",
+            "path": "side_fin_left",
+            "x": -60.0,
+            "y": -43.5,
+            "width": 110,
+            "height": 95
+          }
+        },
+        "side_fin_right": {
+          "side_fin_right": {
+            "type": "region",
+            "path": "side_fin_right",
+            "x": 42.0,
+            "y": -45.0,
+            "width": 110,
+            "height": 86
+          }
+        },
+        "hair_cap": {
+          "hair_cap": {
+            "type": "region",
+            "path": "hair_cap",
+            "x": -10.0,
+            "y": -86.5,
+            "width": 550,
+            "height": 479
+          }
+        },
+        "hair_left": {
+          "hair_left": {
+            "type": "region",
+            "path": "hair_left",
+            "x": -40.0,
+            "y": -204.0,
+            "width": 240,
+            "height": 514
+          }
+        },
+        "hair_right": {
+          "hair_right": {
+            "type": "region",
+            "path": "hair_right",
+            "x": -7.5,
+            "y": -207.5,
+            "width": 295,
+            "height": 507
+          }
+        },
+        "hair_center": {
+          "hair_center": {
+            "type": "region",
+            "path": "hair_center",
+            "x": 0.0,
+            "y": -141.5,
+            "width": 274,
+            "height": 359
+          }
+        },
+        "headband": {
+          "headband": {
+            "type": "region",
+            "path": "headband",
+            "x": -4.0,
+            "y": -66.0,
+            "width": 498,
+            "height": 250
+          }
+        },
+        "whale_hair_accessory": {
+          "whale_hair_accessory": {
+            "type": "region",
+            "path": "whale_hair_accessory",
+            "x": 2.5,
+            "y": -64.0,
+            "width": 175,
+            "height": 170
+          }
+        },
+        "cord_left": {
+          "cord_left": {
+            "type": "region",
+            "path": "cord_left",
+            "x": -2.5,
+            "y": -51.0,
+            "width": 19,
+            "height": 108
+          }
+        },
+        "cord_right": {
+          "cord_right": {
+            "type": "region",
+            "path": "cord_right",
+            "x": 1.5,
+            "y": -53.5,
+            "width": 23,
+            "height": 113
+          }
+        },
+        "bow_left": {
+          "bow_left": {
+            "type": "region",
+            "path": "bow_left",
+            "x": 2.5,
+            "y": -8.0,
+            "width": 79,
+            "height": 84
+          }
+        },
+        "bow_right": {
+          "bow_right": {
+            "type": "region",
+            "path": "bow_right",
+            "x": -2.0,
+            "y": -2.5,
+            "width": 72,
+            "height": 73
+          }
+        },
+        "pompom_left": {
+          "pompom_left": {
+            "type": "region",
+            "path": "pompom_left",
+            "x": -1.5,
+            "y": -34.0,
+            "width": 79,
+            "height": 88
+          }
+        },
+        "pompom_right": {
+          "pompom_right": {
+            "type": "region",
+            "path": "pompom_right",
+            "x": 1.0,
+            "y": -34.5,
+            "width": 76,
+            "height": 89
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}

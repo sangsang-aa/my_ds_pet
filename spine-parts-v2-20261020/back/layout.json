@@ -1,0 +1,499 @@
+{
+  "view": "back",
+  "canvas_size": [
+    683,
+    1052
+  ],
+  "coordinate_convention": "top-left, x right, y down",
+  "source_crop_xyxy": [
+    1489,
+    146,
+    2172,
+    1198
+  ],
+  "parts": [
+    {
+      "name": "boot_left",
+      "draw_order": 0,
+      "parent": "coat_back",
+      "pivot_xy": [
+        277,
+        871
+      ],
+      "original_bbox_xywh": [
+        216,
+        860,
+        107,
+        87
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        214,
+        821,
+        119,
+        130
+      ],
+      "method": "Complete clean boot redraw replacing the occluded source; one boot per attachment."
+    },
+    {
+      "name": "boot_right",
+      "draw_order": 1,
+      "parent": "coat_back",
+      "pivot_xy": [
+        405,
+        873
+      ],
+      "original_bbox_xywh": [
+        368,
+        856,
+        101,
+        91
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        356,
+        821,
+        119,
+        130
+      ],
+      "method": "Complete clean boot redraw replacing the occluded source; one boot per attachment."
+    },
+    {
+      "name": "tail_trunk",
+      "draw_order": 2,
+      "parent": "root",
+      "pivot_xy": [
+        352,
+        829
+      ],
+      "original_bbox_xywh": [
+        290,
+        827,
+        178,
+        114
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        292,
+        816,
+        192,
+        139
+      ],
+      "method": "Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded."
+    },
+    {
+      "name": "tail_fluke_down",
+      "draw_order": 3,
+      "parent": "tail_trunk",
+      "pivot_xy": [
+        471,
+        922
+      ],
+      "original_bbox_xywh": [
+        440,
+        899,
+        77,
+        129
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        424,
+        926,
+        84,
+        103
+      ],
+      "method": "Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded."
+    },
+    {
+      "name": "tail_fluke_right",
+      "draw_order": 4,
+      "parent": "tail_trunk",
+      "pivot_xy": [
+        471,
+        920
+      ],
+      "original_bbox_xywh": [
+        458,
+        876,
+        141,
+        75
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        454,
+        899,
+        148,
+        65
+      ],
+      "method": "Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded."
+    },
+    {
+      "name": "coat_back",
+      "draw_order": 5,
+      "parent": "root",
+      "pivot_xy": [
+        344,
+        660
+      ],
+      "original_bbox_xywh": [
+        86,
+        723,
+        521,
+        66
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        105,
+        488,
+        487,
+        319
+      ],
+      "method": "Complete clean coat redraw, split along its fur seam; no original garment scraps."
+    },
+    {
+      "name": "coat_hem",
+      "draw_order": 6,
+      "parent": "coat_back",
+      "pivot_xy": [
+        344,
+        801
+      ],
+      "original_bbox_xywh": [
+        75,
+        745,
+        542,
+        120
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        73,
+        719,
+        546,
+        147
+      ],
+      "method": "Complete clean coat redraw, split along its fur seam; no original garment scraps."
+    },
+    {
+      "name": "side_fin_left",
+      "draw_order": 9,
+      "parent": "headband",
+      "pivot_xy": [
+        119,
+        327
+      ],
+      "original_bbox_xywh": [
+        6,
+        325,
+        106,
+        91
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        4,
+        323,
+        110,
+        95
+      ],
+      "method": "Original painted side fin with smooth concealed root cut and restored attachment width."
+    },
+    {
+      "name": "side_fin_right",
+      "draw_order": 10,
+      "parent": "headband",
+      "pivot_xy": [
+        560,
+        328
+      ],
+      "original_bbox_xywh": [
+        564,
+        332,
+        91,
+        82
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        547,
+        330,
+        110,
+        86
+      ],
+      "method": "Original painted side fin, mirrored to its matching partner; smooth concealed root cut."
+    },
+    {
+      "name": "hair_cap",
+      "draw_order": 11,
+      "parent": "root",
+      "pivot_xy": [
+        343,
+        246
+      ],
+      "original_bbox_xywh": [
+        125,
+        126,
+        431,
+        421
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        58,
+        93,
+        550,
+        479
+      ],
+      "method": "Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion."
+    },
+    {
+      "name": "hair_left",
+      "draw_order": 12,
+      "parent": "hair_cap",
+      "pivot_xy": [
+        181,
+        325
+      ],
+      "original_bbox_xywh": [
+        23,
+        400,
+        238,
+        381
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        21,
+        272,
+        240,
+        514
+      ],
+      "method": "Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion. Upper loop is merged into this side lock to preserve clean shared crossing lines."
+    },
+    {
+      "name": "hair_right",
+      "draw_order": 13,
+      "parent": "hair_cap",
+      "pivot_xy": [
+        518,
+        325
+      ],
+      "original_bbox_xywh": [
+        370,
+        331,
+        286,
+        450
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        363,
+        279,
+        295,
+        507
+      ],
+      "method": "Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion. Upper loop is merged into this side lock to preserve clean shared crossing lines."
+    },
+    {
+      "name": "hair_center",
+      "draw_order": 14,
+      "parent": "hair_cap",
+      "pivot_xy": [
+        329,
+        464
+      ],
+      "original_bbox_xywh": [
+        187,
+        349,
+        261,
+        435
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        192,
+        426,
+        274,
+        359
+      ],
+      "method": "Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion."
+    },
+    {
+      "name": "headband",
+      "draw_order": 15,
+      "parent": "hair_cap",
+      "pivot_xy": [
+        342,
+        98
+      ],
+      "original_bbox_xywh": [
+        91,
+        41,
+        494,
+        252
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        89,
+        39,
+        498,
+        250
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    },
+    {
+      "name": "whale_hair_accessory",
+      "draw_order": 16,
+      "parent": "hair_cap",
+      "pivot_xy": [
+        343,
+        124
+      ],
+      "original_bbox_xywh": [
+        260,
+        104,
+        171,
+        168
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        258,
+        103,
+        175,
+        170
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    },
+    {
+      "name": "cord_left",
+      "draw_order": 17,
+      "parent": "headband",
+      "pivot_xy": [
+        119,
+        325
+      ],
+      "original_bbox_xywh": [
+        105,
+        329,
+        24,
+        91
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        107,
+        322,
+        19,
+        108
+      ],
+      "method": "Continuous shaded cord redraw replacing the source white-background notch."
+    },
+    {
+      "name": "cord_right",
+      "draw_order": 18,
+      "parent": "headband",
+      "pivot_xy": [
+        555,
+        324
+      ],
+      "original_bbox_xywh": [
+        549,
+        323,
+        28,
+        102
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        545,
+        321,
+        23,
+        113
+      ],
+      "method": "Continuous shaded cord redraw replacing the source white-background notch."
+    },
+    {
+      "name": "bow_left",
+      "draw_order": 19,
+      "parent": "headband",
+      "pivot_xy": [
+        118,
+        305
+      ],
+      "original_bbox_xywh": [
+        83,
+        272,
+        75,
+        82
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        81,
+        271,
+        79,
+        84
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    },
+    {
+      "name": "bow_right",
+      "draw_order": 20,
+      "parent": "headband",
+      "pivot_xy": [
+        559,
+        305
+      ],
+      "original_bbox_xywh": [
+        523,
+        271,
+        70,
+        72
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        521,
+        271,
+        72,
+        73
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    },
+    {
+      "name": "pompom_left",
+      "draw_order": 21,
+      "parent": "cord_left",
+      "pivot_xy": [
+        119,
+        417
+      ],
+      "original_bbox_xywh": [
+        78,
+        409,
+        79,
+        88
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        78,
+        407,
+        79,
+        88
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    },
+    {
+      "name": "pompom_right",
+      "draw_order": 22,
+      "parent": "cord_right",
+      "pivot_xy": [
+        558,
+        417
+      ],
+      "original_bbox_xywh": [
+        522,
+        409,
+        75,
+        88
+      ],
+      "note": "Clean v2 attachment; see method for restoration provenance.",
+      "bbox_xywh": [
+        521,
+        407,
+        76,
+        89
+      ],
+      "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+    }
+  ]
+}

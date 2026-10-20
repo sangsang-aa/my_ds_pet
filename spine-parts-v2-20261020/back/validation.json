@@ -1,0 +1,300 @@
+{
+  "parts": [
+    {
+      "name": "boot_left",
+      "size": [
+        119,
+        130
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "boot_right",
+      "size": [
+        119,
+        130
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "tail_trunk",
+      "size": [
+        192,
+        139
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "tail_fluke_down",
+      "size": [
+        84,
+        103
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "tail_fluke_right",
+      "size": [
+        148,
+        65
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "coat_back",
+      "size": [
+        487,
+        319
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "coat_hem",
+      "size": [
+        546,
+        147
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "side_fin_left",
+      "size": [
+        110,
+        95
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "side_fin_right",
+      "size": [
+        110,
+        86
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hair_cap",
+      "size": [
+        550,
+        479
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hair_left",
+      "size": [
+        240,
+        514
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hair_right",
+      "size": [
+        295,
+        507
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "hair_center",
+      "size": [
+        274,
+        359
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "headband",
+      "size": [
+        498,
+        250
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "whale_hair_accessory",
+      "size": [
+        175,
+        170
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_left",
+      "size": [
+        19,
+        108
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_right",
+      "size": [
+        23,
+        113
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "bow_left",
+      "size": [
+        79,
+        84
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "bow_right",
+      "size": [
+        72,
+        73
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "pompom_left",
+      "size": [
+        79,
+        88
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "pompom_right",
+      "size": [
+        76,
+        89
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    }
+  ],
+  "psd_pixel_roundtrip": "passed",
+  "setup_json": "references and dimensions checked; not opened in Spine"
+}

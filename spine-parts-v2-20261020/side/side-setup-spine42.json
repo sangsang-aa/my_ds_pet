@@ -1,0 +1,626 @@
+{
+  "skeleton": {
+    "spine": "4.2.00",
+    "x": -324.5,
+    "y": -30,
+    "width": 649,
+    "height": 991,
+    "images": "./parts/",
+    "audio": ""
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "x": 0,
+      "y": 277.21
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "x": 0,
+      "y": 148.65
+    },
+    {
+      "name": "tail_trunk",
+      "parent": "body",
+      "x": 5.5,
+      "y": -111.21
+    },
+    {
+      "name": "tail_fluke_upper",
+      "parent": "tail_trunk",
+      "x": 195,
+      "y": -62
+    },
+    {
+      "name": "tail_fluke_lower",
+      "parent": "tail_trunk",
+      "x": 196,
+      "y": -64
+    },
+    {
+      "name": "visible_boot",
+      "parent": "body",
+      "x": -100.5,
+      "y": -160.21
+    },
+    {
+      "name": "coat_torso",
+      "parent": "body",
+      "x": -93.5,
+      "y": 102.79
+    },
+    {
+      "name": "coat_fur_trim",
+      "parent": "coat_torso",
+      "x": -19,
+      "y": -155
+    },
+    {
+      "name": "face_ear_neck",
+      "parent": "head",
+      "x": -95.5,
+      "y": 75.14
+    },
+    {
+      "name": "rear_hair_base",
+      "parent": "head",
+      "x": 80.5,
+      "y": 292.14
+    },
+    {
+      "name": "rear_hair_outer_lock",
+      "parent": "rear_hair_base",
+      "x": 111,
+      "y": -196
+    },
+    {
+      "name": "rear_hair_inner_lock",
+      "parent": "rear_hair_base",
+      "x": -9,
+      "y": -206
+    },
+    {
+      "name": "ahoge",
+      "parent": "rear_hair_base",
+      "x": -175,
+      "y": 139
+    },
+    {
+      "name": "collar",
+      "parent": "coat_torso",
+      "x": -1,
+      "y": 38
+    },
+    {
+      "name": "visible_sleeve",
+      "parent": "coat_torso",
+      "x": 9,
+      "y": -5
+    },
+    {
+      "name": "visible_hand",
+      "parent": "visible_sleeve",
+      "x": 10,
+      "y": -146
+    },
+    {
+      "name": "visible_cuff",
+      "parent": "visible_sleeve",
+      "x": 8,
+      "y": -118
+    },
+    {
+      "name": "chest_bow",
+      "parent": "coat_torso",
+      "x": -85,
+      "y": 27
+    },
+    {
+      "name": "cord_pompom_back",
+      "parent": "chest_bow",
+      "x": -9,
+      "y": -31
+    },
+    {
+      "name": "cord_pompom_front",
+      "parent": "chest_bow",
+      "x": -1,
+      "y": -32
+    },
+    {
+      "name": "visible_eye",
+      "parent": "face_ear_neck",
+      "x": -82,
+      "y": 49
+    },
+    {
+      "name": "mouth",
+      "parent": "face_ear_neck",
+      "x": -135,
+      "y": -23
+    },
+    {
+      "name": "front_hair_near",
+      "parent": "rear_hair_base",
+      "x": -168,
+      "y": 2
+    },
+    {
+      "name": "front_bangs_outer",
+      "parent": "front_hair_near",
+      "x": -101,
+      "y": 43
+    },
+    {
+      "name": "front_bangs_inner",
+      "parent": "front_hair_near",
+      "x": -64,
+      "y": 42
+    },
+    {
+      "name": "eyebrow",
+      "parent": "face_ear_neck",
+      "x": -90,
+      "y": 142
+    },
+    {
+      "name": "headband",
+      "parent": "rear_hair_base",
+      "x": -108,
+      "y": 84
+    },
+    {
+      "name": "fin_ornament",
+      "parent": "headband",
+      "x": 15,
+      "y": -207
+    },
+    {
+      "name": "snowflake",
+      "parent": "headband",
+      "x": 18,
+      "y": -73
+    },
+    {
+      "name": "head_bow",
+      "parent": "headband",
+      "x": 19,
+      "y": -176
+    }
+  ],
+  "slots": [
+    {
+      "name": "tail_trunk",
+      "bone": "tail_trunk",
+      "attachment": "tail_trunk"
+    },
+    {
+      "name": "tail_fluke_upper",
+      "bone": "tail_fluke_upper",
+      "attachment": "tail_fluke_upper"
+    },
+    {
+      "name": "tail_fluke_lower",
+      "bone": "tail_fluke_lower",
+      "attachment": "tail_fluke_lower"
+    },
+    {
+      "name": "visible_boot",
+      "bone": "visible_boot",
+      "attachment": "visible_boot"
+    },
+    {
+      "name": "coat_fur_trim",
+      "bone": "coat_fur_trim",
+      "attachment": "coat_fur_trim"
+    },
+    {
+      "name": "coat_torso",
+      "bone": "coat_torso",
+      "attachment": "coat_torso"
+    },
+    {
+      "name": "face_ear_neck",
+      "bone": "face_ear_neck",
+      "attachment": "face_ear_neck"
+    },
+    {
+      "name": "rear_hair_base",
+      "bone": "rear_hair_base",
+      "attachment": "rear_hair_base"
+    },
+    {
+      "name": "rear_hair_outer_lock",
+      "bone": "rear_hair_outer_lock",
+      "attachment": "rear_hair_outer_lock"
+    },
+    {
+      "name": "rear_hair_inner_lock",
+      "bone": "rear_hair_inner_lock",
+      "attachment": "rear_hair_inner_lock"
+    },
+    {
+      "name": "ahoge",
+      "bone": "ahoge",
+      "attachment": "ahoge"
+    },
+    {
+      "name": "collar",
+      "bone": "collar",
+      "attachment": "collar"
+    },
+    {
+      "name": "visible_sleeve",
+      "bone": "visible_sleeve",
+      "attachment": "visible_sleeve"
+    },
+    {
+      "name": "visible_hand",
+      "bone": "visible_hand",
+      "attachment": "visible_hand"
+    },
+    {
+      "name": "visible_cuff",
+      "bone": "visible_cuff",
+      "attachment": "visible_cuff"
+    },
+    {
+      "name": "chest_bow",
+      "bone": "chest_bow",
+      "attachment": "chest_bow"
+    },
+    {
+      "name": "cord_pompom_back",
+      "bone": "cord_pompom_back",
+      "attachment": "cord_pompom_back"
+    },
+    {
+      "name": "cord_pompom_front",
+      "bone": "cord_pompom_front",
+      "attachment": "cord_pompom_front"
+    },
+    {
+      "name": "visible_eye",
+      "bone": "visible_eye",
+      "attachment": "visible_eye"
+    },
+    {
+      "name": "mouth",
+      "bone": "mouth",
+      "attachment": "mouth"
+    },
+    {
+      "name": "front_hair_near",
+      "bone": "front_hair_near",
+      "attachment": "front_hair_near"
+    },
+    {
+      "name": "front_bangs_outer",
+      "bone": "front_bangs_outer",
+      "attachment": "front_bangs_outer"
+    },
+    {
+      "name": "front_bangs_inner",
+      "bone": "front_bangs_inner",
+      "attachment": "front_bangs_inner"
+    },
+    {
+      "name": "eyebrow",
+      "bone": "eyebrow",
+      "attachment": "eyebrow"
+    },
+    {
+      "name": "headband",
+      "bone": "headband",
+      "attachment": "headband"
+    },
+    {
+      "name": "fin_ornament",
+      "bone": "fin_ornament",
+      "attachment": "fin_ornament"
+    },
+    {
+      "name": "snowflake",
+      "bone": "snowflake",
+      "attachment": "snowflake"
+    },
+    {
+      "name": "head_bow",
+      "bone": "head_bow",
+      "attachment": "head_bow"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "tail_trunk": {
+          "tail_trunk": {
+            "type": "region",
+            "path": "tail_trunk",
+            "x": 84.0,
+            "y": -31.5,
+            "width": 254,
+            "height": 155
+          }
+        },
+        "tail_fluke_upper": {
+          "tail_fluke_upper": {
+            "type": "region",
+            "path": "tail_fluke_upper",
+            "x": 13.0,
+            "y": 50.0,
+            "width": 74,
+            "height": 124
+          }
+        },
+        "tail_fluke_lower": {
+          "tail_fluke_lower": {
+            "type": "region",
+            "path": "tail_fluke_lower",
+            "x": 55.5,
+            "y": 10.5,
+            "width": 131,
+            "height": 75
+          }
+        },
+        "visible_boot": {
+          "visible_boot": {
+            "type": "region",
+            "path": "visible_boot",
+            "x": -3.5,
+            "y": -62.0,
+            "width": 133,
+            "height": 100
+          }
+        },
+        "coat_fur_trim": {
+          "coat_fur_trim": {
+            "type": "region",
+            "path": "coat_fur_trim",
+            "x": 17.5,
+            "y": -29.0,
+            "width": 391,
+            "height": 190
+          }
+        },
+        "coat_torso": {
+          "coat_torso": {
+            "type": "region",
+            "path": "coat_torso",
+            "x": 31.5,
+            "y": -83.0,
+            "width": 359,
+            "height": 326
+          }
+        },
+        "face_ear_neck": {
+          "face_ear_neck": {
+            "type": "region",
+            "path": "face_ear_neck",
+            "x": -33.0,
+            "y": 85.0,
+            "width": 248,
+            "height": 342
+          }
+        },
+        "rear_hair_base": {
+          "rear_hair_base": {
+            "type": "region",
+            "path": "rear_hair_base",
+            "x": 12.0,
+            "y": -112.5,
+            "width": 334,
+            "height": 515
+          }
+        },
+        "rear_hair_outer_lock": {
+          "rear_hair_outer_lock": {
+            "type": "region",
+            "path": "rear_hair_outer_lock",
+            "x": 26.0,
+            "y": -105.0,
+            "width": 100,
+            "height": 332
+          }
+        },
+        "rear_hair_inner_lock": {
+          "rear_hair_inner_lock": {
+            "type": "region",
+            "path": "rear_hair_inner_lock",
+            "x": 5.5,
+            "y": -149.5,
+            "width": 257,
+            "height": 339
+          }
+        },
+        "ahoge": {
+          "ahoge": {
+            "type": "region",
+            "path": "ahoge",
+            "x": -65.0,
+            "y": 21.0,
+            "width": 154,
+            "height": 90
+          }
+        },
+        "collar": {
+          "collar": {
+            "type": "region",
+            "path": "collar",
+            "x": -5.0,
+            "y": 3.0,
+            "width": 228,
+            "height": 118
+          }
+        },
+        "visible_sleeve": {
+          "visible_sleeve": {
+            "type": "region",
+            "path": "visible_sleeve",
+            "x": 9.5,
+            "y": -49.0,
+            "width": 127,
+            "height": 132
+          }
+        },
+        "visible_hand": {
+          "visible_hand": {
+            "type": "region",
+            "path": "visible_hand",
+            "x": -0.5,
+            "y": 15.5,
+            "width": 59,
+            "height": 61
+          }
+        },
+        "visible_cuff": {
+          "visible_cuff": {
+            "type": "region",
+            "path": "visible_cuff",
+            "x": 1.5,
+            "y": -7.0,
+            "width": 133,
+            "height": 66
+          }
+        },
+        "chest_bow": {
+          "chest_bow": {
+            "type": "region",
+            "path": "chest_bow",
+            "x": -5.0,
+            "y": 0.0,
+            "width": 52,
+            "height": 64
+          }
+        },
+        "cord_pompom_back": {
+          "cord_pompom_back": {
+            "type": "region",
+            "path": "cord_pompom_back",
+            "x": -30.0,
+            "y": -37.0,
+            "width": 72,
+            "height": 96
+          }
+        },
+        "cord_pompom_front": {
+          "cord_pompom_front": {
+            "type": "region",
+            "path": "cord_pompom_front",
+            "x": -9.5,
+            "y": -43.5,
+            "width": 65,
+            "height": 97
+          }
+        },
+        "visible_eye": {
+          "visible_eye": {
+            "type": "region",
+            "path": "visible_eye",
+            "x": 1.5,
+            "y": -5.0,
+            "width": 81,
+            "height": 96
+          }
+        },
+        "mouth": {
+          "mouth": {
+            "type": "region",
+            "path": "mouth",
+            "x": -0.5,
+            "y": -0.5,
+            "width": 25,
+            "height": 11
+          }
+        },
+        "front_hair_near": {
+          "front_hair_near": {
+            "type": "region",
+            "path": "front_hair_near",
+            "x": -2.0,
+            "y": -126.0,
+            "width": 142,
+            "height": 464
+          }
+        },
+        "front_bangs_outer": {
+          "front_bangs_outer": {
+            "type": "region",
+            "path": "front_bangs_outer",
+            "x": -38.0,
+            "y": -79.0,
+            "width": 164,
+            "height": 300
+          }
+        },
+        "front_bangs_inner": {
+          "front_bangs_inner": {
+            "type": "region",
+            "path": "front_bangs_inner",
+            "x": -4.0,
+            "y": -79.5,
+            "width": 84,
+            "height": 257
+          }
+        },
+        "eyebrow": {
+          "eyebrow": {
+            "type": "region",
+            "path": "eyebrow",
+            "x": 1.5,
+            "y": -4.0,
+            "width": 65,
+            "height": 24
+          }
+        },
+        "headband": {
+          "headband": {
+            "type": "region",
+            "path": "headband",
+            "x": -0.5,
+            "y": -65.5,
+            "width": 275,
+            "height": 327
+          }
+        },
+        "fin_ornament": {
+          "fin_ornament": {
+            "type": "region",
+            "path": "fin_ornament",
+            "x": 62.5,
+            "y": -34.0,
+            "width": 159,
+            "height": 84
+          }
+        },
+        "snowflake": {
+          "snowflake": {
+            "type": "region",
+            "path": "snowflake",
+            "x": 5.5,
+            "y": 0.5,
+            "width": 95,
+            "height": 97
+          }
+        },
+        "head_bow": {
+          "head_bow": {
+            "type": "region",
+            "path": "head_bow",
+            "x": -5.0,
+            "y": -11.5,
+            "width": 98,
+            "height": 85
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}

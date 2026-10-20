@@ -1,0 +1,792 @@
+{
+  "view": "front",
+  "canvas_size": [
+    756,
+    1008
+  ],
+  "coordinate_convention": "top-left, x right, y down",
+  "source_crop_xyxy": [
+    106,
+    123,
+    862,
+    1131
+  ],
+  "parts": [
+    {
+      "name": "tail_trunk",
+      "draw_order": 0,
+      "parent": "root",
+      "pivot_xy": [
+        469,
+        851
+      ],
+      "original_bbox_xywh": [
+        465,
+        849,
+        161,
+        72
+      ],
+      "note": "Clean v2 attachment. Complete restored tail; use a short mesh bone chain.",
+      "bbox_xywh": [
+        445,
+        752,
+        290,
+        175
+      ],
+      "method": "Complete restored tail; use a short mesh bone chain."
+    },
+    {
+      "name": "rear_hair_base",
+      "draw_order": 1,
+      "parent": "root",
+      "pivot_xy": [
+        351,
+        281
+      ],
+      "original_bbox_xywh": [
+        83,
+        133,
+        564,
+        536
+      ],
+      "note": "Clean v2 attachment. Complete rear-hair restoration, separated into broad mesh locks; no old fragments.",
+      "bbox_xywh": [
+        72,
+        112,
+        614,
+        484
+      ],
+      "method": "Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+    },
+    {
+      "name": "rear_hair_screen_left_outer",
+      "draw_order": 2,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        130,
+        409
+      ],
+      "original_bbox_xywh": [
+        44,
+        453,
+        106,
+        307
+      ],
+      "note": "Clean v2 attachment. Complete rear-hair restoration, separated into broad mesh locks; no old fragments.",
+      "bbox_xywh": [
+        44,
+        362,
+        349,
+        415
+      ],
+      "method": "Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+    },
+    {
+      "name": "rear_hair_screen_right_outer",
+      "draw_order": 3,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        543,
+        437
+      ],
+      "original_bbox_xywh": [
+        609,
+        454,
+        109,
+        287
+      ],
+      "note": "Clean v2 attachment. Complete rear-hair restoration, separated into broad mesh locks; no old fragments.",
+      "bbox_xywh": [
+        346,
+        359,
+        367,
+        418
+      ],
+      "method": "Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+    },
+    {
+      "name": "boot_screen_left",
+      "draw_order": 4,
+      "parent": "root",
+      "pivot_xy": [
+        306,
+        887
+      ],
+      "original_bbox_xywh": [
+        242,
+        874,
+        112,
+        96
+      ],
+      "note": "Clean v2 attachment. Original boot contour cleaned.",
+      "bbox_xywh": [
+        241,
+        865,
+        114,
+        95
+      ],
+      "method": "Original boot contour cleaned."
+    },
+    {
+      "name": "boot_screen_right",
+      "draw_order": 5,
+      "parent": "root",
+      "pivot_xy": [
+        424,
+        888
+      ],
+      "original_bbox_xywh": [
+        366,
+        875,
+        119,
+        95
+      ],
+      "note": "Clean v2 attachment. Original boot contour cleaned.",
+      "bbox_xywh": [
+        364,
+        867,
+        118,
+        93
+      ],
+      "method": "Original boot contour cleaned."
+    },
+    {
+      "name": "coat_torso",
+      "draw_order": 6,
+      "parent": "root",
+      "pivot_xy": [
+        351,
+        585
+      ],
+      "original_bbox_xywh": [
+        181,
+        546,
+        374,
+        331
+      ],
+      "note": "Clean v2 attachment. Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation.",
+      "bbox_xywh": [
+        122,
+        534,
+        466,
+        345
+      ],
+      "method": "Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation."
+    },
+    {
+      "name": "collar",
+      "draw_order": 7,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        352,
+        549
+      ],
+      "original_bbox_xywh": [
+        197,
+        495,
+        314,
+        101
+      ],
+      "note": "Clean v2 attachment. Complete fur collar restoration; no cut-out bow hole.",
+      "bbox_xywh": [
+        193,
+        491,
+        324,
+        103
+      ],
+      "method": "Complete fur collar restoration; no cut-out bow hole."
+    },
+    {
+      "name": "hand_screen_left",
+      "draw_order": 8,
+      "parent": "sleeve_screen_left",
+      "pivot_xy": [
+        137,
+        725
+      ],
+      "original_bbox_xywh": [
+        126,
+        725,
+        26,
+        19
+      ],
+      "note": "Clean v2 attachment. Complete simple chibi hand restoration.",
+      "bbox_xywh": [
+        121,
+        699,
+        40,
+        48
+      ],
+      "method": "Complete simple chibi hand restoration."
+    },
+    {
+      "name": "hand_screen_right",
+      "draw_order": 9,
+      "parent": "sleeve_screen_right",
+      "pivot_xy": [
+        570,
+        725
+      ],
+      "original_bbox_xywh": [
+        568,
+        725,
+        19,
+        15
+      ],
+      "note": "Clean v2 attachment. Complete simple chibi hand restoration.",
+      "bbox_xywh": [
+        560,
+        700,
+        40,
+        48
+      ],
+      "method": "Complete simple chibi hand restoration."
+    },
+    {
+      "name": "sleeve_screen_left",
+      "draw_order": 10,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        207,
+        599
+      ],
+      "original_bbox_xywh": [
+        147,
+        586,
+        87,
+        103
+      ],
+      "note": "Clean v2 attachment. Complete sleeve and cuff restoration; no original clothing fragments.",
+      "bbox_xywh": [
+        103,
+        570,
+        143,
+        175
+      ],
+      "method": "Complete sleeve and cuff restoration; no original clothing fragments."
+    },
+    {
+      "name": "sleeve_screen_right",
+      "draw_order": 11,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        491,
+        602
+      ],
+      "original_bbox_xywh": [
+        469,
+        593,
+        105,
+        114
+      ],
+      "note": "Clean v2 attachment. Mirrored complete sleeve and cuff restoration.",
+      "bbox_xywh": [
+        473,
+        572,
+        143,
+        175
+      ],
+      "method": "Mirrored complete sleeve and cuff restoration."
+    },
+    {
+      "name": "cord_screen_left",
+      "draw_order": 12,
+      "parent": "chest_bow",
+      "pivot_xy": [
+        335,
+        570
+      ],
+      "original_bbox_xywh": [
+        292,
+        577,
+        46,
+        46
+      ],
+      "note": "Clean v2 attachment. Original ornament, alpha and white-matte edge cleanup.",
+      "bbox_xywh": [
+        290,
+        575,
+        50,
+        50
+      ],
+      "method": "Original ornament, alpha and white-matte edge cleanup."
+    },
+    {
+      "name": "cord_screen_right",
+      "draw_order": 13,
+      "parent": "chest_bow",
+      "pivot_xy": [
+        368,
+        571
+      ],
+      "original_bbox_xywh": [
+        365,
+        575,
+        42,
+        49
+      ],
+      "note": "Clean v2 attachment. Original ornament, alpha and white-matte edge cleanup.",
+      "bbox_xywh": [
+        363,
+        573,
+        46,
+        53
+      ],
+      "method": "Original ornament, alpha and white-matte edge cleanup."
+    },
+    {
+      "name": "pompom_screen_left",
+      "draw_order": 14,
+      "parent": "cord_screen_left",
+      "pivot_xy": [
+        293,
+        625
+      ],
+      "original_bbox_xywh": [
+        266,
+        618,
+        54,
+        51
+      ],
+      "note": "Clean v2 attachment. Original ornament, alpha and white-matte edge cleanup.",
+      "bbox_xywh": [
+        264,
+        616,
+        58,
+        55
+      ],
+      "method": "Original ornament, alpha and white-matte edge cleanup."
+    },
+    {
+      "name": "pompom_screen_right",
+      "draw_order": 15,
+      "parent": "cord_screen_right",
+      "pivot_xy": [
+        403,
+        625
+      ],
+      "original_bbox_xywh": [
+        378,
+        618,
+        56,
+        51
+      ],
+      "note": "Clean v2 attachment. Original ornament, alpha and white-matte edge cleanup.",
+      "bbox_xywh": [
+        376,
+        616,
+        60,
+        55
+      ],
+      "method": "Original ornament, alpha and white-matte edge cleanup."
+    },
+    {
+      "name": "chest_bow",
+      "draw_order": 16,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        354,
+        558
+      ],
+      "original_bbox_xywh": [
+        287,
+        524,
+        135,
+        66
+      ],
+      "note": "Clean v2 attachment. Original bow re-extracted from the reference; star remains separate.",
+      "bbox_xywh": [
+        285,
+        522,
+        135,
+        70
+      ],
+      "method": "Original bow re-extracted from the reference; star remains separate."
+    },
+    {
+      "name": "chest_star",
+      "draw_order": 17,
+      "parent": "chest_bow",
+      "pivot_xy": [
+        353,
+        558
+      ],
+      "original_bbox_xywh": [
+        324,
+        529,
+        57,
+        58
+      ],
+      "note": "Clean v2 attachment. Original ornament, alpha and white-matte edge cleanup.",
+      "bbox_xywh": [
+        322,
+        527,
+        61,
+        62
+      ],
+      "method": "Original ornament, alpha and white-matte edge cleanup."
+    },
+    {
+      "name": "front_hair_cap",
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        351,
+        230
+      ],
+      "note": "Clean v2 attachment. Original painted scalp under the front locks, slightly enlarged inside the headband overlap.",
+      "draw_order": 18,
+      "bbox_xywh": [
+        91,
+        129,
+        487,
+        261
+      ],
+      "method": "Original painted scalp under the front locks, slightly enlarged inside the headband overlap."
+    },
+    {
+      "name": "face_base",
+      "draw_order": 19,
+      "parent": "root",
+      "pivot_xy": [
+        352,
+        467
+      ],
+      "original_bbox_xywh": [
+        218,
+        308,
+        271,
+        216
+      ],
+      "note": "Clean v2 attachment. Complete clean blank face restoration; no old skin fragments or hair shards.",
+      "bbox_xywh": [
+        195,
+        206,
+        322,
+        324
+      ],
+      "method": "Complete clean blank face restoration; no old skin fragments or hair shards."
+    },
+    {
+      "name": "eye_screen_left",
+      "draw_order": 20,
+      "parent": "face_base",
+      "pivot_xy": [
+        277,
+        427
+      ],
+      "original_bbox_xywh": [
+        210,
+        382,
+        108,
+        92
+      ],
+      "note": "Clean v2 attachment. Original iris and lashes, manually bounded silhouette, no colour extrusion.",
+      "bbox_xywh": [
+        209,
+        390,
+        103,
+        85
+      ],
+      "method": "Original iris and lashes, manually bounded silhouette, no colour extrusion."
+    },
+    {
+      "name": "eye_screen_right",
+      "draw_order": 21,
+      "parent": "face_base",
+      "pivot_xy": [
+        441,
+        428
+      ],
+      "original_bbox_xywh": [
+        385,
+        388,
+        114,
+        83
+      ],
+      "note": "Clean v2 attachment. Original iris and lashes, manually bounded silhouette, no colour extrusion.",
+      "bbox_xywh": [
+        390,
+        393,
+        107,
+        79
+      ],
+      "method": "Original iris and lashes, manually bounded silhouette, no colour extrusion."
+    },
+    {
+      "name": "mouth",
+      "draw_order": 22,
+      "parent": "face_base",
+      "pivot_xy": [
+        351,
+        494
+      ],
+      "original_bbox_xywh": [
+        341,
+        490,
+        21,
+        8
+      ],
+      "note": "Clean v2 attachment. Clean short chibi mouth stroke.",
+      "bbox_xywh": [
+        342,
+        490,
+        16,
+        9
+      ],
+      "method": "Clean short chibi mouth stroke."
+    },
+    {
+      "name": "fin_screen_left",
+      "draw_order": 23,
+      "parent": "headband",
+      "pivot_xy": [
+        108,
+        402
+      ],
+      "original_bbox_xywh": [
+        33,
+        347,
+        98,
+        113
+      ],
+      "note": "Clean v2 attachment. Original fin ornament with cleaned boundary.",
+      "bbox_xywh": [
+        31,
+        345,
+        102,
+        117
+      ],
+      "method": "Original fin ornament with cleaned boundary."
+    },
+    {
+      "name": "fin_screen_right",
+      "draw_order": 24,
+      "parent": "headband",
+      "pivot_xy": [
+        549,
+        397
+      ],
+      "original_bbox_xywh": [
+        574,
+        362,
+        138,
+        98
+      ],
+      "note": "Clean v2 attachment. Original fin ornament with cleaned boundary.",
+      "bbox_xywh": [
+        572,
+        360,
+        142,
+        102
+      ],
+      "method": "Original fin ornament with cleaned boundary."
+    },
+    {
+      "name": "side_hair_screen_left",
+      "draw_order": 25,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        193,
+        300
+      ],
+      "original_bbox_xywh": [
+        119,
+        175,
+        141,
+        434
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        117,
+        173,
+        145,
+        427
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "side_hair_screen_right",
+      "draw_order": 26,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        501,
+        305
+      ],
+      "original_bbox_xywh": [
+        443,
+        179,
+        142,
+        377
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        430,
+        177,
+        156,
+        381
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "fringe_screen_left",
+      "draw_order": 27,
+      "parent": "side_hair_screen_left",
+      "pivot_xy": [
+        296,
+        202
+      ],
+      "original_bbox_xywh": [
+        204,
+        154,
+        132,
+        258
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        202,
+        151,
+        144,
+        262
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "fringe_center",
+      "draw_order": 28,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        343,
+        213
+      ],
+      "original_bbox_xywh": [
+        269,
+        160,
+        151,
+        281
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        267,
+        158,
+        151,
+        282
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "fringe_screen_right",
+      "draw_order": 29,
+      "parent": "side_hair_screen_right",
+      "pivot_xy": [
+        426,
+        206
+      ],
+      "original_bbox_xywh": [
+        371,
+        156,
+        129,
+        253
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        369,
+        153,
+        132,
+        259
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "ahoge",
+      "draw_order": 30,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        358,
+        89
+      ],
+      "original_bbox_xywh": [
+        204,
+        27,
+        158,
+        82
+      ],
+      "note": "Clean v2 attachment. Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded.",
+      "bbox_xywh": [
+        203,
+        26,
+        168,
+        103
+      ],
+      "method": "Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+    },
+    {
+      "name": "headband",
+      "draw_order": 31,
+      "parent": "rear_hair_base",
+      "pivot_xy": [
+        343,
+        119
+      ],
+      "original_bbox_xywh": [
+        99,
+        58,
+        544,
+        315
+      ],
+      "note": "Clean v2 attachment. Original ornament with isolated contour and edge decontamination.",
+      "bbox_xywh": [
+        97,
+        56,
+        548,
+        319
+      ],
+      "method": "Original ornament with isolated contour and edge decontamination."
+    },
+    {
+      "name": "snowflake",
+      "draw_order": 32,
+      "parent": "headband",
+      "pivot_xy": [
+        566,
+        226
+      ],
+      "original_bbox_xywh": [
+        525,
+        177,
+        79,
+        94
+      ],
+      "note": "Clean v2 attachment. Original ornament with isolated contour and edge decontamination.",
+      "bbox_xywh": [
+        523,
+        183,
+        77,
+        88
+      ],
+      "method": "Original ornament with isolated contour and edge decontamination."
+    },
+    {
+      "name": "head_bow_screen_right",
+      "draw_order": 33,
+      "parent": "headband",
+      "pivot_xy": [
+        595,
+        336
+      ],
+      "original_bbox_xywh": [
+        551,
+        310,
+        77,
+        69
+      ],
+      "note": "Clean v2 attachment. Original ornament with isolated contour and edge decontamination.",
+      "bbox_xywh": [
+        550,
+        309,
+        78,
+        71
+      ],
+      "method": "Original ornament with isolated contour and edge decontamination."
+    }
+  ]
+}

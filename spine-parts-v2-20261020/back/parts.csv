@@ -1,0 +1,22 @@
+﻿name,draw_order,parent,left,top,width,height,pivot_x,pivot_y,method
+boot_left,0,coat_back,214,821,119,130,277,871,Complete clean boot redraw replacing the occluded source; one boot per attachment.
+boot_right,1,coat_back,356,821,119,130,405,873,Complete clean boot redraw replacing the occluded source; one boot per attachment.
+tail_trunk,2,root,292,816,192,139,352,829,Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded.
+tail_fluke_down,3,tail_trunk,424,926,84,103,471,922,Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded.
+tail_fluke_right,4,tail_trunk,454,899,148,65,471,920,Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded.
+coat_back,5,root,105,488,487,319,344,660,"Complete clean coat redraw, split along its fur seam; no original garment scraps."
+coat_hem,6,coat_back,73,719,546,147,344,801,"Complete clean coat redraw, split along its fur seam; no original garment scraps."
+side_fin_left,7,headband,4,323,110,95,119,327,Original painted side fin with smooth concealed root cut and restored attachment width.
+side_fin_right,8,headband,547,330,110,86,560,328,"Original painted side fin, mirrored to its matching partner; smooth concealed root cut."
+hair_cap,9,root,58,93,550,479,343,246,"Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion."
+hair_left,10,hair_cap,21,272,240,514,181,325,"Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion. Upper loop is merged into this side lock to preserve clean shared crossing lines."
+hair_right,11,hair_cap,363,279,295,507,518,325,"Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion. Upper loop is merged into this side lock to preserve clean shared crossing lines."
+hair_center,12,hair_cap,192,426,274,359,329,464,"Complete clean rear-hair redraw from back-restoration.png; curved strand mask, no original fragments or colour extrusion."
+headband,13,hair_cap,89,39,498,250,342,98,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+whale_hair_accessory,14,hair_cap,258,103,175,170,343,124,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+cord_left,15,headband,107,322,19,108,119,325,Continuous shaded cord redraw replacing the source white-background notch.
+cord_right,16,headband,545,321,23,113,555,324,Continuous shaded cord redraw replacing the source white-background notch.
+bow_left,17,headband,81,271,79,84,118,305,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+bow_right,18,headband,521,271,72,73,559,305,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+pompom_left,19,cord_left,78,407,79,88,119,417,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
+pompom_right,20,cord_right,521,407,76,89,558,417,"Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."

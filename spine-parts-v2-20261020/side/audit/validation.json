@@ -1,0 +1,230 @@
+{
+  "part_count": 28,
+  "all_checks_passed": true,
+  "parts": [
+    {
+      "name": "tail_trunk",
+      "size": [
+        254,
+        155
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "tail_fluke_upper",
+      "size": [
+        74,
+        124
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "tail_fluke_lower",
+      "size": [
+        131,
+        75
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "visible_boot",
+      "size": [
+        133,
+        100
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "coat_fur_trim",
+      "size": [
+        391,
+        190
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "coat_torso",
+      "size": [
+        359,
+        326
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "face_ear_neck",
+      "size": [
+        248,
+        342
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "rear_hair_base",
+      "size": [
+        334,
+        515
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "rear_hair_outer_lock",
+      "size": [
+        100,
+        332
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "rear_hair_inner_lock",
+      "size": [
+        257,
+        339
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "ahoge",
+      "size": [
+        154,
+        90
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "collar",
+      "size": [
+        228,
+        118
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "visible_sleeve",
+      "size": [
+        127,
+        132
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "visible_hand",
+      "size": [
+        59,
+        61
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "visible_cuff",
+      "size": [
+        133,
+        66
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "chest_bow",
+      "size": [
+        52,
+        64
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "cord_pompom_back",
+      "size": [
+        72,
+        96
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "cord_pompom_front",
+      "size": [
+        65,
+        97
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "visible_eye",
+      "size": [
+        81,
+        96
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "mouth",
+      "size": [
+        25,
+        11
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "front_hair_near",
+      "size": [
+        142,
+        464
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "front_bangs_outer",
+      "size": [
+        164,
+        300
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "front_bangs_inner",
+      "size": [
+        84,
+        257
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "eyebrow",
+      "size": [
+        65,
+        24
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "headband",
+      "size": [
+        275,
+        327
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "fin_ornament",
+      "size": [
+        159,
+        84
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "snowflake",
+      "size": [
+        95,
+        97
+      ],
+      "transparent_margin_px": 2
+    },
+    {
+      "name": "head_bow",
+      "size": [
+        98,
+        85
+      ],
+      "transparent_margin_px": 2
+    }
+  ]
+}

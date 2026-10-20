@@ -1,0 +1,23 @@
+[
+  {
+    "view": "front",
+    "parts": 34,
+    "psd_layers": 34,
+    "png_alpha_padding": "2 pixels each side",
+    "pixel_roundtrip": "passed"
+  },
+  {
+    "view": "side",
+    "parts": 28,
+    "psd_layers": 28,
+    "png_alpha_padding": "2 pixels each side",
+    "pixel_roundtrip": "passed"
+  },
+  {
+    "view": "back",
+    "parts": 21,
+    "psd_layers": 21,
+    "png_alpha_padding": "2 pixels each side",
+    "pixel_roundtrip": "passed"
+  }
+]

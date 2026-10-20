@@ -1,0 +1,398 @@
+{
+  "parts": [
+    {
+      "name": "tail_trunk",
+      "size": [
+        254,
+        155
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "tail_fluke_upper",
+      "size": [
+        74,
+        124
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "tail_fluke_lower",
+      "size": [
+        131,
+        75
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "visible_boot",
+      "size": [
+        133,
+        100
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "coat_fur_trim",
+      "size": [
+        391,
+        190
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "coat_torso",
+      "size": [
+        359,
+        326
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "face_ear_neck",
+      "size": [
+        248,
+        342
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_base",
+      "size": [
+        334,
+        515
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_outer_lock",
+      "size": [
+        100,
+        332
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "rear_hair_inner_lock",
+      "size": [
+        257,
+        339
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "ahoge",
+      "size": [
+        154,
+        90
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "collar",
+      "size": [
+        228,
+        118
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "visible_sleeve",
+      "size": [
+        127,
+        132
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "visible_hand",
+      "size": [
+        59,
+        61
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "visible_cuff",
+      "size": [
+        133,
+        66
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "chest_bow",
+      "size": [
+        52,
+        64
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_pompom_back",
+      "size": [
+        72,
+        96
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "cord_pompom_front",
+      "size": [
+        65,
+        97
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "visible_eye",
+      "size": [
+        81,
+        96
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "mouth",
+      "size": [
+        25,
+        11
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "front_hair_near",
+      "size": [
+        142,
+        464
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "front_bangs_outer",
+      "size": [
+        164,
+        300
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "front_bangs_inner",
+      "size": [
+        84,
+        257
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "eyebrow",
+      "size": [
+        65,
+        24
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "headband",
+      "size": [
+        275,
+        327
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "fin_ornament",
+      "size": [
+        159,
+        84
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "snowflake",
+      "size": [
+        95,
+        97
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    },
+    {
+      "name": "head_bow",
+      "size": [
+        98,
+        85
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "alpha_components_over_8_pixels": 1
+    }
+  ],
+  "psd_pixel_roundtrip": "passed",
+  "setup_json": "references and dimensions checked; not opened in Spine"
+}

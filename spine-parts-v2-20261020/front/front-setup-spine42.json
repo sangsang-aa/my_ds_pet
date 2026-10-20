@@ -1,0 +1,752 @@
+{
+  "skeleton": {
+    "spine": "4.2.00",
+    "x": -378.0,
+    "y": -30,
+    "width": 756,
+    "height": 1008,
+    "images": "./parts/",
+    "audio": ""
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "x": 0,
+      "y": 282.48
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "x": 0,
+      "y": 151.2
+    },
+    {
+      "name": "tail_trunk",
+      "parent": "body",
+      "x": 91.0,
+      "y": -155.48
+    },
+    {
+      "name": "rear_hair_base",
+      "parent": "head",
+      "x": -27.0,
+      "y": 263.32
+    },
+    {
+      "name": "rear_hair_screen_left_outer",
+      "parent": "rear_hair_base",
+      "x": -221,
+      "y": -128
+    },
+    {
+      "name": "rear_hair_screen_right_outer",
+      "parent": "rear_hair_base",
+      "x": 192,
+      "y": -156
+    },
+    {
+      "name": "boot_screen_left",
+      "parent": "body",
+      "x": -72.0,
+      "y": -191.48
+    },
+    {
+      "name": "boot_screen_right",
+      "parent": "body",
+      "x": 46.0,
+      "y": -192.48
+    },
+    {
+      "name": "coat_torso",
+      "parent": "body",
+      "x": -27.0,
+      "y": 110.52
+    },
+    {
+      "name": "collar",
+      "parent": "coat_torso",
+      "x": 1,
+      "y": 36
+    },
+    {
+      "name": "sleeve_screen_left",
+      "parent": "coat_torso",
+      "x": -144,
+      "y": -14
+    },
+    {
+      "name": "hand_screen_left",
+      "parent": "sleeve_screen_left",
+      "x": -70,
+      "y": -126
+    },
+    {
+      "name": "sleeve_screen_right",
+      "parent": "coat_torso",
+      "x": 140,
+      "y": -17
+    },
+    {
+      "name": "hand_screen_right",
+      "parent": "sleeve_screen_right",
+      "x": 79,
+      "y": -123
+    },
+    {
+      "name": "chest_bow",
+      "parent": "coat_torso",
+      "x": 3,
+      "y": 27
+    },
+    {
+      "name": "cord_screen_left",
+      "parent": "chest_bow",
+      "x": -19,
+      "y": -12
+    },
+    {
+      "name": "cord_screen_right",
+      "parent": "chest_bow",
+      "x": 14,
+      "y": -13
+    },
+    {
+      "name": "pompom_screen_left",
+      "parent": "cord_screen_left",
+      "x": -42,
+      "y": -55
+    },
+    {
+      "name": "pompom_screen_right",
+      "parent": "cord_screen_right",
+      "x": 35,
+      "y": -54
+    },
+    {
+      "name": "chest_star",
+      "parent": "chest_bow",
+      "x": -1,
+      "y": 0
+    },
+    {
+      "name": "front_hair_cap",
+      "parent": "rear_hair_base",
+      "x": 0,
+      "y": 51
+    },
+    {
+      "name": "face_base",
+      "parent": "head",
+      "x": -26.0,
+      "y": 77.32
+    },
+    {
+      "name": "eye_screen_left",
+      "parent": "face_base",
+      "x": -75,
+      "y": 40
+    },
+    {
+      "name": "eye_screen_right",
+      "parent": "face_base",
+      "x": 89,
+      "y": 39
+    },
+    {
+      "name": "mouth",
+      "parent": "face_base",
+      "x": -1,
+      "y": -27
+    },
+    {
+      "name": "headband",
+      "parent": "rear_hair_base",
+      "x": -8,
+      "y": 162
+    },
+    {
+      "name": "fin_screen_left",
+      "parent": "headband",
+      "x": -235,
+      "y": -283
+    },
+    {
+      "name": "fin_screen_right",
+      "parent": "headband",
+      "x": 206,
+      "y": -278
+    },
+    {
+      "name": "side_hair_screen_left",
+      "parent": "rear_hair_base",
+      "x": -158,
+      "y": -19
+    },
+    {
+      "name": "side_hair_screen_right",
+      "parent": "rear_hair_base",
+      "x": 150,
+      "y": -24
+    },
+    {
+      "name": "fringe_screen_left",
+      "parent": "side_hair_screen_left",
+      "x": 103,
+      "y": 98
+    },
+    {
+      "name": "fringe_center",
+      "parent": "rear_hair_base",
+      "x": -8,
+      "y": 68
+    },
+    {
+      "name": "fringe_screen_right",
+      "parent": "side_hair_screen_right",
+      "x": -75,
+      "y": 99
+    },
+    {
+      "name": "ahoge",
+      "parent": "rear_hair_base",
+      "x": 7,
+      "y": 192
+    },
+    {
+      "name": "snowflake",
+      "parent": "headband",
+      "x": 223,
+      "y": -107
+    },
+    {
+      "name": "head_bow_screen_right",
+      "parent": "headband",
+      "x": 252,
+      "y": -217
+    }
+  ],
+  "slots": [
+    {
+      "name": "tail_trunk",
+      "bone": "tail_trunk",
+      "attachment": "tail_trunk"
+    },
+    {
+      "name": "rear_hair_base",
+      "bone": "rear_hair_base",
+      "attachment": "rear_hair_base"
+    },
+    {
+      "name": "rear_hair_screen_left_outer",
+      "bone": "rear_hair_screen_left_outer",
+      "attachment": "rear_hair_screen_left_outer"
+    },
+    {
+      "name": "rear_hair_screen_right_outer",
+      "bone": "rear_hair_screen_right_outer",
+      "attachment": "rear_hair_screen_right_outer"
+    },
+    {
+      "name": "boot_screen_left",
+      "bone": "boot_screen_left",
+      "attachment": "boot_screen_left"
+    },
+    {
+      "name": "boot_screen_right",
+      "bone": "boot_screen_right",
+      "attachment": "boot_screen_right"
+    },
+    {
+      "name": "coat_torso",
+      "bone": "coat_torso",
+      "attachment": "coat_torso"
+    },
+    {
+      "name": "collar",
+      "bone": "collar",
+      "attachment": "collar"
+    },
+    {
+      "name": "hand_screen_left",
+      "bone": "hand_screen_left",
+      "attachment": "hand_screen_left"
+    },
+    {
+      "name": "hand_screen_right",
+      "bone": "hand_screen_right",
+      "attachment": "hand_screen_right"
+    },
+    {
+      "name": "sleeve_screen_left",
+      "bone": "sleeve_screen_left",
+      "attachment": "sleeve_screen_left"
+    },
+    {
+      "name": "sleeve_screen_right",
+      "bone": "sleeve_screen_right",
+      "attachment": "sleeve_screen_right"
+    },
+    {
+      "name": "cord_screen_left",
+      "bone": "cord_screen_left",
+      "attachment": "cord_screen_left"
+    },
+    {
+      "name": "cord_screen_right",
+      "bone": "cord_screen_right",
+      "attachment": "cord_screen_right"
+    },
+    {
+      "name": "pompom_screen_left",
+      "bone": "pompom_screen_left",
+      "attachment": "pompom_screen_left"
+    },
+    {
+      "name": "pompom_screen_right",
+      "bone": "pompom_screen_right",
+      "attachment": "pompom_screen_right"
+    },
+    {
+      "name": "chest_bow",
+      "bone": "chest_bow",
+      "attachment": "chest_bow"
+    },
+    {
+      "name": "chest_star",
+      "bone": "chest_star",
+      "attachment": "chest_star"
+    },
+    {
+      "name": "front_hair_cap",
+      "bone": "front_hair_cap",
+      "attachment": "front_hair_cap"
+    },
+    {
+      "name": "face_base",
+      "bone": "face_base",
+      "attachment": "face_base"
+    },
+    {
+      "name": "eye_screen_left",
+      "bone": "eye_screen_left",
+      "attachment": "eye_screen_left"
+    },
+    {
+      "name": "eye_screen_right",
+      "bone": "eye_screen_right",
+      "attachment": "eye_screen_right"
+    },
+    {
+      "name": "mouth",
+      "bone": "mouth",
+      "attachment": "mouth"
+    },
+    {
+      "name": "fin_screen_left",
+      "bone": "fin_screen_left",
+      "attachment": "fin_screen_left"
+    },
+    {
+      "name": "fin_screen_right",
+      "bone": "fin_screen_right",
+      "attachment": "fin_screen_right"
+    },
+    {
+      "name": "side_hair_screen_left",
+      "bone": "side_hair_screen_left",
+      "attachment": "side_hair_screen_left"
+    },
+    {
+      "name": "side_hair_screen_right",
+      "bone": "side_hair_screen_right",
+      "attachment": "side_hair_screen_right"
+    },
+    {
+      "name": "fringe_screen_left",
+      "bone": "fringe_screen_left",
+      "attachment": "fringe_screen_left"
+    },
+    {
+      "name": "fringe_center",
+      "bone": "fringe_center",
+      "attachment": "fringe_center"
+    },
+    {
+      "name": "fringe_screen_right",
+      "bone": "fringe_screen_right",
+      "attachment": "fringe_screen_right"
+    },
+    {
+      "name": "ahoge",
+      "bone": "ahoge",
+      "attachment": "ahoge"
+    },
+    {
+      "name": "headband",
+      "bone": "headband",
+      "attachment": "headband"
+    },
+    {
+      "name": "snowflake",
+      "bone": "snowflake",
+      "attachment": "snowflake"
+    },
+    {
+      "name": "head_bow_screen_right",
+      "bone": "head_bow_screen_right",
+      "attachment": "head_bow_screen_right"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "tail_trunk": {
+          "tail_trunk": {
+            "type": "region",
+            "path": "tail_trunk",
+            "x": 121.0,
+            "y": 11.5,
+            "width": 290,
+            "height": 175
+          }
+        },
+        "rear_hair_base": {
+          "rear_hair_base": {
+            "type": "region",
+            "path": "rear_hair_base",
+            "x": 28.0,
+            "y": -73.0,
+            "width": 614,
+            "height": 484
+          }
+        },
+        "rear_hair_screen_left_outer": {
+          "rear_hair_screen_left_outer": {
+            "type": "region",
+            "path": "rear_hair_screen_left_outer",
+            "x": 88.5,
+            "y": -160.5,
+            "width": 349,
+            "height": 415
+          }
+        },
+        "rear_hair_screen_right_outer": {
+          "rear_hair_screen_right_outer": {
+            "type": "region",
+            "path": "rear_hair_screen_right_outer",
+            "x": -13.5,
+            "y": -131.0,
+            "width": 367,
+            "height": 418
+          }
+        },
+        "boot_screen_left": {
+          "boot_screen_left": {
+            "type": "region",
+            "path": "boot_screen_left",
+            "x": -8.0,
+            "y": -25.5,
+            "width": 114,
+            "height": 95
+          }
+        },
+        "boot_screen_right": {
+          "boot_screen_right": {
+            "type": "region",
+            "path": "boot_screen_right",
+            "x": -1.0,
+            "y": -25.5,
+            "width": 118,
+            "height": 93
+          }
+        },
+        "coat_torso": {
+          "coat_torso": {
+            "type": "region",
+            "path": "coat_torso",
+            "x": 4.0,
+            "y": -121.5,
+            "width": 466,
+            "height": 345
+          }
+        },
+        "collar": {
+          "collar": {
+            "type": "region",
+            "path": "collar",
+            "x": 3.0,
+            "y": 6.5,
+            "width": 324,
+            "height": 103
+          }
+        },
+        "hand_screen_left": {
+          "hand_screen_left": {
+            "type": "region",
+            "path": "hand_screen_left",
+            "x": 4.0,
+            "y": 2.0,
+            "width": 40,
+            "height": 48
+          }
+        },
+        "hand_screen_right": {
+          "hand_screen_right": {
+            "type": "region",
+            "path": "hand_screen_right",
+            "x": 10.0,
+            "y": 1.0,
+            "width": 40,
+            "height": 48
+          }
+        },
+        "sleeve_screen_left": {
+          "sleeve_screen_left": {
+            "type": "region",
+            "path": "sleeve_screen_left",
+            "x": -32.5,
+            "y": -58.5,
+            "width": 143,
+            "height": 175
+          }
+        },
+        "sleeve_screen_right": {
+          "sleeve_screen_right": {
+            "type": "region",
+            "path": "sleeve_screen_right",
+            "x": 53.5,
+            "y": -57.5,
+            "width": 143,
+            "height": 175
+          }
+        },
+        "cord_screen_left": {
+          "cord_screen_left": {
+            "type": "region",
+            "path": "cord_screen_left",
+            "x": -20.0,
+            "y": -30.0,
+            "width": 50,
+            "height": 50
+          }
+        },
+        "cord_screen_right": {
+          "cord_screen_right": {
+            "type": "region",
+            "path": "cord_screen_right",
+            "x": 18.0,
+            "y": -28.5,
+            "width": 46,
+            "height": 53
+          }
+        },
+        "pompom_screen_left": {
+          "pompom_screen_left": {
+            "type": "region",
+            "path": "pompom_screen_left",
+            "x": 0.0,
+            "y": -18.5,
+            "width": 58,
+            "height": 55
+          }
+        },
+        "pompom_screen_right": {
+          "pompom_screen_right": {
+            "type": "region",
+            "path": "pompom_screen_right",
+            "x": 3.0,
+            "y": -18.5,
+            "width": 60,
+            "height": 55
+          }
+        },
+        "chest_bow": {
+          "chest_bow": {
+            "type": "region",
+            "path": "chest_bow",
+            "x": -1.5,
+            "y": 1.0,
+            "width": 135,
+            "height": 70
+          }
+        },
+        "chest_star": {
+          "chest_star": {
+            "type": "region",
+            "path": "chest_star",
+            "x": -0.5,
+            "y": 0.0,
+            "width": 61,
+            "height": 62
+          }
+        },
+        "front_hair_cap": {
+          "front_hair_cap": {
+            "type": "region",
+            "path": "front_hair_cap",
+            "x": -16.5,
+            "y": -29.5,
+            "width": 487,
+            "height": 261
+          }
+        },
+        "face_base": {
+          "face_base": {
+            "type": "region",
+            "path": "face_base",
+            "x": 4.0,
+            "y": 99.0,
+            "width": 322,
+            "height": 324
+          }
+        },
+        "eye_screen_left": {
+          "eye_screen_left": {
+            "type": "region",
+            "path": "eye_screen_left",
+            "x": -16.5,
+            "y": -5.5,
+            "width": 103,
+            "height": 85
+          }
+        },
+        "eye_screen_right": {
+          "eye_screen_right": {
+            "type": "region",
+            "path": "eye_screen_right",
+            "x": 2.5,
+            "y": -4.5,
+            "width": 107,
+            "height": 79
+          }
+        },
+        "mouth": {
+          "mouth": {
+            "type": "region",
+            "path": "mouth",
+            "x": -1.0,
+            "y": -0.5,
+            "width": 16,
+            "height": 9
+          }
+        },
+        "fin_screen_left": {
+          "fin_screen_left": {
+            "type": "region",
+            "path": "fin_screen_left",
+            "x": -26.0,
+            "y": -1.5,
+            "width": 102,
+            "height": 117
+          }
+        },
+        "fin_screen_right": {
+          "fin_screen_right": {
+            "type": "region",
+            "path": "fin_screen_right",
+            "x": 94.0,
+            "y": -14.0,
+            "width": 142,
+            "height": 102
+          }
+        },
+        "side_hair_screen_left": {
+          "side_hair_screen_left": {
+            "type": "region",
+            "path": "side_hair_screen_left",
+            "x": -3.5,
+            "y": -86.5,
+            "width": 145,
+            "height": 427
+          }
+        },
+        "side_hair_screen_right": {
+          "side_hair_screen_right": {
+            "type": "region",
+            "path": "side_hair_screen_right",
+            "x": 7.0,
+            "y": -62.5,
+            "width": 156,
+            "height": 381
+          }
+        },
+        "fringe_screen_left": {
+          "fringe_screen_left": {
+            "type": "region",
+            "path": "fringe_screen_left",
+            "x": -22.0,
+            "y": -80.0,
+            "width": 144,
+            "height": 262
+          }
+        },
+        "fringe_center": {
+          "fringe_center": {
+            "type": "region",
+            "path": "fringe_center",
+            "x": -0.5,
+            "y": -86.0,
+            "width": 151,
+            "height": 282
+          }
+        },
+        "fringe_screen_right": {
+          "fringe_screen_right": {
+            "type": "region",
+            "path": "fringe_screen_right",
+            "x": 9.0,
+            "y": -76.5,
+            "width": 132,
+            "height": 259
+          }
+        },
+        "ahoge": {
+          "ahoge": {
+            "type": "region",
+            "path": "ahoge",
+            "x": -71.0,
+            "y": 11.5,
+            "width": 168,
+            "height": 103
+          }
+        },
+        "headband": {
+          "headband": {
+            "type": "region",
+            "path": "headband",
+            "x": 28.0,
+            "y": -96.5,
+            "width": 548,
+            "height": 319
+          }
+        },
+        "snowflake": {
+          "snowflake": {
+            "type": "region",
+            "path": "snowflake",
+            "x": -4.5,
+            "y": -1.0,
+            "width": 77,
+            "height": 88
+          }
+        },
+        "head_bow_screen_right": {
+          "head_bow_screen_right": {
+            "type": "region",
+            "path": "head_bow_screen_right",
+            "x": -6.0,
+            "y": -8.5,
+            "width": 78,
+            "height": 71
+          }
+        }
+      }
+    }
+  ],
+  "animations": {}
+}
