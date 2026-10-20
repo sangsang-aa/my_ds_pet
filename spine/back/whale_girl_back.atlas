@@ -1,0 +1,152 @@
+whale_girl_back.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hair_left
+  rotate: false
+  xy: 2, 2
+  size: 240, 514
+  orig: 240, 514
+  offset: 0, 0
+  index: -1
+hair_right
+  rotate: false
+  xy: 244, 2
+  size: 295, 507
+  orig: 295, 507
+  offset: 0, 0
+  index: -1
+hair_cap
+  rotate: false
+  xy: 541, 2
+  size: 550, 479
+  orig: 550, 479
+  offset: 0, 0
+  index: -1
+hair_center
+  rotate: false
+  xy: 1093, 2
+  size: 274, 359
+  orig: 274, 359
+  offset: 0, 0
+  index: -1
+coat_back
+  rotate: false
+  xy: 1369, 2
+  size: 487, 319
+  orig: 487, 319
+  offset: 0, 0
+  index: -1
+headband
+  rotate: false
+  xy: 2, 518
+  size: 498, 250
+  orig: 498, 250
+  offset: 0, 0
+  index: -1
+whale_hair_accessory
+  rotate: false
+  xy: 502, 518
+  size: 175, 170
+  orig: 175, 170
+  offset: 0, 0
+  index: -1
+coat_hem
+  rotate: false
+  xy: 679, 518
+  size: 546, 147
+  orig: 546, 147
+  offset: 0, 0
+  index: -1
+tail_trunk
+  rotate: false
+  xy: 1227, 518
+  size: 192, 139
+  orig: 192, 139
+  offset: 0, 0
+  index: -1
+boot_left
+  rotate: false
+  xy: 1421, 518
+  size: 119, 130
+  orig: 119, 130
+  offset: 0, 0
+  index: -1
+boot_right
+  rotate: false
+  xy: 1542, 518
+  size: 119, 130
+  orig: 119, 130
+  offset: 0, 0
+  index: -1
+cord_right
+  rotate: false
+  xy: 1663, 518
+  size: 23, 113
+  orig: 23, 113
+  offset: 0, 0
+  index: -1
+cord_left
+  rotate: false
+  xy: 1688, 518
+  size: 19, 108
+  orig: 19, 108
+  offset: 0, 0
+  index: -1
+tail_fluke_down
+  rotate: false
+  xy: 1709, 518
+  size: 84, 103
+  orig: 84, 103
+  offset: 0, 0
+  index: -1
+side_fin_left
+  rotate: false
+  xy: 1795, 518
+  size: 110, 95
+  orig: 110, 95
+  offset: 0, 0
+  index: -1
+pompom_right
+  rotate: false
+  xy: 1907, 518
+  size: 76, 89
+  orig: 76, 89
+  offset: 0, 0
+  index: -1
+pompom_left
+  rotate: false
+  xy: 2, 770
+  size: 79, 88
+  orig: 79, 88
+  offset: 0, 0
+  index: -1
+side_fin_right
+  rotate: false
+  xy: 83, 770
+  size: 110, 86
+  orig: 110, 86
+  offset: 0, 0
+  index: -1
+bow_left
+  rotate: false
+  xy: 195, 770
+  size: 79, 84
+  orig: 79, 84
+  offset: 0, 0
+  index: -1
+bow_right
+  rotate: false
+  xy: 276, 770
+  size: 72, 73
+  orig: 72, 73
+  offset: 0, 0
+  index: -1
+tail_fluke_right
+  rotate: false
+  xy: 350, 770
+  size: 148, 65
+  orig: 148, 65
+  offset: 0, 0
+  index: -1

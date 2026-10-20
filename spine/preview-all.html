@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whale Girl — All Views (Spine 4.2)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f0f1a;
+    color: #d7dce8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 18px 18px 28px;
+  }
+  header { text-align: center; margin-bottom: 16px; }
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #a8b2d1;
+  }
+  header p {
+    margin-top: 5px;
+    font-size: 0.78rem;
+    color: #5f6d8c;
+  }
+  .views {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  .view { min-width: 0; }
+  .view h2 {
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8fa0c4;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  iframe {
+    display: block;
+    width: 100%;
+    height: 720px;
+    border: 1px solid #232a3d;
+    border-radius: 10px;
+    background: #1a1a2e;
+  }
+  footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 0.72rem;
+    color: #46516b;
+    line-height: 1.6;
+  }
+  @media (max-width: 900px) {
+    .views { grid-template-columns: 1fr; }
+    iframe { height: 640px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Whale Girl — all three views</h1>
+  <p>Independent 2D asset sets · Spine 4.2 · clips: idle · walk · wave · shy</p>
+</header>
+
+<main class="views">
+  <section class="view">
+    <h2>Front</h2>
+    <iframe src="front/preview.html" title="Whale Girl front view preview" loading="lazy"></iframe>
+  </section>
+  <section class="view">
+    <h2>Side</h2>
+    <iframe src="side/preview.html" title="Whale Girl side view preview" loading="lazy"></iframe>
+  </section>
+  <section class="view">
+    <h2>Back</h2>
+    <iframe src="back/preview.html" title="Whale Girl back view preview" loading="lazy"></iframe>
+  </section>
+</main>
+
+<footer>
+  Each view is a separate skeleton with the same four clips and durations
+  (idle 2.0 s loop · walk 0.8 s loop · wave 1.2 s · shy 1.2 s).
+</footer>
+
+</body>
+</html>
