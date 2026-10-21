@@ -3,199 +3,206 @@ size: 2048,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-rear_hair_base
+tail_trunk
   rotate: false
-  xy: 2, 2
-  size: 334, 515
-  orig: 334, 515
+  xy: 530, 523
+  size: 254, 155
+  orig: 254, 155
   offset: 0, 0
   index: -1
-front_hair_near
+tail_fluke_upper
   rotate: false
-  xy: 338, 2
-  size: 142, 464
-  orig: 142, 464
+  xy: 788, 523
+  size: 74, 124
+  orig: 74, 124
   offset: 0, 0
   index: -1
-face_ear_neck
+tail_fluke_lower
   rotate: false
-  xy: 482, 2
-  size: 248, 342
-  orig: 248, 342
+  xy: 4, 717
+  size: 131, 75
+  orig: 131, 75
   offset: 0, 0
   index: -1
-rear_hair_inner_lock
+visible_sock
   rotate: false
-  xy: 732, 2
-  size: 257, 339
-  orig: 257, 339
+  xy: 276, 717
+  size: 86, 65
+  orig: 86, 65
   offset: 0, 0
   index: -1
-rear_hair_outer_lock
+visible_boot
   rotate: false
-  xy: 991, 2
-  size: 100, 332
-  orig: 100, 332
+  xy: 1098, 523
+  size: 133, 100
+  orig: 133, 100
   offset: 0, 0
   index: -1
-headband
+coat_fur_trim
   rotate: false
-  xy: 1093, 2
-  size: 275, 327
-  orig: 275, 327
+  xy: 4, 523
+  size: 391, 190
+  orig: 391, 190
   offset: 0, 0
   index: -1
 coat_torso
   rotate: false
-  xy: 1370, 2
+  xy: 1384, 4
   size: 359, 326
   orig: 359, 326
   offset: 0, 0
   index: -1
+face_ear_neck
+  rotate: false
+  xy: 488, 4
+  size: 248, 342
+  orig: 248, 342
+  offset: 0, 0
+  index: -1
+rear_hair_base
+  rotate: false
+  xy: 4, 4
+  size: 334, 515
+  orig: 334, 515
+  offset: 0, 0
+  index: -1
+rear_hair_outer_lock
+  rotate: false
+  xy: 1001, 4
+  size: 100, 332
+  orig: 100, 332
+  offset: 0, 0
+  index: -1
+rear_hair_inner_lock
+  rotate: false
+  xy: 740, 4
+  size: 257, 339
+  orig: 257, 339
+  offset: 0, 0
+  index: -1
+ahoge
+  rotate: false
+  xy: 1564, 523
+  size: 154, 90
+  orig: 154, 90
+  offset: 0, 0
+  index: -1
+visible_sleeve
+  rotate: false
+  xy: 399, 523
+  size: 127, 163
+  orig: 127, 163
+  offset: 0, 0
+  index: -1
+visible_hand
+  rotate: false
+  xy: 422, 717
+  size: 59, 61
+  orig: 59, 61
+  offset: 0, 0
+  index: -1
+visible_cuff
+  rotate: false
+  xy: 139, 717
+  size: 133, 66
+  orig: 133, 66
+  offset: 0, 0
+  index: -1
+collar
+  rotate: false
+  xy: 866, 523
+  size: 228, 118
+  orig: 228, 118
+  offset: 0, 0
+  index: -1
+chest_bow
+  rotate: false
+  xy: 366, 717
+  size: 52, 64
+  orig: 52, 64
+  offset: 0, 0
+  index: -1
+cord_pompom_back
+  rotate: false
+  xy: 1403, 523
+  size: 72, 96
+  orig: 72, 96
+  offset: 0, 0
+  index: -1
+cord_pompom_front
+  rotate: false
+  xy: 1235, 523
+  size: 65, 97
+  orig: 65, 97
+  offset: 0, 0
+  index: -1
+visible_eye
+  rotate: false
+  xy: 1479, 523
+  size: 81, 96
+  orig: 81, 96
+  offset: 0, 0
+  index: -1
+mouth
+  rotate: false
+  xy: 557, 717
+  size: 25, 11
+  orig: 25, 11
+  offset: 0, 0
+  index: -1
+front_hair_near
+  rotate: false
+  xy: 342, 4
+  size: 142, 464
+  orig: 142, 464
+  offset: 0, 0
+  index: -1
 front_bangs_outer
   rotate: false
-  xy: 1731, 2
+  xy: 1747, 4
   size: 164, 300
   orig: 164, 300
   offset: 0, 0
   index: -1
 front_bangs_inner
   rotate: false
-  xy: 1897, 2
+  xy: 1915, 4
   size: 84, 257
   orig: 84, 257
   offset: 0, 0
   index: -1
-coat_fur_trim
+eyebrow
   rotate: false
-  xy: 2, 519
-  size: 391, 190
-  orig: 391, 190
+  xy: 485, 717
+  size: 68, 24
+  orig: 68, 24
   offset: 0, 0
   index: -1
-tail_trunk
+headband
   rotate: false
-  xy: 395, 519
-  size: 254, 155
-  orig: 254, 155
-  offset: 0, 0
-  index: -1
-visible_sleeve
-  rotate: false
-  xy: 651, 519
-  size: 127, 132
-  orig: 127, 132
-  offset: 0, 0
-  index: -1
-tail_fluke_upper
-  rotate: false
-  xy: 780, 519
-  size: 74, 124
-  orig: 74, 124
-  offset: 0, 0
-  index: -1
-collar
-  rotate: false
-  xy: 856, 519
-  size: 228, 118
-  orig: 228, 118
-  offset: 0, 0
-  index: -1
-visible_boot
-  rotate: false
-  xy: 1086, 519
-  size: 133, 100
-  orig: 133, 100
-  offset: 0, 0
-  index: -1
-cord_pompom_front
-  rotate: false
-  xy: 1221, 519
-  size: 65, 97
-  orig: 65, 97
-  offset: 0, 0
-  index: -1
-snowflake
-  rotate: false
-  xy: 1288, 519
-  size: 95, 97
-  orig: 95, 97
-  offset: 0, 0
-  index: -1
-cord_pompom_back
-  rotate: false
-  xy: 1385, 519
-  size: 72, 96
-  orig: 72, 96
-  offset: 0, 0
-  index: -1
-visible_eye
-  rotate: false
-  xy: 1459, 519
-  size: 81, 96
-  orig: 81, 96
-  offset: 0, 0
-  index: -1
-ahoge
-  rotate: false
-  xy: 1542, 519
-  size: 154, 90
-  orig: 154, 90
-  offset: 0, 0
-  index: -1
-head_bow
-  rotate: false
-  xy: 1698, 519
-  size: 98, 85
-  orig: 98, 85
+  xy: 1105, 4
+  size: 275, 327
+  orig: 275, 327
   offset: 0, 0
   index: -1
 fin_ornament
   rotate: false
-  xy: 1798, 519
+  xy: 1824, 523
   size: 159, 84
   orig: 159, 84
   offset: 0, 0
   index: -1
-tail_fluke_lower
+snowflake
   rotate: false
-  xy: 2, 711
-  size: 131, 75
-  orig: 131, 75
+  xy: 1304, 523
+  size: 95, 97
+  orig: 95, 97
   offset: 0, 0
   index: -1
-visible_cuff
+head_bow
   rotate: false
-  xy: 135, 711
-  size: 133, 66
-  orig: 133, 66
-  offset: 0, 0
-  index: -1
-chest_bow
-  rotate: false
-  xy: 270, 711
-  size: 52, 64
-  orig: 52, 64
-  offset: 0, 0
-  index: -1
-visible_hand
-  rotate: false
-  xy: 324, 711
-  size: 59, 61
-  orig: 59, 61
-  offset: 0, 0
-  index: -1
-eyebrow
-  rotate: false
-  xy: 385, 711
-  size: 65, 24
-  orig: 65, 24
-  offset: 0, 0
-  index: -1
-mouth
-  rotate: false
-  xy: 452, 711
-  size: 25, 11
-  orig: 25, 11
+  xy: 1722, 523
+  size: 98, 85
+  orig: 98, 85
   offset: 0, 0
   index: -1
