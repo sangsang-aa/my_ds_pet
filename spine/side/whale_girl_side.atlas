@@ -5,44 +5,65 @@ filter: Linear,Linear
 repeat: none
 tail_trunk
   rotate: false
-  xy: 530, 523
+  xy: 646, 523
   size: 254, 155
   orig: 254, 155
   offset: 0, 0
   index: -1
 tail_fluke_upper
   rotate: false
-  xy: 788, 523
+  xy: 904, 523
   size: 74, 124
   orig: 74, 124
   offset: 0, 0
   index: -1
 tail_fluke_lower
   rotate: false
-  xy: 4, 717
+  xy: 167, 714
   size: 131, 75
   orig: 131, 75
   offset: 0, 0
   index: -1
+far_sock
+  rotate: false
+  xy: 302, 714
+  size: 79, 72
+  orig: 79, 72
+  offset: 0, 0
+  index: -1
+far_boot
+  rotate: false
+  xy: 1503, 523
+  size: 113, 96
+  orig: 113, 96
+  offset: 0, 0
+  index: -1
 visible_sock
   rotate: false
-  xy: 276, 717
-  size: 86, 65
-  orig: 86, 65
+  xy: 385, 714
+  size: 81, 72
+  orig: 81, 72
   offset: 0, 0
   index: -1
 visible_boot
   rotate: false
-  xy: 1098, 523
-  size: 133, 100
-  orig: 133, 100
+  xy: 1214, 523
+  size: 117, 98
+  orig: 117, 98
+  offset: 0, 0
+  index: -1
+coat_far_flap
+  rotate: false
+  xy: 4, 523
+  size: 131, 187
+  orig: 131, 187
   offset: 0, 0
   index: -1
 coat_fur_trim
   rotate: false
-  xy: 4, 523
-  size: 391, 190
-  orig: 391, 190
+  xy: 139, 523
+  size: 372, 182
+  orig: 372, 182
   offset: 0, 0
   index: -1
 coat_torso
@@ -82,70 +103,70 @@ rear_hair_inner_lock
   index: -1
 ahoge
   rotate: false
-  xy: 1564, 523
+  xy: 1781, 523
   size: 154, 90
   orig: 154, 90
   offset: 0, 0
   index: -1
 visible_sleeve
   rotate: false
-  xy: 399, 523
+  xy: 515, 523
   size: 127, 163
   orig: 127, 163
   offset: 0, 0
   index: -1
 visible_hand
   rotate: false
-  xy: 422, 717
+  xy: 663, 714
   size: 59, 61
   orig: 59, 61
   offset: 0, 0
   index: -1
 visible_cuff
   rotate: false
-  xy: 139, 717
+  xy: 470, 714
   size: 133, 66
   orig: 133, 66
   offset: 0, 0
   index: -1
 collar
   rotate: false
-  xy: 866, 523
+  xy: 982, 523
   size: 228, 118
   orig: 228, 118
   offset: 0, 0
   index: -1
 chest_bow
   rotate: false
-  xy: 366, 717
+  xy: 607, 714
   size: 52, 64
   orig: 52, 64
   offset: 0, 0
   index: -1
 cord_pompom_back
   rotate: false
-  xy: 1403, 523
+  xy: 1620, 523
   size: 72, 96
   orig: 72, 96
   offset: 0, 0
   index: -1
 cord_pompom_front
   rotate: false
-  xy: 1235, 523
+  xy: 1335, 523
   size: 65, 97
   orig: 65, 97
   offset: 0, 0
   index: -1
 visible_eye
   rotate: false
-  xy: 1479, 523
+  xy: 1696, 523
   size: 81, 96
   orig: 81, 96
   offset: 0, 0
   index: -1
 mouth
   rotate: false
-  xy: 557, 717
+  xy: 798, 714
   size: 25, 11
   orig: 25, 11
   offset: 0, 0
@@ -173,7 +194,7 @@ front_bangs_inner
   index: -1
 eyebrow
   rotate: false
-  xy: 485, 717
+  xy: 726, 714
   size: 68, 24
   orig: 68, 24
   offset: 0, 0
@@ -187,21 +208,21 @@ headband
   index: -1
 fin_ornament
   rotate: false
-  xy: 1824, 523
+  xy: 4, 714
   size: 159, 84
   orig: 159, 84
   offset: 0, 0
   index: -1
 snowflake
   rotate: false
-  xy: 1304, 523
+  xy: 1404, 523
   size: 95, 97
   orig: 95, 97
   offset: 0, 0
   index: -1
 head_bow
   rotate: false
-  xy: 1722, 523
+  xy: 1939, 523
   size: 98, 85
   orig: 98, 85
   offset: 0, 0
