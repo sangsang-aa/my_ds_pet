@@ -80,20 +80,6 @@ hand_screen_right
   orig: 40, 48
   offset: 0, 0
   index: -1
-sleeve_screen_left
-  rotate: false
-  xy: 631, 841
-  size: 156, 221
-  orig: 156, 221
-  offset: 0, 0
-  index: -1
-sleeve_screen_right
-  rotate: false
-  xy: 791, 841
-  size: 156, 221
-  orig: 156, 221
-  offset: 0, 0
-  index: -1
 collar
   rotate: false
   xy: 4, 1106
@@ -267,5 +253,47 @@ eyebrow_screen_right
   xy: 1530, 1106
   size: 80, 21
   orig: 80, 21
+  offset: 0, 0
+  index: -1
+upper_arm_screen_left
+  rotate: false
+  xy: 4, 1220
+  size: 118, 173
+  orig: 118, 173
+  offset: 0, 0
+  index: -1
+forearm_screen_left
+  rotate: false
+  xy: 124, 1220
+  size: 112, 155
+  orig: 112, 155
+  offset: 0, 0
+  index: -1
+cuff_screen_left
+  rotate: false
+  xy: 238, 1220
+  size: 108, 126
+  orig: 108, 126
+  offset: 0, 0
+  index: -1
+upper_arm_screen_right
+  rotate: false
+  xy: 348, 1220
+  size: 113, 172
+  orig: 113, 172
+  offset: 0, 0
+  index: -1
+forearm_screen_right
+  rotate: false
+  xy: 463, 1220
+  size: 118, 157
+  orig: 118, 157
+  offset: 0, 0
+  index: -1
+cuff_screen_right
+  rotate: false
+  xy: 583, 1220
+  size: 108, 126
+  orig: 108, 126
   offset: 0, 0
   index: -1
