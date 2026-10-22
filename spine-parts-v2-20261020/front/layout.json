@@ -225,12 +225,12 @@
       "parent": "forearm_screen_left",
       "pivot_xy": [
         133.458,
-        758.635
+        730.635
       ],
       "source": "native",
       "bbox_xywh": [
         117,
-        733,
+        705,
         40,
         48
       ],
@@ -249,12 +249,12 @@
       "parent": "forearm_screen_right",
       "pivot_xy": [
         577.715,
-        758.817
+        730.817
       ],
       "source": "native",
       "bbox_xywh": [
         568,
-        734,
+        706,
         40,
         48
       ],
@@ -273,12 +273,12 @@
       "parent": "coat_torso",
       "pivot_xy": [
         255.034,
-        599.956
+        571.956
       ],
       "source": "native",
       "bbox_xywh": [
         154,
-        538,
+        510,
         108,
         137
       ],
@@ -300,12 +300,12 @@
       "parent": "coat_torso",
       "pivot_xy": [
         438.966,
-        601.956
+        573.956
       ],
       "source": "native",
       "bbox_xywh": [
         456,
-        540,
+        512,
         104,
         136
       ],
@@ -327,12 +327,12 @@
       "parent": "upper_arm_screen_left",
       "pivot_xy": [
         189.579,
-        651.749
+        623.749
       ],
       "source": "native",
       "bbox_xywh": [
         122,
-        624,
+        596,
         103,
         123
       ],
@@ -354,12 +354,12 @@
       "parent": "upper_arm_screen_right",
       "pivot_xy": [
         528.795,
-        653.13
+        625.13
       ],
       "source": "native",
       "bbox_xywh": [
         498,
-        625,
+        597,
         108,
         124
       ],
@@ -381,12 +381,12 @@
       "parent": "upper_arm_screen_left",
       "pivot_xy": [
         189.579,
-        651.749
+        623.749
       ],
       "source": "native",
       "bbox_xywh": [
         102,
-        665,
+        637,
         99,
         100
       ],
@@ -408,12 +408,12 @@
       "parent": "upper_arm_screen_right",
       "pivot_xy": [
         528.795,
-        653.13
+        625.13
       ],
       "source": "native",
       "bbox_xywh": [
         520,
-        668,
+        640,
         99,
         100
       ],

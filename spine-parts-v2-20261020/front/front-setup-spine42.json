@@ -76,7 +76,7 @@
       "name": "upper_arm_screen_left",
       "parent": "coat_torso",
       "x": -95.9661,
-      "y": -14.9562
+      "y": 13.044
     },
     {
       "name": "forearm_screen_left",
@@ -94,7 +94,7 @@
       "name": "upper_arm_screen_right",
       "parent": "coat_torso",
       "x": 87.9661,
-      "y": -16.9562
+      "y": 11.044
     },
     {
       "name": "forearm_screen_right",
