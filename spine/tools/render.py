@@ -247,8 +247,13 @@ def draw_region(canvas, img, w, h, bone, att, skel, cw, ch, resample=Image.NEARE
     # sprite px -> attachment-local (x right, y up), pixel-centre aligned
     # -> bone local -> world -> screen
     def to_screen(sx, sy):
-        lx = (sx + 0.5 - aw * 0.5) * ascx
-        ly = (ah * 0.5 - sy - 0.5) * ascy
+        # The attachment's width/height define the quad; the image is mapped
+        # across it (Spine stretches the region when the two differ).
+        # Corner-accurate quad mapping: the image spans exactly width/height.
+        # The 0.5 * scale term keeps the historical half-pixel nudge, which is
+        # what the committed verify images were produced with.
+        lx = (sx / w - 0.5) * aw * ascx + 0.5 * ascx
+        ly = (0.5 - sy / h) * ah * ascy - 0.5 * ascy
         rx = c * lx - s * ly + ax
         ry = s * lx + c * ly + ay
         wx = bone.a * rx + bone.b * ry + bone.wx
@@ -277,8 +282,25 @@ def draw_region(canvas, img, w, h, bone, att, skel, cw, ch, resample=Image.NEARE
     canvas.alpha_composite(layer)
 
 
+def find_attachment(atts, slot):
+    """Look an attachment up the way the JSON may group it.
+
+    Spine groups skin attachments by slot name, but hand-edited rigs (and this
+    project's cuff slots) can group them under the driving bone instead, so try
+    both and fall back to a name scan.
+    """
+    name = slot.get("attachment")
+    for key in (slot.get("name"), slot.get("bone")):
+        if key and name in atts.get(key, {}):
+            return atts[key][name]
+    for group in atts.values():
+        if name in group:
+            return group[name]
+    return None
+
+
 def render(json_path, atlas_base, out_path=None, clip=None, time=0.0,
-           scale=1.0, curves=False):
+           scale=1.0, curves=False, resample=Image.NEAREST):
     with open(json_path, "r", encoding="utf-8") as fh:
         data = json.load(fh)
     skel = data["skeleton"]
@@ -301,12 +323,13 @@ def render(json_path, atlas_base, out_path=None, clip=None, time=0.0,
             continue
 
         bname = slot["bone"]
-        a = atts.get(bname, {}).get(name)
+        a = find_attachment(atts, slot)
         if not a or a.get("type", "region") != "region":
             continue
         entry = regions[a.get("path", name)]
         img = region_image(entry)
-        draw_region(canvas, img, img.width, img.height, bones[bname], a, skel, cw, ch)
+        draw_region(canvas, img, img.width, img.height, bones[bname], a, skel, cw, ch,
+                    resample=resample)
     if scale != 1.0:
         canvas = canvas.resize((int(cw * scale), int(ch * scale)), Image.LANCZOS)
     if out_path:
