@@ -1,0 +1,3 @@
+# Third-party Spine Web Player bundle, downloaded on demand by make_preview.py
+.cache/
+__pycache__/
