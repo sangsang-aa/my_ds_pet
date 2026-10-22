@@ -9,13 +9,13 @@ sock_screen_right,6,boot_screen_right,383,839,82,68,424.0,912.0,New part.
 boot_screen_right,7,body,364,891,118,93,424.0,912.0,Original boot contour cleaned.
 coat_torso,8,body,122,534,466,345,351.0,585.0,"Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation."
 hand_screen_left,9,forearm_screen_left,117,705,40,48,133.458,730.635,Complete simple chibi hand restoration.
-hand_screen_right,10,forearm_screen_right,568,706,40,48,577.715,730.817,Complete simple chibi hand restoration.
+hand_screen_right,10,forearm_screen_right,557,706,40,48,566.715,730.817,Complete simple chibi hand restoration.
 upper_arm_screen_left,11,coat_torso,154,510,108,137,255.034,571.956,Split from the old single sleeve; no reshaping.
-upper_arm_screen_right,12,coat_torso,456,512,104,136,438.966,573.956,Split from the old single sleeve; no reshaping.
+upper_arm_screen_right,12,coat_torso,445,512,104,136,427.966,573.956,Split from the old single sleeve; no reshaping.
 forearm_screen_left,13,upper_arm_screen_left,122,596,103,123,189.579,623.749,Split from the old single sleeve; no reshaping.
-forearm_screen_right,14,upper_arm_screen_right,498,597,108,124,528.795,625.13,Split from the old single sleeve; no reshaping.
+forearm_screen_right,14,upper_arm_screen_right,487,597,108,124,517.795,625.13,Split from the old single sleeve; no reshaping.
 cuff_screen_left,15,upper_arm_screen_left,102,637,99,100,189.579,623.749,Split from the old sleeve's fur trim; no reshaping.
-cuff_screen_right,16,upper_arm_screen_right,520,640,99,100,528.795,625.13,Split from the old sleeve's fur trim; no reshaping.
+cuff_screen_right,16,upper_arm_screen_right,509,640,99,100,517.795,625.13,Split from the old sleeve's fur trim; no reshaping.
 collar,17,coat_torso,194,497,324,103,352.0,549.0,Complete fur collar restoration; no cut-out bow hole.
 cord_screen_left,18,chest_bow,290,575,50,50,335.0,570.0,"Original ornament, alpha and white-matte edge cleanup."
 cord_screen_right,19,chest_bow,363,573,46,53,368.0,571.0,"Original ornament, alpha and white-matte edge cleanup."

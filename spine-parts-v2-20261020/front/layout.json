@@ -248,12 +248,12 @@
       "draw_order": 10,
       "parent": "forearm_screen_right",
       "pivot_xy": [
-        577.715,
+        566.715,
         730.817
       ],
       "source": "native",
       "bbox_xywh": [
-        568,
+        557,
         706,
         40,
         48
@@ -299,12 +299,12 @@
       "draw_order": 12,
       "parent": "coat_torso",
       "pivot_xy": [
-        438.966,
+        427.966,
         573.956
       ],
       "source": "native",
       "bbox_xywh": [
-        456,
+        445,
         512,
         104,
         136
@@ -353,12 +353,12 @@
       "draw_order": 14,
       "parent": "upper_arm_screen_right",
       "pivot_xy": [
-        528.795,
+        517.795,
         625.13
       ],
       "source": "native",
       "bbox_xywh": [
-        498,
+        487,
         597,
         108,
         124
@@ -407,12 +407,12 @@
       "draw_order": 16,
       "parent": "upper_arm_screen_right",
       "pivot_xy": [
-        528.795,
+        517.795,
         625.13
       ],
       "source": "native",
       "bbox_xywh": [
-        520,
+        509,
         640,
         99,
         100
