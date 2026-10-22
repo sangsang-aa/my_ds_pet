@@ -70,6 +70,19 @@ python3 spine/tools/regen_manifests.py back --check # 只报差异
 骨架尺寸」重建，所以它能在 `parts/` 上复现骨架的静止四边形（当前误差
 < 0.0001 px）。
 
+## `sync_parts.py`
+
+用图集重切拆件包里的 PNG：图集是渲染唯一实际使用的那份美术，`parts/` 里可能是同一
+张画的旧尺寸拷贝。脚本按槽位取图集区域，有空间就补 2 像素透明边，没空间就保持图集
+原尺寸（这样骨架仍是 1:1）。只改 `parts/<name>.png`，骨架和所有渲染产物都不动。
+
+```
+python3 spine/tools/sync_parts.py front --select differ,missing --skip collar
+python3 spine/tools/sync_parts.py front --select differ --check
+```
+
+`--select` 可选 `differ`（尺寸与图集不符）、`missing`（包里缺文件）、`all`。
+
 ## 建议顺序
 
 改完骨架后：
