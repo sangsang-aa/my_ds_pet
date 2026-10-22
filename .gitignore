@@ -13,3 +13,7 @@ build-*/
 dist/
 CMakeFiles/
 CMakeCache.txt
+
+# Local request notes (not part of the repo) and Windows download metadata
+REQUEST.md
+*:Zone.Identifier
