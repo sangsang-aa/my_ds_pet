@@ -106,6 +106,24 @@
       "method": "Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
     },
     {
+      "name": "sock_screen_left",
+      "draw_order": 4,
+      "parent": "boot_screen_left",
+      "pivot_xy": [
+        306.0,
+        911.0
+      ],
+      "bbox_xywh": [
+        264,
+        839,
+        82,
+        68
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
+    },
+    {
       "name": "boot_screen_left",
       "draw_order": 5,
       "parent": "body",
@@ -127,6 +145,24 @@
       ],
       "note": "Clean v2 attachment. Original boot contour cleaned.",
       "method": "Original boot contour cleaned."
+    },
+    {
+      "name": "sock_screen_right",
+      "draw_order": 6,
+      "parent": "boot_screen_right",
+      "pivot_xy": [
+        424.0,
+        912.0
+      ],
+      "bbox_xywh": [
+        383,
+        839,
+        82,
+        68
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
     },
     {
       "name": "boot_screen_right",
@@ -229,22 +265,14 @@
         599.956
       ],
       "bbox_xywh": [
-        154,
-        538,
-        108,
-        137
+        149,
+        520,
+        118,
+        173
       ],
       "original_bbox_xywh": null,
       "note": "Upper arm of the split arm chain (shoulder -> upper arm -> forearm -> cuff -> hand).",
-      "method": "Split from the old single sleeve; no reshaping.",
-      "atlas_size": [
-        118.0,
-        173.0
-      ],
-      "region_scale": [
-        1.0926,
-        1.2628
-      ]
+      "method": "Split from the old single sleeve; no reshaping."
     },
     {
       "name": "upper_arm_screen_right",
@@ -255,22 +283,14 @@
         601.956
       ],
       "bbox_xywh": [
-        456,
-        540,
-        104,
-        136
+        452,
+        522,
+        113,
+        172
       ],
       "original_bbox_xywh": null,
       "note": "Upper arm of the split arm chain (shoulder -> upper arm -> forearm -> cuff -> hand).",
-      "method": "Split from the old single sleeve; no reshaping.",
-      "atlas_size": [
-        113.0,
-        172.0
-      ],
-      "region_scale": [
-        1.0865,
-        1.2647
-      ]
+      "method": "Split from the old single sleeve; no reshaping."
     },
     {
       "name": "forearm_screen_left",
@@ -281,22 +301,14 @@
         651.749
       ],
       "bbox_xywh": [
-        122,
-        624,
-        103,
-        123
+        118,
+        608,
+        112,
+        155
       ],
       "original_bbox_xywh": null,
       "note": "Forearm; the bone sits at the middle of the upper-arm/forearm overlap, which is the elbow.",
-      "method": "Split from the old single sleeve; no reshaping.",
-      "atlas_size": [
-        112.0,
-        155.0
-      ],
-      "region_scale": [
-        1.0874,
-        1.2602
-      ]
+      "method": "Split from the old single sleeve; no reshaping."
     },
     {
       "name": "forearm_screen_right",
@@ -307,22 +319,14 @@
         653.13
       ],
       "bbox_xywh": [
-        498,
-        625,
-        108,
-        124
+        493,
+        608,
+        118,
+        157
       ],
       "original_bbox_xywh": null,
       "note": "Forearm; the bone sits at the middle of the upper-arm/forearm overlap, which is the elbow.",
-      "method": "Split from the old single sleeve; no reshaping.",
-      "atlas_size": [
-        118.0,
-        157.0
-      ],
-      "region_scale": [
-        1.0926,
-        1.2661
-      ]
+      "method": "Split from the old single sleeve; no reshaping."
     },
     {
       "name": "cuff_screen_left",
@@ -333,22 +337,14 @@
         651.749
       ],
       "bbox_xywh": [
-        102,
-        665,
-        99,
-        100
+        97,
+        652,
+        108,
+        126
       ],
       "original_bbox_xywh": null,
       "note": "Fur cuff, bound to the forearm bone.",
-      "method": "Split from the old sleeve's fur trim; no reshaping.",
-      "atlas_size": [
-        108.0,
-        126.0
-      ],
-      "region_scale": [
-        1.0909,
-        1.26
-      ]
+      "method": "Split from the old sleeve's fur trim; no reshaping."
     },
     {
       "name": "cuff_screen_right",
@@ -359,22 +355,14 @@
         653.13
       ],
       "bbox_xywh": [
-        520,
-        668,
-        99,
-        100
+        516,
+        655,
+        108,
+        126
       ],
       "original_bbox_xywh": null,
       "note": "Fur cuff, bound to the forearm bone.",
-      "method": "Split from the old sleeve's fur trim; no reshaping.",
-      "atlas_size": [
-        108.0,
-        126.0
-      ],
-      "region_scale": [
-        1.0909,
-        1.26
-      ]
+      "method": "Split from the old sleeve's fur trim; no reshaping."
     },
     {
       "name": "collar",
@@ -907,42 +895,6 @@
       ],
       "note": "Clean v2 attachment. Original ornament with isolated contour and edge decontamination.",
       "method": "Original ornament with isolated contour and edge decontamination."
-    }
-  ],
-  "derived_parts": [
-    {
-      "name": "sock_screen_left",
-      "draw_order": 4,
-      "parent": "boot_screen_left",
-      "pivot_xy": [
-        306.0,
-        911.0
-      ],
-      "bbox_xywh": [
-        264,
-        839,
-        82,
-        68
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    },
-    {
-      "name": "sock_screen_right",
-      "draw_order": 6,
-      "parent": "boot_screen_right",
-      "pivot_xy": [
-        424.0,
-        912.0
-      ],
-      "bbox_xywh": [
-        383,
-        839,
-        82,
-        68
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
     },
     {
       "name": "eyebrow_screen_left",
@@ -958,8 +910,9 @@
         81,
         19
       ],
-      "note": "Eyebrow, drawn over the face.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
     },
     {
       "name": "eyebrow_screen_right",
@@ -975,10 +928,12 @@
         80,
         21
       ],
-      "note": "Eyebrow, drawn over the face.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
     }
   ],
+  "derived_parts": [],
   "unbound_parts": [
     {
       "name": "fist_screen_left",

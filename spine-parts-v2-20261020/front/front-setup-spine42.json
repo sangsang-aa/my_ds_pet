@@ -287,9 +287,19 @@
       "attachment": "rear_hair_screen_right_outer"
     },
     {
+      "name": "sock_screen_left",
+      "bone": "sock_screen_left",
+      "attachment": "sock_screen_left"
+    },
+    {
       "name": "boot_screen_left",
       "bone": "boot_screen_left",
       "attachment": "boot_screen_left"
+    },
+    {
+      "name": "sock_screen_right",
+      "bone": "sock_screen_right",
+      "attachment": "sock_screen_right"
     },
     {
       "name": "boot_screen_right",
@@ -455,6 +465,16 @@
       "name": "head_bow_screen_right",
       "bone": "head_bow_screen_right",
       "attachment": "head_bow_screen_right"
+    },
+    {
+      "name": "eyebrow_screen_left",
+      "bone": "eyebrow_screen_left",
+      "attachment": "eyebrow_screen_left"
+    },
+    {
+      "name": "eyebrow_screen_right",
+      "bone": "eyebrow_screen_right",
+      "attachment": "eyebrow_screen_right"
     }
   ],
   "skins": [
@@ -501,6 +521,16 @@
             "height": 418
           }
         },
+        "sock_screen_left": {
+          "sock_screen_left": {
+            "type": "region",
+            "path": "sock_screen_left",
+            "x": -1.0,
+            "y": 38.0,
+            "width": 82,
+            "height": 68
+          }
+        },
         "boot_screen_left": {
           "boot_screen_left": {
             "type": "region",
@@ -509,6 +539,16 @@
             "y": -25.5,
             "width": 114,
             "height": 95
+          }
+        },
+        "sock_screen_right": {
+          "sock_screen_right": {
+            "type": "region",
+            "path": "sock_screen_right",
+            "x": 0.0,
+            "y": 39.0,
+            "width": 82,
+            "height": 68
           }
         },
         "boot_screen_right": {
@@ -557,11 +597,9 @@
             "path": "upper_arm_screen_left",
             "x": -47.0339,
             "y": -6.5438,
-            "width": 108,
-            "height": 137,
-            "rotation": -4.9,
-            "scaleX": 1.092593,
-            "scaleY": 1.262774
+            "width": 118,
+            "height": 173,
+            "rotation": -4.9
           }
         },
         "upper_arm_screen_right": {
@@ -570,11 +608,9 @@
             "path": "upper_arm_screen_right",
             "x": 69.5339,
             "y": -6.0438,
-            "width": 104,
-            "height": 136,
-            "rotation": 8.1,
-            "scaleX": 1.086538,
-            "scaleY": 1.264706
+            "width": 113,
+            "height": 172,
+            "rotation": 8.1
           }
         },
         "forearm_screen_left": {
@@ -583,11 +619,9 @@
             "path": "forearm_screen_left",
             "x": -15.587,
             "y": -33.5082,
-            "width": 103,
-            "height": 123,
-            "rotation": -4.9,
-            "scaleX": 1.087379,
-            "scaleY": 1.260163
+            "width": 112,
+            "height": 155,
+            "rotation": -4.9
           }
         },
         "forearm_screen_right": {
@@ -596,11 +630,9 @@
             "path": "forearm_screen_right",
             "x": 22.8834,
             "y": -33.7111,
-            "width": 108,
-            "height": 124,
-            "rotation": 8.1,
-            "scaleX": 1.092593,
-            "scaleY": 1.266129
+            "width": 118,
+            "height": 157,
+            "rotation": 8.1
           }
         },
         "cuff_screen_left": {
@@ -609,10 +641,8 @@
             "path": "cuff_screen_left",
             "x": -38.1203,
             "y": -63.5863,
-            "width": 99,
-            "height": 100,
-            "scaleX": 1.090909,
-            "scaleY": 1.26
+            "width": 108,
+            "height": 126
           }
         },
         "cuff_screen_right": {
@@ -621,10 +651,8 @@
             "path": "cuff_screen_right",
             "x": 40.9203,
             "y": -64.3863,
-            "width": 99,
-            "height": 100,
-            "scaleX": 1.090909,
-            "scaleY": 1.26
+            "width": 108,
+            "height": 126
           }
         },
         "collar": {
@@ -857,6 +885,26 @@
             "y": -8.5,
             "width": 78,
             "height": 71
+          }
+        },
+        "eyebrow_screen_left": {
+          "eyebrow_screen_left": {
+            "type": "region",
+            "path": "eyebrow_screen_left",
+            "x": -1.5,
+            "y": -0.5,
+            "width": 81,
+            "height": 19
+          }
+        },
+        "eyebrow_screen_right": {
+          "eyebrow_screen_right": {
+            "type": "region",
+            "path": "eyebrow_screen_right",
+            "x": -2.0,
+            "y": -1.5,
+            "width": 80,
+            "height": 21
           }
         }
       }

@@ -1,12 +1,12 @@
 # 鲸鱼少女 Spine 静态拆件 · 返工版
 
-共 91 个透明 PNG：front 42 件、side 28 件、back 21 件。
+共 95 个透明 PNG：front 46 件、side 28 件、back 21 件。
 
 ## 从哪里开始
 
 先看 preview.jpg 和每个视角的 parts-dark.jpg。深色底预览用于看白边，PNG 本身都是透明背景。
 每个视角包含：
-- parts/：裁紧的 RGBA PNG，外侧保留透明留边（多数为 2 像素）。
+- parts/：裁紧的 RGBA PNG，外侧保留透明留边；正面手臂/袖口是图集原尺寸（1–2 像素留边），其余大多是 2 像素。
 - *-clean.psd：同一画布上按实际位置排好的独立图层，方便继续修图。
 - *-setup-spine42.json：按 Spine 4.2 数据结构写出的初始骨骼与 region 附件，图片路径为同级 parts/。
 - layout.json / parts.csv：坐标、层序、建议轴心、父级与补绘来源。
@@ -35,8 +35,26 @@ python3 spine/tools/regen_manifests.py front
 - `*-setup-spine42.json` 保留骨架全部骨骼，附件按「同一中心、同一旋转、尺寸=骨架
   尺寸」重建，在 `parts/` 上复现骨架静止四边形，最大误差 < 0.0001 像素。
 
-正面 42 个 PNG = 38 个已绑定零件 + 2 个拳头 + 2 个已停用袖子；袜子与眉毛的 4 个
-槽位是图集派生裁切，`parts/` 里没有对应文件。
+正面 46 个 PNG = 42 个已绑定零件 + 2 个拳头 + 2 个已停用袖子；42 个槽位全部有独立
+PNG，不再有派生裁切（侧面仍有 4 个、背面 2 个）。
+
+### 正面手臂与袜子/眉毛已按图集重切
+
+`parts/` 里原来那 6 块手臂/袖口是和骨架不同尺寸的旧稿（108×137 vs 骨架的
+118×173 等），4 块袜子/眉毛则完全没有独立文件。现在用
+`spine/tools/sync_parts.py` 从图集重切：
+
+```
+python3 spine/tools/sync_parts.py front --select differ,missing --skip collar
+```
+
+- 6 块手臂/袖口：按图集原尺寸写出（与骨架 1:1，内容逐像素相同），因此清单里不再
+  有 `region_scale`。
+- 4 块袜子/眉毛：裁到内容 + 上下左右各 2 像素透明边，尺寸与图集槽位一致。
+- 骨架、预览、`verify/`、`assembled.png` 全部未动（它们本来就只用图集）。
+
+唯一仍带缩放的是 `collar`：包里是 324×103 的旧裁切，骨架用的是 325×95，清单里
+记录为 `region_scale [1.0031, 0.9223]`，尚未重切。
 
 `validation.json` 的 `checks` 记录了逐项核对结果；其中 `psd_pixel_roundtrip`
 标注为「未重跑」，因为这轮没有重建 PSD。

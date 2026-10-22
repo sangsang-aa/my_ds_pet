@@ -3,19 +3,19 @@ tail_trunk,0,body,445,752,290,175,469.0,851.0,Complete restored tail; use a shor
 rear_hair_base,1,head,72,122,614,484,351.0,291.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
 rear_hair_screen_left_outer,2,rear_hair_base,44,372,349,415,130.0,419.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
 rear_hair_screen_right_outer,3,rear_hair_base,346,369,367,418,543.0,447.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
-sock_screen_left,4,boot_screen_left,264,839,82,68,306.0,911.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+sock_screen_left,4,boot_screen_left,264,839,82,68,306.0,911.0,New part.
 boot_screen_left,5,body,241,889,114,95,306.0,911.0,Original boot contour cleaned.
-sock_screen_right,6,boot_screen_right,383,839,82,68,424.0,912.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+sock_screen_right,6,boot_screen_right,383,839,82,68,424.0,912.0,New part.
 boot_screen_right,7,body,364,891,118,93,424.0,912.0,Original boot contour cleaned.
 coat_torso,8,body,122,534,466,345,351.0,585.0,"Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation."
 hand_screen_left,9,forearm_screen_left,117,733,40,48,133.458,758.635,Complete simple chibi hand restoration.
 hand_screen_right,10,forearm_screen_right,568,734,40,48,577.715,758.817,Complete simple chibi hand restoration.
-upper_arm_screen_left,11,coat_torso,154,538,108,137,255.034,599.956,Split from the old single sleeve; no reshaping.
-upper_arm_screen_right,12,coat_torso,456,540,104,136,438.966,601.956,Split from the old single sleeve; no reshaping.
-forearm_screen_left,13,upper_arm_screen_left,122,624,103,123,189.579,651.749,Split from the old single sleeve; no reshaping.
-forearm_screen_right,14,upper_arm_screen_right,498,625,108,124,528.795,653.13,Split from the old single sleeve; no reshaping.
-cuff_screen_left,15,upper_arm_screen_left,102,665,99,100,189.579,651.749,Split from the old sleeve's fur trim; no reshaping.
-cuff_screen_right,16,upper_arm_screen_right,520,668,99,100,528.795,653.13,Split from the old sleeve's fur trim; no reshaping.
+upper_arm_screen_left,11,coat_torso,149,520,118,173,255.034,599.956,Split from the old single sleeve; no reshaping.
+upper_arm_screen_right,12,coat_torso,452,522,113,172,438.966,601.956,Split from the old single sleeve; no reshaping.
+forearm_screen_left,13,upper_arm_screen_left,118,608,112,155,189.579,651.749,Split from the old single sleeve; no reshaping.
+forearm_screen_right,14,upper_arm_screen_right,493,608,118,157,528.795,653.13,Split from the old single sleeve; no reshaping.
+cuff_screen_left,15,upper_arm_screen_left,97,652,108,126,189.579,651.749,Split from the old sleeve's fur trim; no reshaping.
+cuff_screen_right,16,upper_arm_screen_right,516,655,108,126,528.795,653.13,Split from the old sleeve's fur trim; no reshaping.
 collar,17,coat_torso,194,497,324,103,352.0,549.0,Complete fur collar restoration; no cut-out bow hole.
 cord_screen_left,18,chest_bow,290,575,50,50,335.0,570.0,"Original ornament, alpha and white-matte edge cleanup."
 cord_screen_right,19,chest_bow,363,573,46,53,368.0,571.0,"Original ornament, alpha and white-matte edge cleanup."
@@ -39,5 +39,5 @@ ahoge,36,rear_hair_base,203,36,168,103,358.0,99.0,"Re-extracted original blue ha
 headband,37,rear_hair_base,97,66,548,319,343.0,129.0,Original ornament with isolated contour and edge decontamination.
 snowflake,38,headband,523,193,77,88,566.0,236.0,Original ornament with isolated contour and edge decontamination.
 head_bow_screen_right,39,headband,550,319,78,71,595.0,346.0,Original ornament with isolated contour and edge decontamination.
-eyebrow_screen_left,40,face_base,227,337,81,19,269.0,346.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
-eyebrow_screen_right,41,face_base,387,335,80,21,429.0,344.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+eyebrow_screen_left,40,face_base,227,337,81,19,269.0,346.0,New part.
+eyebrow_screen_right,41,face_base,387,335,80,21,429.0,344.0,New part.
