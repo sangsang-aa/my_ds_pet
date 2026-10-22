@@ -111,8 +111,8 @@ ahoge
 visible_sleeve
   rotate: false
   xy: 515, 523
-  size: 127, 163
-  orig: 127, 163
+  size: 127, 132
+  orig: 127, 132
   offset: 0, 0
   index: -1
 visible_hand

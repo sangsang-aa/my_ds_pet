@@ -304,7 +304,7 @@
       "source": "native",
       "bbox_xywh": [
         186,
-        554,
+        569,
         127,
         132
       ],
@@ -315,15 +315,7 @@
         128
       ],
       "note": "唯一主要可见袖筒，雪花图案随袖子运动。",
-      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩",
-      "atlas_size": [
-        127.0,
-        163.0
-      ],
-      "region_scale": [
-        1.0,
-        1.2348
-      ]
+      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "visible_hand",
@@ -748,22 +740,6 @@
       "ratio": [
         0.9514,
         0.9579
-      ],
-      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
-    },
-    {
-      "name": "visible_sleeve",
-      "png": [
-        127,
-        132
-      ],
-      "atlas": [
-        127,
-        163
-      ],
-      "ratio": [
-        1.0,
-        1.2348
       ],
       "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     },

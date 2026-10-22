@@ -482,11 +482,9 @@
             "type": "region",
             "path": "visible_sleeve",
             "x": 9.5,
-            "y": -60.5,
+            "y": -76.0,
             "width": 127,
-            "height": 132,
-            "scaleX": 1.0,
-            "scaleY": 1.234848
+            "height": 132
           }
         },
         "visible_hand": {
