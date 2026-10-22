@@ -555,7 +555,7 @@
           "boot_screen_right": {
             "type": "region",
             "path": "boot_screen_right",
-            "x": -1.0,
+            "x": -18.0,
             "y": -25.5,
             "width": 118,
             "height": 93
