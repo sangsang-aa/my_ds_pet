@@ -117,17 +117,25 @@ def main():
     for name, why, path, entry in todo:
         img, strategy = pack(region_image(entry))
         old = str(Image.open(path).size) if path.exists() else "none"
+        # Name the policy, not just the packing step: a part that only looks
+        # "2 px bigger" may actually be a rescale (collar is 1.003 x 0.922).
+        if path.exists():
+            pw, ph = Image.open(path).size
+            aw, ah = entry["orig"]
+            policy = "rescale %.3fx%.3f" % (aw / float(pw), ah / float(ph))
+        else:
+            policy = "new part"
         if not args.write:
-            print("  WOULD %-26s %-8s %-11s %s -> %dx%d"
-                  % (name, why, strategy, old, img.width, img.height))
+            print("  WOULD %-26s %-8s %-20s %s -> %dx%d (%s)"
+                  % (name, why, policy, old, img.width, img.height, strategy))
             continue
         img.save(path)
         saved = Image.open(path).convert("RGBA")
         box = saved.getbbox()
         pad = [box[0], box[1], saved.width - box[2], saved.height - box[3]]
         assert saved.size == img.size and min(pad) >= 1, (name, saved.size, pad)
-        print("  %-26s %-8s %-11s %s -> %dx%d  margins %s"
-              % (name, why, strategy, old, img.width, img.height, pad))
+        print("  %-26s %-8s %-20s %s -> %dx%d  margins %s (%s)"
+              % (name, why, policy, old, img.width, img.height, pad, strategy))
 
     return 0
 
