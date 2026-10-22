@@ -206,24 +206,30 @@ def sample(keys, time, field, default, curves=False):
     """
     if not keys:
         return default
-    if time <= keys[0]["time"]:
+    # Spine lets the first key omit "time"; it means 0.  Editors such as
+    # Rigby2D and Rev2D write it that way, and the file is still valid 4.2.
+    t0 = keys[0].get("time", 0.0)
+    if time <= t0:
         return float(keys[0].get(field, default))
-    if time >= keys[-1]["time"]:
+    t_last = keys[-1].get("time", 0.0)
+    if time >= t_last:
         return float(keys[-1].get(field, default))
     for i in range(len(keys) - 1):
         k0, k1 = keys[i], keys[i + 1]
-        if k0["time"] <= time <= k1["time"]:
+        t0 = k0.get("time", 0.0)
+        t1 = k1.get("time", 0.0)
+        if t0 <= time <= t1:
             v0 = float(k0.get(field, default))
             v1 = float(k1.get(field, default))
-            if k1["time"] == k0["time"]:
+            if t1 == t0:
                 return v1
             curve = k0.get("curve")
             if curves and curve and len(curve) >= 4:
                 off = 4 if (field == "y" and len(curve) >= 8) else 0
                 cx1, cy1, cx2, cy2 = curve[off:off + 4]
-                return _bezier_y(k0["time"], v0, cx1, cy1, cx2, cy2,
-                                 k1["time"], v1, time)
-            f = (time - k0["time"]) / (k1["time"] - k0["time"])
+                return _bezier_y(t0, v0, cx1, cy1, cx2, cy2,
+                                 t1, v1, time)
+            f = (time - t0) / (t1 - t0)
             return v0 + (v1 - v0) * f
     return default
 
@@ -344,7 +350,7 @@ def duration(data, clip):
     for tl in data["animations"][clip].get("bones", {}).values():
         for keys in tl.values():
             if keys:
-                last = max(last, keys[-1]["time"])
+                last = max(last, keys[-1].get("time", 0.0))
     return last
 
 
@@ -357,6 +363,8 @@ if __name__ == "__main__":
     ap.add_argument("--atlas", required=True, help="atlas base path without extension")
     ap.add_argument("--clip")
     ap.add_argument("--time", type=float, default=0.0, help="seconds into the clip")
+    ap.add_argument("--curves", action="store_true",
+                    help="honour bezier easing (the verify pipeline uses linear)")
     args = ap.parse_args()
-    render(args.json, args.atlas, args.out, args.clip, args.time)
+    render(args.json, args.atlas, args.out, args.clip, args.time, curves=args.curves)
     print(f"wrote {args.out}")

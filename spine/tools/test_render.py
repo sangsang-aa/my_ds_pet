@@ -132,6 +132,16 @@ def main():
                        (w, h) == (10, 20) and close(c[0], 100) and close(c[1], 100),
                        "size=%s centre=%s" % ((w, h), c)))
 
+    # Spine lets the first key omit "time"; it means 0.  Rigby2D and Rev2D
+    # both write timelines that way, and the file is still valid 4.2 JSON.
+    keys = [{"x": 0.0}, {"time": 1.0, "x": 10.0}]
+    checks.append(("first key without time means t=0",
+                   render.sample(keys, 0.0, "x", 0.0) == 0.0
+                   and abs(render.sample(keys, 0.5, "x", 0.0) - 5.0) < 1e-9,
+                   "t0=%r t0.5=%r"
+                   % (render.sample(keys, 0.0, "x", 0.0),
+                      render.sample(keys, 0.5, "x", 0.0))))
+
     width = max(len(c[0]) for c in checks)
     failed = 0
     for name, ok, detail in checks:
