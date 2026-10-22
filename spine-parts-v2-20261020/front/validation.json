@@ -554,13 +554,16 @@
     "derived_parts": 0,
     "unbound_parts": 2,
     "deprecated_parts": 2,
-    "png_files_in_parts": 46
+    "png_files_in_parts": 46,
+    "expected_differences": 1,
+    "atlas_derived_parts": 4
   },
   "checks": {
     "bbox_width_height_equals_png_size": "passed (42 parts)",
     "pivot_equals_bound_bone_position": "passed (42 slots)",
     "bbox_centre_max_delta_px": 0.5,
     "setup_json_reproduces_rig_quads": "passed (max corner delta 0.000068 px)",
+    "parts_vs_atlas_size": "expected: 1 of 42 parts differ on purpose (see layout.json expected_differences); the atlas is not a licence to rewrite parts/",
     "psd_pixel_roundtrip": "not re-run; the PSD was not rebuilt"
   },
   "padding": {

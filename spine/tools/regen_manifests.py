@@ -60,6 +60,23 @@ REPLACED = {
                             "cuff_screen_right"],
 }
 
+# Parts whose PNG was cut out of the atlas, so the atlas is their only source
+# and a re-cut cannot recover detail.  Recorded as `source: atlas-derived`.
+ATLAS_DERIVED = {
+    "front": {"sock_screen_left", "sock_screen_right",
+              "eyebrow_screen_left", "eyebrow_screen_right"},
+}
+
+# Why a part's PNG and its atlas region may legitimately differ in size.
+DIFF_REASON_SCALED = ("the atlas bakes the display scale into the texture "
+                      "(LANCZOS); region_scale records the ratio and the rig "
+                      "keeps drawing the same size. Do not copy the atlas "
+                      "region back into parts/.")
+DIFF_REASON_CROP = ("the package PNG is a different crop of the same art than "
+                    "the atlas region; the rig expresses the difference in "
+                    "width/height. Do not copy the atlas region back into "
+                    "parts/.")
+
 # Prose for parts the original manifest never described.
 NEW_NOTES = {
     "upper_arm": ("Upper arm of the split arm chain "
@@ -119,6 +136,8 @@ def describe(view):
     bones, order = render.build_bones(rig)
     render.compute_world(bones, order)
     atts = rig["skins"][0]["attachments"]
+    entries = render.load_atlas(str((ROOT / cfg["rig"]).with_suffix("")))
+    atlas_derived = ATLAS_DERIVED.get(view, set())
 
     old_path = pkg / "layout.json"
     old = json.loads(old_path.read_text(encoding="utf-8")) if old_path.exists() else {}
@@ -132,7 +151,7 @@ def describe(view):
 
     for index, slot in enumerate(rig["slots"]):
         name = slot["name"]
-        att = atts.get(name, {}).get(slot.get("attachment"))
+        att = render.find_attachment(atts, slot)
         if not att or att.get("type", "region") != "region":
             continue
         bone = bones[slot["bone"]]
@@ -150,6 +169,7 @@ def describe(view):
             "draw_order": index,
             "parent": parent,
             "pivot_xy": [round(pivot[0], 3), round(pivot[1], 3)],
+            "source": "atlas-derived" if name in atlas_derived else "native",
         }
 
         png = pngs.get(name)
@@ -186,6 +206,7 @@ def describe(view):
                               int(round(drawn_w)), int(round(drawn_h))],
                 "note": DERIVED_NOTES.get(key, ""),
                 "method": DERIVED_METHOD,
+                "source": "atlas-derived",
             })
             derived.append(entry)
 
@@ -207,6 +228,25 @@ def describe(view):
         unbound.append({"name": stem, "source_size": [pw, ph],
                         "note": note})
 
+    expected = []
+    for entry in parts:
+        png = pngs[entry["name"]]
+        pw, ph = Image.open(png).size
+        region = entries.get(entry["name"])
+        if region is None:
+            continue
+        aw, ah = region["orig"]
+        if (pw, ph) == (aw, ah):
+            continue
+        same_aspect = abs(pw / float(ph) - aw / float(ah)) < 0.02
+        expected.append({
+            "name": entry["name"],
+            "png": [pw, ph],
+            "atlas": [aw, ah],
+            "ratio": [round(aw / float(pw), 4), round(ah / float(ph), 4)],
+            "reason": DIFF_REASON_SCALED if same_aspect else DIFF_REASON_CROP,
+        })
+
     layout = {
         "view": view,
         "canvas_size": [int(round(skel.get("width", 756))), ch],
@@ -214,6 +254,7 @@ def describe(view):
         "source_crop_xyxy": old.get("source_crop_xyxy"),
         "derived_from": "%s (rest pose)" % cfg["rig"],
         "parts": parts,
+        "expected_differences": expected,
         "derived_parts": derived,
         "unbound_parts": unbound,
         "deprecated_parts": deprecated,
@@ -286,6 +327,9 @@ def describe(view):
             "unbound_parts": len(unbound),
             "deprecated_parts": len(deprecated),
             "png_files_in_parts": len(pngs),
+            "expected_differences": len(expected),
+            "atlas_derived_parts": sum(1 for p in parts
+                                       if p.get("source") == "atlas-derived"),
         },
         "checks": {
             "bbox_width_height_equals_png_size":
@@ -296,6 +340,10 @@ def describe(view):
             "setup_json_reproduces_rig_quads":
                 "passed (max corner delta %.6f px)"
                 % checks["setup_quad_max_delta"],
+            "parts_vs_atlas_size":
+                "expected: %d of %d parts differ on purpose (see "
+                "layout.json expected_differences); the atlas is not a licence "
+                "to rewrite parts/" % (len(expected), len(parts)),
             "psd_pixel_roundtrip": "not re-run; the PSD was not rebuilt",
         },
         "padding": {"%d,%d,%d,%d" % k: v

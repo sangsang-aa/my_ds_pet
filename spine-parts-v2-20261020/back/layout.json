@@ -21,6 +21,7 @@
         277.0,
         890.0
       ],
+      "source": "native",
       "bbox_xywh": [
         214,
         840,
@@ -44,6 +45,7 @@
         405.0,
         892.0
       ],
+      "source": "native",
       "bbox_xywh": [
         356,
         840,
@@ -67,6 +69,7 @@
         352.0,
         829.0
       ],
+      "source": "native",
       "bbox_xywh": [
         292,
         816,
@@ -90,6 +93,7 @@
         471.0,
         922.0
       ],
+      "source": "native",
       "bbox_xywh": [
         424,
         926,
@@ -113,6 +117,7 @@
         471.0,
         920.0
       ],
+      "source": "native",
       "bbox_xywh": [
         454,
         899,
@@ -136,6 +141,7 @@
         344.0,
         801.0
       ],
+      "source": "native",
       "bbox_xywh": [
         75,
         704,
@@ -167,6 +173,7 @@
         344.0,
         660.0
       ],
+      "source": "native",
       "bbox_xywh": [
         105,
         488,
@@ -190,6 +197,7 @@
         119.0,
         327.0
       ],
+      "source": "native",
       "bbox_xywh": [
         4,
         323,
@@ -213,6 +221,7 @@
         560.0,
         328.0
       ],
+      "source": "native",
       "bbox_xywh": [
         547,
         330,
@@ -236,6 +245,7 @@
         343.0,
         246.0
       ],
+      "source": "native",
       "bbox_xywh": [
         58,
         93,
@@ -259,6 +269,7 @@
         181.0,
         325.0
       ],
+      "source": "native",
       "bbox_xywh": [
         21,
         272,
@@ -282,6 +293,7 @@
         518.0,
         325.0
       ],
+      "source": "native",
       "bbox_xywh": [
         363,
         279,
@@ -305,6 +317,7 @@
         329.0,
         464.0
       ],
+      "source": "native",
       "bbox_xywh": [
         192,
         426,
@@ -328,6 +341,7 @@
         342.0,
         98.0
       ],
+      "source": "native",
       "bbox_xywh": [
         89,
         39,
@@ -351,6 +365,7 @@
         343.0,
         124.0
       ],
+      "source": "native",
       "bbox_xywh": [
         258,
         103,
@@ -374,6 +389,7 @@
         119.0,
         325.0
       ],
+      "source": "native",
       "bbox_xywh": [
         107,
         322,
@@ -397,6 +413,7 @@
         555.0,
         324.0
       ],
+      "source": "native",
       "bbox_xywh": [
         545,
         321,
@@ -420,6 +437,7 @@
         118.0,
         305.0
       ],
+      "source": "native",
       "bbox_xywh": [
         81,
         271,
@@ -443,6 +461,7 @@
         559.0,
         305.0
       ],
+      "source": "native",
       "bbox_xywh": [
         521,
         271,
@@ -466,6 +485,7 @@
         119.0,
         417.0
       ],
+      "source": "native",
       "bbox_xywh": [
         78,
         407,
@@ -489,6 +509,7 @@
         558.0,
         417.0
       ],
+      "source": "native",
       "bbox_xywh": [
         521,
         407,
@@ -505,6 +526,7 @@
       "method": "Original painted feature, separately cleaned alpha and white-matte edges; adjacent colours removed."
     }
   ],
+  "expected_differences": [],
   "derived_parts": [
     {
       "name": "sock_left",
@@ -514,6 +536,7 @@
         277.0,
         890.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         246,
         804,
@@ -531,6 +554,7 @@
         405.0,
         892.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         388,
         804,

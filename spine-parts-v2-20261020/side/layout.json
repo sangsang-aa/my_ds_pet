@@ -21,6 +21,7 @@
         330.0,
         795.0
       ],
+      "source": "native",
       "bbox_xywh": [
         287,
         749,
@@ -44,6 +45,7 @@
         525.0,
         857.0
       ],
+      "source": "native",
       "bbox_xywh": [
         501,
         745,
@@ -67,6 +69,7 @@
         526.0,
         859.0
       ],
+      "source": "native",
       "bbox_xywh": [
         516,
         811,
@@ -90,6 +93,7 @@
         236.0,
         862.0
       ],
+      "source": "native",
       "bbox_xywh": [
         161,
         875,
@@ -121,6 +125,7 @@
         226.0,
         726.0
       ],
+      "source": "native",
       "bbox_xywh": [
         74,
         650,
@@ -152,6 +157,7 @@
         231.0,
         581.0
       ],
+      "source": "native",
       "bbox_xywh": [
         83,
         501,
@@ -175,6 +181,7 @@
         229.0,
         460.0
       ],
+      "source": "native",
       "bbox_xywh": [
         72,
         204,
@@ -198,6 +205,7 @@
         405.0,
         243.0
       ],
+      "source": "native",
       "bbox_xywh": [
         250,
         98,
@@ -221,6 +229,7 @@
         516.0,
         439.0
       ],
+      "source": "native",
       "bbox_xywh": [
         492,
         378,
@@ -244,6 +253,7 @@
         396.0,
         449.0
       ],
+      "source": "native",
       "bbox_xywh": [
         273,
         429,
@@ -267,6 +277,7 @@
         230.0,
         104.0
       ],
+      "source": "native",
       "bbox_xywh": [
         88,
         38,
@@ -290,6 +301,7 @@
         240.0,
         559.0
       ],
+      "source": "native",
       "bbox_xywh": [
         186,
         554,
@@ -321,6 +333,7 @@
         250.0,
         732.0
       ],
+      "source": "native",
       "bbox_xywh": [
         220,
         686,
@@ -344,6 +357,7 @@
         248.0,
         704.0
       ],
+      "source": "native",
       "bbox_xywh": [
         183,
         678,
@@ -367,6 +381,7 @@
         230.0,
         543.0
       ],
+      "source": "native",
       "bbox_xywh": [
         111,
         481,
@@ -390,6 +405,7 @@
         146.0,
         554.0
       ],
+      "source": "native",
       "bbox_xywh": [
         115,
         522,
@@ -413,6 +429,7 @@
         137.0,
         585.0
       ],
+      "source": "native",
       "bbox_xywh": [
         71,
         574,
@@ -436,6 +453,7 @@
         145.0,
         586.0
       ],
+      "source": "native",
       "bbox_xywh": [
         103,
         581,
@@ -459,6 +477,7 @@
         147.0,
         411.0
       ],
+      "source": "native",
       "bbox_xywh": [
         108,
         368,
@@ -482,6 +501,7 @@
         94.0,
         483.0
       ],
+      "source": "native",
       "bbox_xywh": [
         81,
         478,
@@ -505,6 +525,7 @@
         237.0,
         241.0
       ],
+      "source": "native",
       "bbox_xywh": [
         164,
         135,
@@ -528,6 +549,7 @@
         136.0,
         198.0
       ],
+      "source": "native",
       "bbox_xywh": [
         16,
         127,
@@ -551,6 +573,7 @@
         173.0,
         199.0
       ],
+      "source": "native",
       "bbox_xywh": [
         127,
         150,
@@ -574,6 +597,7 @@
         139.0,
         318.0
       ],
+      "source": "native",
       "bbox_xywh": [
         108,
         309,
@@ -605,6 +629,7 @@
         297.0,
         159.0
       ],
+      "source": "native",
       "bbox_xywh": [
         159,
         61,
@@ -628,6 +653,7 @@
         312.0,
         366.0
       ],
+      "source": "native",
       "bbox_xywh": [
         295,
         358,
@@ -651,6 +677,7 @@
         315.0,
         232.0
       ],
+      "source": "native",
       "bbox_xywh": [
         273,
         183,
@@ -674,6 +701,7 @@
         316.0,
         335.0
       ],
+      "source": "native",
       "bbox_xywh": [
         262,
         304,
@@ -690,6 +718,72 @@
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     }
   ],
+  "expected_differences": [
+    {
+      "name": "visible_boot",
+      "png": [
+        133,
+        100
+      ],
+      "atlas": [
+        117,
+        98
+      ],
+      "ratio": [
+        0.8797,
+        0.98
+      ],
+      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "coat_fur_trim",
+      "png": [
+        391,
+        190
+      ],
+      "atlas": [
+        372,
+        182
+      ],
+      "ratio": [
+        0.9514,
+        0.9579
+      ],
+      "reason": "the atlas bakes the display scale into the texture (LANCZOS); region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "visible_sleeve",
+      "png": [
+        127,
+        132
+      ],
+      "atlas": [
+        127,
+        163
+      ],
+      "ratio": [
+        1.0,
+        1.2348
+      ],
+      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "eyebrow",
+      "png": [
+        65,
+        24
+      ],
+      "atlas": [
+        68,
+        24
+      ],
+      "ratio": [
+        1.0462,
+        1.0
+      ],
+      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+    }
+  ],
   "derived_parts": [
     {
       "name": "far_sock",
@@ -699,6 +793,7 @@
         216.0,
         860.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         175,
         816,
@@ -716,6 +811,7 @@
         216.0,
         860.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         151,
         876,
@@ -733,6 +829,7 @@
         236.0,
         862.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         195,
         817,
@@ -750,6 +847,7 @@
         125.0,
         661.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         41,
         635,

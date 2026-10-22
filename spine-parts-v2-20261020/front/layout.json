@@ -21,6 +21,7 @@
         469.0,
         851.0
       ],
+      "source": "native",
       "bbox_xywh": [
         445,
         752,
@@ -44,6 +45,7 @@
         351.0,
         291.0
       ],
+      "source": "native",
       "bbox_xywh": [
         72,
         122,
@@ -67,6 +69,7 @@
         130.0,
         419.0
       ],
+      "source": "native",
       "bbox_xywh": [
         44,
         372,
@@ -90,6 +93,7 @@
         543.0,
         447.0
       ],
+      "source": "native",
       "bbox_xywh": [
         346,
         369,
@@ -113,6 +117,7 @@
         306.0,
         911.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         264,
         839,
@@ -131,6 +136,7 @@
         306.0,
         911.0
       ],
+      "source": "native",
       "bbox_xywh": [
         241,
         889,
@@ -154,6 +160,7 @@
         424.0,
         912.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         383,
         839,
@@ -172,6 +179,7 @@
         424.0,
         912.0
       ],
+      "source": "native",
       "bbox_xywh": [
         364,
         891,
@@ -195,6 +203,7 @@
         351.0,
         585.0
       ],
+      "source": "native",
       "bbox_xywh": [
         122,
         534,
@@ -218,6 +227,7 @@
         133.458,
         758.635
       ],
+      "source": "native",
       "bbox_xywh": [
         117,
         733,
@@ -241,6 +251,7 @@
         577.715,
         758.817
       ],
+      "source": "native",
       "bbox_xywh": [
         568,
         734,
@@ -264,6 +275,7 @@
         255.034,
         599.956
       ],
+      "source": "native",
       "bbox_xywh": [
         149,
         520,
@@ -282,6 +294,7 @@
         438.966,
         601.956
       ],
+      "source": "native",
       "bbox_xywh": [
         452,
         522,
@@ -300,6 +313,7 @@
         189.579,
         651.749
       ],
+      "source": "native",
       "bbox_xywh": [
         118,
         608,
@@ -318,6 +332,7 @@
         528.795,
         653.13
       ],
+      "source": "native",
       "bbox_xywh": [
         493,
         608,
@@ -336,6 +351,7 @@
         189.579,
         651.749
       ],
+      "source": "native",
       "bbox_xywh": [
         97,
         652,
@@ -354,6 +370,7 @@
         528.795,
         653.13
       ],
+      "source": "native",
       "bbox_xywh": [
         516,
         655,
@@ -372,6 +389,7 @@
         352.0,
         549.0
       ],
+      "source": "native",
       "bbox_xywh": [
         194,
         497,
@@ -403,6 +421,7 @@
         335.0,
         570.0
       ],
+      "source": "native",
       "bbox_xywh": [
         290,
         575,
@@ -426,6 +445,7 @@
         368.0,
         571.0
       ],
+      "source": "native",
       "bbox_xywh": [
         363,
         573,
@@ -449,6 +469,7 @@
         293.0,
         625.0
       ],
+      "source": "native",
       "bbox_xywh": [
         264,
         616,
@@ -472,6 +493,7 @@
         403.0,
         625.0
       ],
+      "source": "native",
       "bbox_xywh": [
         376,
         616,
@@ -495,6 +517,7 @@
         354.0,
         558.0
       ],
+      "source": "native",
       "bbox_xywh": [
         285,
         522,
@@ -518,6 +541,7 @@
         353.0,
         558.0
       ],
+      "source": "native",
       "bbox_xywh": [
         322,
         527,
@@ -541,6 +565,7 @@
         351.0,
         240.0
       ],
+      "source": "native",
       "bbox_xywh": [
         91,
         139,
@@ -559,6 +584,7 @@
         352.0,
         477.0
       ],
+      "source": "native",
       "bbox_xywh": [
         195,
         216,
@@ -582,6 +608,7 @@
         277.0,
         437.0
       ],
+      "source": "native",
       "bbox_xywh": [
         209,
         400,
@@ -605,6 +632,7 @@
         441.0,
         438.0
       ],
+      "source": "native",
       "bbox_xywh": [
         390,
         403,
@@ -628,6 +656,7 @@
         351.0,
         504.0
       ],
+      "source": "native",
       "bbox_xywh": [
         342,
         500,
@@ -651,6 +680,7 @@
         108.0,
         412.0
       ],
+      "source": "native",
       "bbox_xywh": [
         31,
         355,
@@ -674,6 +704,7 @@
         549.0,
         407.0
       ],
+      "source": "native",
       "bbox_xywh": [
         572,
         370,
@@ -697,6 +728,7 @@
         193.0,
         310.0
       ],
+      "source": "native",
       "bbox_xywh": [
         117,
         183,
@@ -720,6 +752,7 @@
         501.0,
         315.0
       ],
+      "source": "native",
       "bbox_xywh": [
         430,
         187,
@@ -743,6 +776,7 @@
         296.0,
         212.0
       ],
+      "source": "native",
       "bbox_xywh": [
         202,
         161,
@@ -766,6 +800,7 @@
         343.0,
         223.0
       ],
+      "source": "native",
       "bbox_xywh": [
         267,
         168,
@@ -789,6 +824,7 @@
         426.0,
         216.0
       ],
+      "source": "native",
       "bbox_xywh": [
         369,
         163,
@@ -812,6 +848,7 @@
         358.0,
         99.0
       ],
+      "source": "native",
       "bbox_xywh": [
         203,
         36,
@@ -835,6 +872,7 @@
         343.0,
         129.0
       ],
+      "source": "native",
       "bbox_xywh": [
         97,
         66,
@@ -858,6 +896,7 @@
         566.0,
         236.0
       ],
+      "source": "native",
       "bbox_xywh": [
         523,
         193,
@@ -881,6 +920,7 @@
         595.0,
         346.0
       ],
+      "source": "native",
       "bbox_xywh": [
         550,
         319,
@@ -904,6 +944,7 @@
         269.0,
         346.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         227,
         337,
@@ -922,6 +963,7 @@
         429.0,
         344.0
       ],
+      "source": "atlas-derived",
       "bbox_xywh": [
         387,
         335,
@@ -931,6 +973,24 @@
       "original_bbox_xywh": null,
       "note": "",
       "method": "New part."
+    }
+  ],
+  "expected_differences": [
+    {
+      "name": "collar",
+      "png": [
+        324,
+        103
+      ],
+      "atlas": [
+        325,
+        95
+      ],
+      "ratio": [
+        1.0031,
+        0.9223
+      ],
+      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
     }
   ],
   "derived_parts": [],
