@@ -283,19 +283,21 @@ def draw_region(canvas, img, w, h, bone, att, skel, cw, ch, resample=Image.NEARE
 
 
 def find_attachment(atts, slot):
-    """Look an attachment up the way the JSON may group it.
+    """Look an attachment up by slot name, the way Spine groups skins.
 
-    Spine groups skin attachments by slot name, but hand-edited rigs (and this
-    project's cuff slots) can group them under the driving bone instead, so try
-    both and fall back to a name scan.
+    A missing attachment is a data error.  Warn and skip; never borrow a
+    same-named attachment from another group, because that silently hides the
+    mistake (the front cuffs were duplicated under their bone's group for a
+    while and two lookups made it work).
     """
     name = slot.get("attachment")
-    for key in (slot.get("name"), slot.get("bone")):
-        if key and name in atts.get(key, {}):
-            return atts[key][name]
-    for group in atts.values():
-        if name in group:
-            return group[name]
+    if name is None:
+        return None
+    group = atts.get(slot.get("name"), {})
+    if name in group:
+        return group[name]
+    print("warning: slot %r has no attachment %r, skipped"
+          % (slot.get("name"), name), file=sys.stderr)
     return None
 
 
