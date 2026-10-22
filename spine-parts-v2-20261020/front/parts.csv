@@ -1,35 +1,43 @@
 ﻿name,draw_order,parent,left,top,width,height,pivot_x,pivot_y,method
-tail_trunk,0,root,445,752,290,175,469,851,Complete restored tail; use a short mesh bone chain.
-rear_hair_base,1,root,72,112,614,484,351,281,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
-rear_hair_screen_left_outer,2,rear_hair_base,44,362,349,415,130,409,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
-rear_hair_screen_right_outer,3,rear_hair_base,346,359,367,418,543,437,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
-boot_screen_left,4,root,241,865,114,95,306,887,Original boot contour cleaned.
-boot_screen_right,5,root,364,867,118,93,424,888,Original boot contour cleaned.
-coat_torso,6,root,122,534,466,345,351,585,"Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation."
-collar,7,coat_torso,193,491,324,103,352,549,Complete fur collar restoration; no cut-out bow hole.
-hand_screen_left,8,sleeve_screen_left,121,699,40,48,137,725,Complete simple chibi hand restoration.
-hand_screen_right,9,sleeve_screen_right,560,700,40,48,570,725,Complete simple chibi hand restoration.
-sleeve_screen_left,10,coat_torso,103,570,143,175,207,599,Complete sleeve and cuff restoration; no original clothing fragments.
-sleeve_screen_right,11,coat_torso,473,572,143,175,491,602,Mirrored complete sleeve and cuff restoration.
-cord_screen_left,12,chest_bow,290,575,50,50,335,570,"Original ornament, alpha and white-matte edge cleanup."
-cord_screen_right,13,chest_bow,363,573,46,53,368,571,"Original ornament, alpha and white-matte edge cleanup."
-pompom_screen_left,14,cord_screen_left,264,616,58,55,293,625,"Original ornament, alpha and white-matte edge cleanup."
-pompom_screen_right,15,cord_screen_right,376,616,60,55,403,625,"Original ornament, alpha and white-matte edge cleanup."
-chest_bow,16,coat_torso,285,522,135,70,354,558,Original bow re-extracted from the reference; star remains separate.
-chest_star,17,chest_bow,322,527,61,62,353,558,"Original ornament, alpha and white-matte edge cleanup."
-front_hair_cap,18,rear_hair_base,91,129,487,261,351,230,"Original painted scalp under the front locks, slightly enlarged inside the headband overlap."
-face_base,19,root,195,206,322,324,352,467,Complete clean blank face restoration; no old skin fragments or hair shards.
-eye_screen_left,20,face_base,209,390,103,85,277,427,"Original iris and lashes, manually bounded silhouette, no colour extrusion."
-eye_screen_right,21,face_base,390,393,107,79,441,428,"Original iris and lashes, manually bounded silhouette, no colour extrusion."
-mouth,22,face_base,342,490,16,9,351,494,Clean short chibi mouth stroke.
-fin_screen_left,23,headband,31,345,102,117,108,402,Original fin ornament with cleaned boundary.
-fin_screen_right,24,headband,572,360,142,102,549,397,Original fin ornament with cleaned boundary.
-side_hair_screen_left,25,rear_hair_base,117,173,145,427,193,300,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-side_hair_screen_right,26,rear_hair_base,430,177,156,381,501,305,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-fringe_screen_left,27,side_hair_screen_left,202,151,144,262,296,202,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-fringe_center,28,rear_hair_base,267,158,151,282,343,213,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-fringe_screen_right,29,side_hair_screen_right,369,153,132,259,426,206,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-ahoge,30,rear_hair_base,203,26,168,103,358,89,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
-headband,31,rear_hair_base,97,56,548,319,343,119,Original ornament with isolated contour and edge decontamination.
-snowflake,32,headband,523,183,77,88,566,226,Original ornament with isolated contour and edge decontamination.
-head_bow_screen_right,33,headband,550,309,78,71,595,336,Original ornament with isolated contour and edge decontamination.
+tail_trunk,0,body,445,752,290,175,469.0,851.0,Complete restored tail; use a short mesh bone chain.
+rear_hair_base,1,head,72,122,614,484,351.0,291.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+rear_hair_screen_left_outer,2,rear_hair_base,44,372,349,415,130.0,419.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+rear_hair_screen_right_outer,3,rear_hair_base,346,369,367,418,543.0,447.0,"Complete rear-hair restoration, separated into broad mesh locks; no old fragments."
+sock_screen_left,4,boot_screen_left,264,839,82,68,306.0,911.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+boot_screen_left,5,body,241,889,114,95,306.0,911.0,Original boot contour cleaned.
+sock_screen_right,6,boot_screen_right,383,839,82,68,424.0,912.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+boot_screen_right,7,body,364,891,118,93,424.0,912.0,Original boot contour cleaned.
+coat_torso,8,body,122,534,466,345,351.0,585.0,"Sudorelay complete sleeveless torso redraw, including patterned skirt and fur hem. Use mesh deformation."
+hand_screen_left,9,forearm_screen_left,117,733,40,48,133.458,758.635,Complete simple chibi hand restoration.
+hand_screen_right,10,forearm_screen_right,568,734,40,48,577.715,758.817,Complete simple chibi hand restoration.
+upper_arm_screen_left,11,coat_torso,154,538,108,137,255.034,599.956,Split from the old single sleeve; no reshaping.
+upper_arm_screen_right,12,coat_torso,456,540,104,136,438.966,601.956,Split from the old single sleeve; no reshaping.
+forearm_screen_left,13,upper_arm_screen_left,122,624,103,123,189.579,651.749,Split from the old single sleeve; no reshaping.
+forearm_screen_right,14,upper_arm_screen_right,498,625,108,124,528.795,653.13,Split from the old single sleeve; no reshaping.
+cuff_screen_left,15,upper_arm_screen_left,102,665,99,100,189.579,651.749,Split from the old sleeve's fur trim; no reshaping.
+cuff_screen_right,16,upper_arm_screen_right,520,668,99,100,528.795,653.13,Split from the old sleeve's fur trim; no reshaping.
+collar,17,coat_torso,194,497,324,103,352.0,549.0,Complete fur collar restoration; no cut-out bow hole.
+cord_screen_left,18,chest_bow,290,575,50,50,335.0,570.0,"Original ornament, alpha and white-matte edge cleanup."
+cord_screen_right,19,chest_bow,363,573,46,53,368.0,571.0,"Original ornament, alpha and white-matte edge cleanup."
+pompom_screen_left,20,cord_screen_left,264,616,58,55,293.0,625.0,"Original ornament, alpha and white-matte edge cleanup."
+pompom_screen_right,21,cord_screen_right,376,616,60,55,403.0,625.0,"Original ornament, alpha and white-matte edge cleanup."
+chest_bow,22,coat_torso,285,522,135,70,354.0,558.0,Original bow re-extracted from the reference; star remains separate.
+chest_star,23,chest_bow,322,527,61,62,353.0,558.0,"Original ornament, alpha and white-matte edge cleanup."
+front_hair_cap,24,rear_hair_base,91,139,487,261,351.0,240.0,"Original painted scalp under the front locks, slightly enlarged inside the headband overlap."
+face_base,25,head,195,216,322,324,352.0,477.0,Complete clean blank face restoration; no old skin fragments or hair shards.
+eye_screen_left,26,face_base,209,400,103,85,277.0,437.0,"Original iris and lashes, manually bounded silhouette, no colour extrusion."
+eye_screen_right,27,face_base,390,403,107,79,441.0,438.0,"Original iris and lashes, manually bounded silhouette, no colour extrusion."
+mouth,28,face_base,342,500,16,9,351.0,504.0,Clean short chibi mouth stroke.
+fin_screen_left,29,headband,31,355,102,117,108.0,412.0,Original fin ornament with cleaned boundary.
+fin_screen_right,30,headband,572,370,142,102,549.0,407.0,Original fin ornament with cleaned boundary.
+side_hair_screen_left,31,rear_hair_base,117,183,145,427,193.0,310.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+side_hair_screen_right,32,rear_hair_base,430,187,156,381,501.0,315.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+fringe_screen_left,33,side_hair_screen_left,202,161,144,262,296.0,212.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+fringe_center,34,rear_hair_base,267,168,151,282,343.0,223.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+fringe_screen_right,35,side_hair_screen_right,369,163,132,259,426.0,216.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+ahoge,36,rear_hair_base,203,36,168,103,358.0,99.0,"Re-extracted original blue hair within a dedicated contour; skin, fur and red lashes excluded."
+headband,37,rear_hair_base,97,66,548,319,343.0,129.0,Original ornament with isolated contour and edge decontamination.
+snowflake,38,headband,523,193,77,88,566.0,236.0,Original ornament with isolated contour and edge decontamination.
+head_bow_screen_right,39,headband,550,319,78,71,595.0,346.0,Original ornament with isolated contour and edge decontamination.
+eyebrow_screen_left,40,face_base,227,337,81,19,269.0,346.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+eyebrow_screen_right,41,face_base,387,335,80,21,429.0,344.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.

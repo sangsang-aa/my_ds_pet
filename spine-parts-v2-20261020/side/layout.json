@@ -11,14 +11,21 @@
     1511,
     1131
   ],
+  "derived_from": "spine/side/whale_girl_side.json (rest pose)",
   "parts": [
     {
       "name": "tail_trunk",
       "draw_order": 0,
-      "parent": "root",
+      "parent": "body",
       "pivot_xy": [
-        330,
-        795
+        330.0,
+        795.0
+      ],
+      "bbox_xywh": [
+        287,
+        749,
+        254,
+        155
       ],
       "original_bbox_xywh": [
         300,
@@ -27,12 +34,6 @@
         79
       ],
       "note": "尾干；连接外套下方与尾鳍，根部遮挡区需补画。",
-      "bbox_xywh": [
-        287,
-        749,
-        254,
-        155
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
@@ -40,8 +41,14 @@
       "draw_order": 1,
       "parent": "tail_trunk",
       "pivot_xy": [
-        525,
-        857
+        525.0,
+        857.0
+      ],
+      "bbox_xywh": [
+        501,
+        745,
+        74,
+        124
       ],
       "original_bbox_xywh": [
         501,
@@ -50,12 +57,6 @@
         120
       ],
       "note": "朝上的尾鳍叶片，可独立扇动。",
-      "bbox_xywh": [
-        501,
-        745,
-        74,
-        124
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
@@ -63,8 +64,14 @@
       "draw_order": 2,
       "parent": "tail_trunk",
       "pivot_xy": [
-        526,
-        859
+        526.0,
+        859.0
+      ],
+      "bbox_xywh": [
+        516,
+        811,
+        131,
+        75
       ],
       "original_bbox_xywh": [
         521,
@@ -73,21 +80,21 @@
         69
       ],
       "note": "朝右的尾鳍叶片；与上叶片在尾尖交接。",
-      "bbox_xywh": [
-        516,
-        811,
-        131,
-        75
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "visible_boot",
-      "draw_order": 3,
-      "parent": "root",
+      "draw_order": 6,
+      "parent": "body",
       "pivot_xy": [
-        224,
-        844
+        236.0,
+        862.0
+      ],
+      "bbox_xywh": [
+        161,
+        875,
+        133,
+        100
       ],
       "original_bbox_xywh": [
         156,
@@ -96,21 +103,29 @@
         96
       ],
       "note": "侧面仅一只完整可见靴子；含可见袜筒和腿部细条，不虚构另一只脚。",
-      "bbox_xywh": [
-        154,
-        856,
-        133,
-        100
+      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩",
+      "atlas_size": [
+        117.0,
+        98.0
       ],
-      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
+      "region_scale": [
+        0.8797,
+        0.98
+      ]
     },
     {
       "name": "coat_fur_trim",
-      "draw_order": 4,
+      "draw_order": 8,
       "parent": "coat_torso",
       "pivot_xy": [
-        212,
-        736
+        226.0,
+        726.0
+      ],
+      "bbox_xywh": [
+        74,
+        650,
+        391,
+        190
       ],
       "original_bbox_xywh": [
         33,
@@ -119,21 +134,29 @@
         245
       ],
       "note": "前襟与下摆相连的毛边；被衣身覆盖的底层留作补画，左侧极小的远侧白边随衣摆保留。",
-      "bbox_xywh": [
-        34,
-        670,
-        391,
-        190
+      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩",
+      "atlas_size": [
+        372.0,
+        182.0
       ],
-      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
+      "region_scale": [
+        0.9514,
+        0.9579
+      ]
     },
     {
       "name": "coat_torso",
-      "draw_order": 5,
-      "parent": "root",
+      "draw_order": 9,
+      "parent": "body",
       "pivot_xy": [
-        231,
-        581
+        231.0,
+        581.0
+      ],
+      "bbox_xywh": [
+        83,
+        501,
+        359,
+        326
       ],
       "original_bbox_xywh": [
         50,
@@ -142,21 +165,21 @@
         227
       ],
       "note": "外套衣身与左侧可见衣襟；肩部和头发覆盖处需补齐。",
-      "bbox_xywh": [
-        83,
-        501,
-        359,
-        326
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "face_ear_neck",
-      "draw_order": 6,
-      "parent": "root",
+      "draw_order": 10,
+      "parent": "head",
       "pivot_xy": [
-        229,
-        460
+        229.0,
+        460.0
+      ],
+      "bbox_xywh": [
+        72,
+        204,
+        248,
+        342
       ],
       "original_bbox_xywh": [
         77,
@@ -165,21 +188,21 @@
         221
       ],
       "note": "侧脸、耳与露出的颈部合为底皮；耳前被头发遮住的脸颊和颈部需补画。",
-      "bbox_xywh": [
-        72,
-        204,
-        248,
-        342
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "rear_hair_base",
-      "draw_order": 7,
-      "parent": "root",
+      "draw_order": 11,
+      "parent": "head",
       "pivot_xy": [
-        405,
-        243
+        405.0,
+        243.0
+      ],
+      "bbox_xywh": [
+        250,
+        98,
+        334,
+        515
       ],
       "original_bbox_xywh": [
         298,
@@ -188,21 +211,21 @@
         636
       ],
       "note": "后发主体底层，只覆盖真实后发区域；后面两束覆盖后发的下端。",
-      "bbox_xywh": [
-        250,
-        98,
-        334,
-        515
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "rear_hair_outer_lock",
-      "draw_order": 8,
+      "draw_order": 12,
       "parent": "rear_hair_base",
       "pivot_xy": [
-        516,
-        439
+        516.0,
+        439.0
+      ],
+      "bbox_xywh": [
+        492,
+        378,
+        100,
+        332
       ],
       "original_bbox_xywh": [
         480,
@@ -211,21 +234,21 @@
         314
       ],
       "note": "最外侧后发卷束，包含两个细弧形镂空附近的发丝与外卷发尾。",
-      "bbox_xywh": [
-        492,
-        378,
-        100,
-        332
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "rear_hair_inner_lock",
-      "draw_order": 9,
+      "draw_order": 13,
       "parent": "rear_hair_base",
       "pivot_xy": [
-        396,
-        449
+        396.0,
+        449.0
+      ],
+      "bbox_xywh": [
+        273,
+        429,
+        257,
+        339
       ],
       "original_bbox_xywh": [
         316,
@@ -234,21 +257,21 @@
         337
       ],
       "note": "靠近身体的后发大束与中央卷尾；分界沿原画内部发束线延伸。",
-      "bbox_xywh": [
-        273,
-        429,
-        257,
-        339
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "ahoge",
-      "draw_order": 10,
+      "draw_order": 14,
       "parent": "rear_hair_base",
       "pivot_xy": [
-        230,
-        104
+        230.0,
+        104.0
+      ],
+      "bbox_xywh": [
+        88,
+        38,
+        154,
+        90
       ],
       "original_bbox_xywh": [
         90,
@@ -257,44 +280,21 @@
         89
       ],
       "note": "头顶呆毛；根部位于发箍后。",
-      "bbox_xywh": [
-        88,
-        38,
-        154,
-        90
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
-      "name": "collar",
-      "draw_order": 11,
-      "parent": "coat_torso",
-      "pivot_xy": [
-        230,
-        543
-      ],
-      "original_bbox_xywh": [
-        114,
-        484,
-        223,
-        112
-      ],
-      "note": "颈后与肩部毛领，和后发、脸皮分开。",
-      "bbox_xywh": [
-        111,
-        481,
-        228,
-        118
-      ],
-      "method": "完整插画替换；原坐标适配；无原碎片叠加"
-    },
-    {
       "name": "visible_sleeve",
-      "draw_order": 12,
+      "draw_order": 15,
       "parent": "coat_torso",
       "pivot_xy": [
-        240,
-        586
+        240.0,
+        559.0
+      ],
+      "bbox_xywh": [
+        186,
+        554,
+        127,
+        132
       ],
       "original_bbox_xywh": [
         188,
@@ -303,21 +303,29 @@
         128
       ],
       "note": "唯一主要可见袖筒，雪花图案随袖子运动。",
-      "bbox_xywh": [
-        186,
-        569,
-        127,
-        132
+      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩",
+      "atlas_size": [
+        127.0,
+        163.0
       ],
-      "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
+      "region_scale": [
+        1.0,
+        1.2348
+      ]
     },
     {
       "name": "visible_hand",
-      "draw_order": 13,
+      "draw_order": 16,
       "parent": "visible_sleeve",
       "pivot_xy": [
-        250,
-        732
+        250.0,
+        732.0
+      ],
+      "bbox_xywh": [
+        220,
+        686,
+        59,
+        61
       ],
       "original_bbox_xywh": [
         227,
@@ -326,21 +334,21 @@
         16
       ],
       "note": "袖口下露出的指尖；完整手掌与手腕需要补画。",
-      "bbox_xywh": [
-        220,
-        686,
-        59,
-        61
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "visible_cuff",
-      "draw_order": 14,
+      "draw_order": 17,
       "parent": "visible_sleeve",
       "pivot_xy": [
-        248,
-        704
+        248.0,
+        704.0
+      ],
+      "bbox_xywh": [
+        183,
+        678,
+        133,
+        66
       ],
       "original_bbox_xywh": [
         185,
@@ -349,21 +357,44 @@
         62
       ],
       "note": "白色袖口毛边；前沿的小手另层。",
-      "bbox_xywh": [
-        183,
-        678,
-        133,
-        66
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
-      "name": "chest_bow",
-      "draw_order": 15,
+      "name": "collar",
+      "draw_order": 18,
       "parent": "coat_torso",
       "pivot_xy": [
-        146,
-        554
+        230.0,
+        543.0
+      ],
+      "bbox_xywh": [
+        111,
+        481,
+        228,
+        118
+      ],
+      "original_bbox_xywh": [
+        114,
+        484,
+        223,
+        112
+      ],
+      "note": "颈后与肩部毛领，和后发、脸皮分开。",
+      "method": "完整插画替换；原坐标适配；无原碎片叠加"
+    },
+    {
+      "name": "chest_bow",
+      "draw_order": 19,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        146.0,
+        554.0
+      ],
+      "bbox_xywh": [
+        115,
+        522,
+        52,
+        64
       ],
       "original_bbox_xywh": [
         115,
@@ -372,21 +403,21 @@
         65
       ],
       "note": "侧面可见的胸前蝴蝶结窄侧面与星饰边缘。",
-      "bbox_xywh": [
-        115,
-        522,
-        52,
-        64
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "cord_pompom_back",
-      "draw_order": 16,
+      "draw_order": 20,
       "parent": "chest_bow",
       "pivot_xy": [
-        137,
-        585
+        137.0,
+        585.0
+      ],
+      "bbox_xywh": [
+        71,
+        574,
+        72,
+        96
       ],
       "original_bbox_xywh": [
         73,
@@ -395,21 +426,21 @@
         92
       ],
       "note": "较靠左的细绳和毛球作为一条摆件。",
-      "bbox_xywh": [
-        71,
-        574,
-        72,
-        96
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "cord_pompom_front",
-      "draw_order": 17,
+      "draw_order": 21,
       "parent": "chest_bow",
       "pivot_xy": [
-        145,
-        586
+        145.0,
+        586.0
+      ],
+      "bbox_xywh": [
+        103,
+        581,
+        65,
+        97
       ],
       "original_bbox_xywh": [
         105,
@@ -418,21 +449,21 @@
         93
       ],
       "note": "靠近观察者的细绳和大毛球；根部被胸饰遮住。",
-      "bbox_xywh": [
-        103,
-        581,
-        65,
-        97
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "visible_eye",
-      "draw_order": 18,
+      "draw_order": 22,
       "parent": "face_ear_neck",
       "pivot_xy": [
-        147,
-        411
+        147.0,
+        411.0
+      ],
+      "bbox_xywh": [
+        108,
+        368,
+        81,
+        96
       ],
       "original_bbox_xywh": [
         110,
@@ -441,21 +472,21 @@
         101
       ],
       "note": "唯一可见眼睛，包括睫毛和淡色上眼睑线；闭眼替换图需另绘。",
-      "bbox_xywh": [
-        108,
-        368,
-        81,
-        96
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "mouth",
-      "draw_order": 19,
+      "draw_order": 23,
       "parent": "face_ear_neck",
       "pivot_xy": [
-        94,
-        483
+        94.0,
+        483.0
+      ],
+      "bbox_xywh": [
+        81,
+        478,
+        25,
+        11
       ],
       "original_bbox_xywh": [
         83,
@@ -464,21 +495,21 @@
         10
       ],
       "note": "侧面细小嘴线，供口型或表情替换。",
-      "bbox_xywh": [
-        81,
-        478,
-        25,
-        11
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "front_hair_near",
-      "draw_order": 20,
+      "draw_order": 24,
       "parent": "rear_hair_base",
       "pivot_xy": [
-        237,
-        241
+        237.0,
+        241.0
+      ],
+      "bbox_xywh": [
+        164,
+        135,
+        142,
+        464
       ],
       "original_bbox_xywh": [
         162,
@@ -487,21 +518,21 @@
         460
       ],
       "note": "近侧包脸长发，连同垂到毛领前的蓝色发尾，和背后的毛领分开。",
-      "bbox_xywh": [
-        164,
-        135,
-        142,
-        464
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "front_bangs_outer",
-      "draw_order": 21,
+      "draw_order": 25,
       "parent": "front_hair_near",
       "pivot_xy": [
-        136,
-        198
+        136.0,
+        198.0
+      ],
+      "bbox_xywh": [
+        16,
+        127,
+        164,
+        300
       ],
       "original_bbox_xywh": [
         18,
@@ -510,21 +541,21 @@
         356
       ],
       "note": "远离耳朵一侧的外侧刘海；保持鼻尖附近真实镂空。",
-      "bbox_xywh": [
-        16,
-        127,
-        164,
-        300
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "front_bangs_inner",
-      "draw_order": 22,
+      "draw_order": 26,
       "parent": "front_hair_near",
       "pivot_xy": [
-        173,
-        199
+        173.0,
+        199.0
+      ],
+      "bbox_xywh": [
+        127,
+        150,
+        84,
+        257
       ],
       "original_bbox_xywh": [
         129,
@@ -533,21 +564,21 @@
         253
       ],
       "note": "朝眼角垂落的内侧刘海，尖端在眼睛上方。",
-      "bbox_xywh": [
-        127,
-        150,
-        84,
-        257
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "eyebrow",
-      "draw_order": 23,
+      "draw_order": 27,
       "parent": "face_ear_neck",
       "pivot_xy": [
-        139,
-        318
+        139.0,
+        318.0
+      ],
+      "bbox_xywh": [
+        108,
+        309,
+        65,
+        24
       ],
       "original_bbox_xywh": [
         110,
@@ -556,21 +587,29 @@
         29
       ],
       "note": "额头深色眉线，末段跨到刘海表面；抽离后需要修补其下的皮肤和头发。",
-      "bbox_xywh": [
-        108,
-        310,
-        65,
-        24
+      "method": "完整插画替换；原坐标适配；无原碎片叠加",
+      "atlas_size": [
+        68.0,
+        24.0
       ],
-      "method": "完整插画替换；原坐标适配；无原碎片叠加"
+      "region_scale": [
+        1.0462,
+        1.0
+      ]
     },
     {
       "name": "headband",
-      "draw_order": 24,
+      "draw_order": 28,
       "parent": "rear_hair_base",
       "pivot_xy": [
-        297,
-        159
+        297.0,
+        159.0
+      ],
+      "bbox_xywh": [
+        159,
+        61,
+        275,
+        327
       ],
       "original_bbox_xywh": [
         161,
@@ -579,21 +618,21 @@
         325
       ],
       "note": "整条毛绒发箍及深色中带；雪花、蝴蝶结、鳍饰另层覆盖。",
-      "bbox_xywh": [
-        159,
-        61,
-        275,
-        327
-      ],
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
       "name": "fin_ornament",
-      "draw_order": 25,
+      "draw_order": 29,
       "parent": "headband",
       "pivot_xy": [
-        312,
-        366
+        312.0,
+        366.0
+      ],
+      "bbox_xywh": [
+        295,
+        358,
+        159,
+        84
       ],
       "original_bbox_xywh": [
         292,
@@ -602,21 +641,21 @@
         91
       ],
       "note": "侧面鲸鳍耳饰，深色上层与白色波边整体摆动。",
-      "bbox_xywh": [
-        295,
-        358,
-        159,
-        84
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "snowflake",
-      "draw_order": 26,
+      "draw_order": 30,
       "parent": "headband",
       "pivot_xy": [
-        315,
-        232
+        315.0,
+        232.0
+      ],
+      "bbox_xywh": [
+        273,
+        183,
+        95,
+        97
       ],
       "original_bbox_xywh": [
         257,
@@ -625,21 +664,21 @@
         95
       ],
       "note": "雪花徽章整体，可做轻微弹性摆动。",
-      "bbox_xywh": [
-        273,
-        183,
-        95,
-        97
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     },
     {
       "name": "head_bow",
-      "draw_order": 27,
+      "draw_order": 31,
       "parent": "headband",
       "pivot_xy": [
-        316,
-        335
+        316.0,
+        335.0
+      ],
+      "bbox_xywh": [
+        262,
+        304,
+        98,
+        85
       ],
       "original_bbox_xywh": [
         264,
@@ -648,13 +687,79 @@
         81
       ],
       "note": "发箍侧蓝色蝴蝶结，压在鳍饰根部之上。",
-      "bbox_xywh": [
-        262,
-        304,
-        98,
-        85
-      ],
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
     }
-  ]
+  ],
+  "derived_parts": [
+    {
+      "name": "far_sock",
+      "draw_order": 3,
+      "parent": "far_boot",
+      "pivot_xy": [
+        216.0,
+        860.0
+      ],
+      "bbox_xywh": [
+        175,
+        816,
+        79,
+        72
+      ],
+      "note": "Sock, drawn under the boot.",
+      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+    },
+    {
+      "name": "far_boot",
+      "draw_order": 4,
+      "parent": "body",
+      "pivot_xy": [
+        216.0,
+        860.0
+      ],
+      "bbox_xywh": [
+        151,
+        876,
+        113,
+        96
+      ],
+      "note": "Far-side boot, drawn behind the near one.",
+      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+    },
+    {
+      "name": "visible_sock",
+      "draw_order": 5,
+      "parent": "visible_boot",
+      "pivot_xy": [
+        236.0,
+        862.0
+      ],
+      "bbox_xywh": [
+        195,
+        817,
+        81,
+        72
+      ],
+      "note": "Sock, drawn under the boot.",
+      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+    },
+    {
+      "name": "coat_far_flap",
+      "draw_order": 7,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        125.0,
+        661.0
+      ],
+      "bbox_xywh": [
+        41,
+        635,
+        131,
+        187
+      ],
+      "note": "Far-side coat flap, drawn behind the coat.",
+      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
+    }
+  ],
+  "unbound_parts": [],
+  "deprecated_parts": []
 }

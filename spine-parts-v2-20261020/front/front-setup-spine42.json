@@ -22,7 +22,7 @@
       "name": "head",
       "parent": "body",
       "x": 0,
-      "y": 151.2
+      "y": 141.2
     },
     {
       "name": "tail_trunk",
@@ -39,26 +39,26 @@
     {
       "name": "rear_hair_screen_left_outer",
       "parent": "rear_hair_base",
-      "x": -221,
+      "x": -221.0,
       "y": -128
     },
     {
       "name": "rear_hair_screen_right_outer",
       "parent": "rear_hair_base",
-      "x": 192,
+      "x": 192.0,
       "y": -156
     },
     {
       "name": "boot_screen_left",
       "parent": "body",
       "x": -72.0,
-      "y": -191.48
+      "y": -215.48
     },
     {
       "name": "boot_screen_right",
       "parent": "body",
       "x": 46.0,
-      "y": -192.48
+      "y": -216.48
     },
     {
       "name": "coat_torso",
@@ -69,73 +69,85 @@
     {
       "name": "collar",
       "parent": "coat_torso",
-      "x": 1,
+      "x": 1.0,
       "y": 36
     },
     {
-      "name": "sleeve_screen_left",
+      "name": "upper_arm_screen_left",
       "parent": "coat_torso",
-      "x": -144,
-      "y": -14
+      "x": -95.9661,
+      "y": -14.9562
+    },
+    {
+      "name": "forearm_screen_left",
+      "parent": "upper_arm_screen_left",
+      "x": -65.4553,
+      "y": -51.7926
     },
     {
       "name": "hand_screen_left",
-      "parent": "sleeve_screen_left",
-      "x": -70,
-      "y": -126
+      "parent": "forearm_screen_left",
+      "x": -56.1203,
+      "y": -106.8863
     },
     {
-      "name": "sleeve_screen_right",
+      "name": "upper_arm_screen_right",
       "parent": "coat_torso",
-      "x": 140,
-      "y": -17
+      "x": 87.9661,
+      "y": -16.9562
+    },
+    {
+      "name": "forearm_screen_right",
+      "parent": "upper_arm_screen_right",
+      "x": 89.8288,
+      "y": -51.1743
     },
     {
       "name": "hand_screen_right",
-      "parent": "sleeve_screen_right",
-      "x": 79,
-      "y": -123
+      "parent": "forearm_screen_right",
+      "x": 48.9203,
+      "y": -105.6863
     },
     {
       "name": "chest_bow",
       "parent": "coat_torso",
-      "x": 3,
+      "x": 3.0,
       "y": 27
     },
     {
       "name": "cord_screen_left",
       "parent": "chest_bow",
-      "x": -19,
+      "x": -19.0,
       "y": -12
     },
     {
       "name": "cord_screen_right",
       "parent": "chest_bow",
-      "x": 14,
+      "x": 14.0,
       "y": -13
     },
     {
       "name": "pompom_screen_left",
       "parent": "cord_screen_left",
-      "x": -42,
+      "x": -42.0,
       "y": -55
     },
     {
       "name": "pompom_screen_right",
       "parent": "cord_screen_right",
-      "x": 35,
+      "x": 35.0,
       "y": -54
     },
     {
       "name": "chest_star",
       "parent": "chest_bow",
-      "x": -1,
+      "x": -1.0,
       "y": 0
     },
     {
       "name": "front_hair_cap",
       "parent": "rear_hair_base",
-      "x": 0,
+      "x": 0.0,
       "y": 51
     },
     {
@@ -147,86 +159,110 @@
     {
       "name": "eye_screen_left",
       "parent": "face_base",
-      "x": -75,
+      "x": -75.0,
       "y": 40
     },
     {
       "name": "eye_screen_right",
       "parent": "face_base",
-      "x": 89,
+      "x": 89.0,
       "y": 39
     },
     {
       "name": "mouth",
       "parent": "face_base",
-      "x": -1,
+      "x": -1.0,
       "y": -27
     },
     {
       "name": "headband",
       "parent": "rear_hair_base",
-      "x": -8,
+      "x": -8.0,
       "y": 162
     },
     {
       "name": "fin_screen_left",
       "parent": "headband",
-      "x": -235,
+      "x": -235.0,
       "y": -283
     },
     {
       "name": "fin_screen_right",
       "parent": "headband",
-      "x": 206,
+      "x": 206.0,
       "y": -278
     },
     {
       "name": "side_hair_screen_left",
       "parent": "rear_hair_base",
-      "x": -158,
+      "x": -158.0,
       "y": -19
     },
     {
       "name": "side_hair_screen_right",
       "parent": "rear_hair_base",
-      "x": 150,
+      "x": 150.0,
       "y": -24
     },
     {
       "name": "fringe_screen_left",
       "parent": "side_hair_screen_left",
-      "x": 103,
+      "x": 103.0,
       "y": 98
     },
     {
       "name": "fringe_center",
       "parent": "rear_hair_base",
-      "x": -8,
+      "x": -8.0,
       "y": 68
     },
     {
       "name": "fringe_screen_right",
       "parent": "side_hair_screen_right",
-      "x": -75,
+      "x": -75.0,
       "y": 99
     },
     {
       "name": "ahoge",
       "parent": "rear_hair_base",
-      "x": 7,
+      "x": 7.0,
       "y": 192
     },
     {
       "name": "snowflake",
       "parent": "headband",
-      "x": 223,
+      "x": 223.0,
       "y": -107
     },
     {
       "name": "head_bow_screen_right",
       "parent": "headband",
-      "x": 252,
+      "x": 252.0,
       "y": -217
+    },
+    {
+      "name": "sock_screen_left",
+      "parent": "boot_screen_left",
+      "x": 0.0,
+      "y": 0
+    },
+    {
+      "name": "sock_screen_right",
+      "parent": "boot_screen_right",
+      "x": 0.0,
+      "y": 0
+    },
+    {
+      "name": "eyebrow_screen_left",
+      "parent": "face_base",
+      "x": -83.0,
+      "y": 131
+    },
+    {
+      "name": "eyebrow_screen_right",
+      "parent": "face_base",
+      "x": 77.0,
+      "y": 133
     }
   ],
   "slots": [
@@ -266,11 +302,6 @@
       "attachment": "coat_torso"
     },
     {
-      "name": "collar",
-      "bone": "collar",
-      "attachment": "collar"
-    },
-    {
       "name": "hand_screen_left",
       "bone": "hand_screen_left",
       "attachment": "hand_screen_left"
@@ -281,14 +312,39 @@
       "attachment": "hand_screen_right"
     },
     {
-      "name": "sleeve_screen_left",
-      "bone": "sleeve_screen_left",
-      "attachment": "sleeve_screen_left"
+      "name": "upper_arm_screen_left",
+      "bone": "upper_arm_screen_left",
+      "attachment": "upper_arm_screen_left"
     },
     {
-      "name": "sleeve_screen_right",
-      "bone": "sleeve_screen_right",
-      "attachment": "sleeve_screen_right"
+      "name": "upper_arm_screen_right",
+      "bone": "upper_arm_screen_right",
+      "attachment": "upper_arm_screen_right"
+    },
+    {
+      "name": "forearm_screen_left",
+      "bone": "forearm_screen_left",
+      "attachment": "forearm_screen_left"
+    },
+    {
+      "name": "forearm_screen_right",
+      "bone": "forearm_screen_right",
+      "attachment": "forearm_screen_right"
+    },
+    {
+      "name": "cuff_screen_left",
+      "bone": "forearm_screen_left",
+      "attachment": "cuff_screen_left"
+    },
+    {
+      "name": "cuff_screen_right",
+      "bone": "forearm_screen_right",
+      "attachment": "cuff_screen_right"
+    },
+    {
+      "name": "collar",
+      "bone": "collar",
+      "attachment": "collar"
     },
     {
       "name": "cord_screen_left",
@@ -475,16 +531,6 @@
             "height": 345
           }
         },
-        "collar": {
-          "collar": {
-            "type": "region",
-            "path": "collar",
-            "x": 3.0,
-            "y": 6.5,
-            "width": 324,
-            "height": 103
-          }
-        },
         "hand_screen_left": {
           "hand_screen_left": {
             "type": "region",
@@ -505,24 +551,92 @@
             "height": 48
           }
         },
-        "sleeve_screen_left": {
-          "sleeve_screen_left": {
+        "upper_arm_screen_left": {
+          "upper_arm_screen_left": {
             "type": "region",
-            "path": "sleeve_screen_left",
-            "x": -32.5,
-            "y": -58.5,
-            "width": 143,
-            "height": 175
+            "path": "upper_arm_screen_left",
+            "x": -47.0339,
+            "y": -6.5438,
+            "width": 108,
+            "height": 137,
+            "rotation": -4.9,
+            "scaleX": 1.092593,
+            "scaleY": 1.262774
           }
         },
-        "sleeve_screen_right": {
-          "sleeve_screen_right": {
+        "upper_arm_screen_right": {
+          "upper_arm_screen_right": {
             "type": "region",
-            "path": "sleeve_screen_right",
-            "x": 53.5,
-            "y": -57.5,
-            "width": 143,
-            "height": 175
+            "path": "upper_arm_screen_right",
+            "x": 69.5339,
+            "y": -6.0438,
+            "width": 104,
+            "height": 136,
+            "rotation": 8.1,
+            "scaleX": 1.086538,
+            "scaleY": 1.264706
+          }
+        },
+        "forearm_screen_left": {
+          "forearm_screen_left": {
+            "type": "region",
+            "path": "forearm_screen_left",
+            "x": -15.587,
+            "y": -33.5082,
+            "width": 103,
+            "height": 123,
+            "rotation": -4.9,
+            "scaleX": 1.087379,
+            "scaleY": 1.260163
+          }
+        },
+        "forearm_screen_right": {
+          "forearm_screen_right": {
+            "type": "region",
+            "path": "forearm_screen_right",
+            "x": 22.8834,
+            "y": -33.7111,
+            "width": 108,
+            "height": 124,
+            "rotation": 8.1,
+            "scaleX": 1.092593,
+            "scaleY": 1.266129
+          }
+        },
+        "cuff_screen_left": {
+          "cuff_screen_left": {
+            "type": "region",
+            "path": "cuff_screen_left",
+            "x": -38.1203,
+            "y": -63.5863,
+            "width": 99,
+            "height": 100,
+            "scaleX": 1.090909,
+            "scaleY": 1.26
+          }
+        },
+        "cuff_screen_right": {
+          "cuff_screen_right": {
+            "type": "region",
+            "path": "cuff_screen_right",
+            "x": 40.9203,
+            "y": -64.3863,
+            "width": 99,
+            "height": 100,
+            "scaleX": 1.090909,
+            "scaleY": 1.26
+          }
+        },
+        "collar": {
+          "collar": {
+            "type": "region",
+            "path": "collar",
+            "x": 4.5,
+            "y": 0.5,
+            "width": 324,
+            "height": 103,
+            "scaleX": 1.003086,
+            "scaleY": 0.92233
           }
         },
         "cord_screen_left": {

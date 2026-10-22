@@ -1,4 +1,5 @@
 {
+  "rig": "spine/back/whale_girl_back.json",
   "parts": [
     {
       "name": "boot_left",
@@ -11,8 +12,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "boot_right",
@@ -25,8 +25,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "tail_trunk",
@@ -39,8 +38,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "tail_fluke_down",
@@ -53,8 +51,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "tail_fluke_right",
@@ -67,22 +64,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
-    },
-    {
-      "name": "coat_back",
-      "size": [
-        487,
-        319
-      ],
-      "padding": [
-        2,
-        2,
-        2,
-        2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "coat_hem",
@@ -95,8 +77,20 @@
         2,
         2,
         2
+      ]
+    },
+    {
+      "name": "coat_back",
+      "size": [
+        487,
+        319
       ],
-      "alpha_components_over_8_pixels": 1
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ]
     },
     {
       "name": "side_fin_left",
@@ -109,8 +103,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "side_fin_right",
@@ -123,8 +116,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "hair_cap",
@@ -137,8 +129,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "hair_left",
@@ -151,8 +142,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "hair_right",
@@ -165,8 +155,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "hair_center",
@@ -179,8 +168,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "headband",
@@ -193,8 +181,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "whale_hair_accessory",
@@ -207,8 +194,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "cord_left",
@@ -221,8 +207,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "cord_right",
@@ -235,8 +220,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "bow_left",
@@ -249,8 +233,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "bow_right",
@@ -263,8 +246,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "pompom_left",
@@ -277,8 +259,7 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     },
     {
       "name": "pompom_right",
@@ -291,10 +272,25 @@
         2,
         2,
         2
-      ],
-      "alpha_components_over_8_pixels": 1
+      ]
     }
   ],
-  "psd_pixel_roundtrip": "passed",
-  "setup_json": "references and dimensions checked; not opened in Spine"
+  "counts": {
+    "rig_slots": 23,
+    "png_backed_parts": 21,
+    "derived_parts": 2,
+    "unbound_parts": 0,
+    "deprecated_parts": 0,
+    "png_files_in_parts": 21
+  },
+  "checks": {
+    "bbox_width_height_equals_png_size": "passed (21 parts)",
+    "pivot_equals_bound_bone_position": "passed (23 slots)",
+    "bbox_centre_max_delta_px": 0.5,
+    "setup_json_reproduces_rig_quads": "passed (max corner delta 0.000000 px)",
+    "psd_pixel_roundtrip": "not re-run; the PSD was not rebuilt"
+  },
+  "padding": {
+    "2,2,2,2": 21
+  }
 }
