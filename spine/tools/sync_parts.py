@@ -13,9 +13,15 @@ version of the same drawing.  This tool rewrites that copy from the atlas:
 
 The rig and every rendered image are untouched; only parts/<name>.png changes.
 
+READ-ONLY BY DEFAULT.  Rewriting parts/ from the atlas destroys the original
+art: the atlas regions are re-fitted copies, so a "sync" makes the resampled
+version the only one left.  This project has done that once by accident
+(d642d69) and reverted it.  Pass --write only when the request explicitly says
+the package art should follow the atlas.
+
 Usage:
   python3 spine/tools/sync_parts.py front --select differ,missing --skip collar
-  python3 spine/tools/sync_parts.py front --select differ --check
+  python3 spine/tools/sync_parts.py front --select differ --write
 """
 import argparse
 import json
@@ -70,8 +76,8 @@ def main():
                     help="comma list of: differ, missing, all")
     ap.add_argument("--skip", default="",
                     help="comma list of region names to leave alone")
-    ap.add_argument("--check", action="store_true",
-                    help="report what would change instead of writing")
+    ap.add_argument("--write", action="store_true",
+                    help="rewrite parts/*.png; without it nothing is touched")
     args = ap.parse_args()
 
     cfg = VIEWS[args.view]
@@ -111,7 +117,7 @@ def main():
     for name, why, path, entry in todo:
         img, strategy = pack(region_image(entry))
         old = str(Image.open(path).size) if path.exists() else "none"
-        if args.check:
+        if not args.write:
             print("  WOULD %-26s %-8s %-11s %s -> %dx%d"
                   % (name, why, strategy, old, img.width, img.height))
             continue

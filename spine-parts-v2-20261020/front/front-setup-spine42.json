@@ -597,9 +597,11 @@
             "path": "upper_arm_screen_left",
             "x": -47.0339,
             "y": -6.5438,
-            "width": 118,
-            "height": 173,
-            "rotation": -4.9
+            "width": 108,
+            "height": 137,
+            "rotation": -4.9,
+            "scaleX": 1.092593,
+            "scaleY": 1.262774
           }
         },
         "upper_arm_screen_right": {
@@ -608,9 +610,11 @@
             "path": "upper_arm_screen_right",
             "x": 69.5339,
             "y": -6.0438,
-            "width": 113,
-            "height": 172,
-            "rotation": 8.1
+            "width": 104,
+            "height": 136,
+            "rotation": 8.1,
+            "scaleX": 1.086538,
+            "scaleY": 1.264706
           }
         },
         "forearm_screen_left": {
@@ -619,9 +623,11 @@
             "path": "forearm_screen_left",
             "x": -15.587,
             "y": -33.5082,
-            "width": 112,
-            "height": 155,
-            "rotation": -4.9
+            "width": 103,
+            "height": 123,
+            "rotation": -4.9,
+            "scaleX": 1.087379,
+            "scaleY": 1.260163
           }
         },
         "forearm_screen_right": {
@@ -630,9 +636,11 @@
             "path": "forearm_screen_right",
             "x": 22.8834,
             "y": -33.7111,
-            "width": 118,
-            "height": 157,
-            "rotation": 8.1
+            "width": 108,
+            "height": 124,
+            "rotation": 8.1,
+            "scaleX": 1.092593,
+            "scaleY": 1.266129
           }
         },
         "cuff_screen_left": {
@@ -641,8 +649,10 @@
             "path": "cuff_screen_left",
             "x": -38.1203,
             "y": -63.5863,
-            "width": 108,
-            "height": 126
+            "width": 99,
+            "height": 100,
+            "scaleX": 1.090909,
+            "scaleY": 1.26
           }
         },
         "cuff_screen_right": {
@@ -651,8 +661,10 @@
             "path": "cuff_screen_right",
             "x": 40.9203,
             "y": -64.3863,
-            "width": 108,
-            "height": 126
+            "width": 99,
+            "height": 100,
+            "scaleX": 1.090909,
+            "scaleY": 1.26
           }
         },
         "collar": {

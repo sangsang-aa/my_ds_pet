@@ -70,18 +70,32 @@ python3 spine/tools/regen_manifests.py back --check # 只报差异
 骨架尺寸」重建，所以它能在 `parts/` 上复现骨架的静止四边形（当前误差
 < 0.0001 px）。
 
-## `sync_parts.py`
+## `test_render.py`
 
-用图集重切拆件包里的 PNG：图集是渲染唯一实际使用的那份美术，`parts/` 里可能是同一
-张画的旧尺寸拷贝。脚本按槽位取图集区域，有空间就补 2 像素透明边，没空间就保持图集
-原尺寸（这样骨架仍是 1:1）。只改 `parts/<name>.png`，骨架和所有渲染产物都不动。
+`render.py` 的四边形规则测试：附件尺寸 == 区域尺寸时 1:1 绘制；附件比区域大时把
+区域拉伸到附件大小（Spine 运行时就是这个语义，已用官方播放器实测确认）；两轴独立
+缩放；`x/y` 平移中心；`resample` 参数生效。
 
 ```
-python3 spine/tools/sync_parts.py front --select differ,missing --skip collar
-python3 spine/tools/sync_parts.py front --select differ --check
+python3 spine/tools/test_render.py     # 5/5 passed
+```
+
+## `sync_parts.py`
+
+**默认只读**：只报告 `parts/` 与图集尺寸不一致或缺失的槽位，不改任何文件。加
+`--write` 才会覆盖 `parts/*.png`。
+
+```
+python3 spine/tools/sync_parts.py front --select differ,missing     # 只报告
+python3 spine/tools/sync_parts.py front --select differ --write     # 真要覆盖
 ```
 
 `--select` 可选 `differ`（尺寸与图集不符）、`missing`（包里缺文件）、`all`。
+
+为什么默认只读：图集里的区域是**重采样后的副本**，拿它覆盖 `parts/` 会把重采样
+固化成唯一副本（2026-10-22 的 `d642d69` 就是这么发生的，已在 `69aed6a` 之前恢复）。
+`parts/` 与图集尺寸不一致是**记录在案的状态**，见 `layout.json` 的
+`expected_differences`，不是待修的 bug。
 
 ## 建议顺序
 

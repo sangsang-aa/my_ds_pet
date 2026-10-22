@@ -277,14 +277,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        149,
-        520,
-        118,
-        173
+        154,
+        538,
+        108,
+        137
       ],
       "original_bbox_xywh": null,
       "note": "Upper arm of the split arm chain (shoulder -> upper arm -> forearm -> cuff -> hand).",
-      "method": "Split from the old single sleeve; no reshaping."
+      "method": "Split from the old single sleeve; no reshaping.",
+      "atlas_size": [
+        118.0,
+        173.0
+      ],
+      "region_scale": [
+        1.0926,
+        1.2628
+      ]
     },
     {
       "name": "upper_arm_screen_right",
@@ -296,14 +304,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        452,
-        522,
-        113,
-        172
+        456,
+        540,
+        104,
+        136
       ],
       "original_bbox_xywh": null,
       "note": "Upper arm of the split arm chain (shoulder -> upper arm -> forearm -> cuff -> hand).",
-      "method": "Split from the old single sleeve; no reshaping."
+      "method": "Split from the old single sleeve; no reshaping.",
+      "atlas_size": [
+        113.0,
+        172.0
+      ],
+      "region_scale": [
+        1.0865,
+        1.2647
+      ]
     },
     {
       "name": "forearm_screen_left",
@@ -315,14 +331,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        118,
-        608,
-        112,
-        155
+        122,
+        624,
+        103,
+        123
       ],
       "original_bbox_xywh": null,
       "note": "Forearm; the bone sits at the middle of the upper-arm/forearm overlap, which is the elbow.",
-      "method": "Split from the old single sleeve; no reshaping."
+      "method": "Split from the old single sleeve; no reshaping.",
+      "atlas_size": [
+        112.0,
+        155.0
+      ],
+      "region_scale": [
+        1.0874,
+        1.2602
+      ]
     },
     {
       "name": "forearm_screen_right",
@@ -334,14 +358,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        493,
-        608,
-        118,
-        157
+        498,
+        625,
+        108,
+        124
       ],
       "original_bbox_xywh": null,
       "note": "Forearm; the bone sits at the middle of the upper-arm/forearm overlap, which is the elbow.",
-      "method": "Split from the old single sleeve; no reshaping."
+      "method": "Split from the old single sleeve; no reshaping.",
+      "atlas_size": [
+        118.0,
+        157.0
+      ],
+      "region_scale": [
+        1.0926,
+        1.2661
+      ]
     },
     {
       "name": "cuff_screen_left",
@@ -353,14 +385,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        97,
-        652,
-        108,
-        126
+        102,
+        665,
+        99,
+        100
       ],
       "original_bbox_xywh": null,
       "note": "Fur cuff, bound to the forearm bone.",
-      "method": "Split from the old sleeve's fur trim; no reshaping."
+      "method": "Split from the old sleeve's fur trim; no reshaping.",
+      "atlas_size": [
+        108.0,
+        126.0
+      ],
+      "region_scale": [
+        1.0909,
+        1.26
+      ]
     },
     {
       "name": "cuff_screen_right",
@@ -372,14 +412,22 @@
       ],
       "source": "native",
       "bbox_xywh": [
-        516,
-        655,
-        108,
-        126
+        520,
+        668,
+        99,
+        100
       ],
       "original_bbox_xywh": null,
       "note": "Fur cuff, bound to the forearm bone.",
-      "method": "Split from the old sleeve's fur trim; no reshaping."
+      "method": "Split from the old sleeve's fur trim; no reshaping.",
+      "atlas_size": [
+        108.0,
+        126.0
+      ],
+      "region_scale": [
+        1.0909,
+        1.26
+      ]
     },
     {
       "name": "collar",
@@ -977,6 +1025,102 @@
   ],
   "expected_differences": [
     {
+      "name": "upper_arm_screen_left",
+      "png": [
+        108,
+        137
+      ],
+      "atlas": [
+        118,
+        173
+      ],
+      "ratio": [
+        1.0926,
+        1.2628
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "upper_arm_screen_right",
+      "png": [
+        104,
+        136
+      ],
+      "atlas": [
+        113,
+        172
+      ],
+      "ratio": [
+        1.0865,
+        1.2647
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "forearm_screen_left",
+      "png": [
+        103,
+        123
+      ],
+      "atlas": [
+        112,
+        155
+      ],
+      "ratio": [
+        1.0874,
+        1.2602
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "forearm_screen_right",
+      "png": [
+        108,
+        124
+      ],
+      "atlas": [
+        118,
+        157
+      ],
+      "ratio": [
+        1.0926,
+        1.2661
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "cuff_screen_left",
+      "png": [
+        99,
+        100
+      ],
+      "atlas": [
+        108,
+        126
+      ],
+      "ratio": [
+        1.0909,
+        1.26
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
+      "name": "cuff_screen_right",
+      "png": [
+        99,
+        100
+      ],
+      "atlas": [
+        108,
+        126
+      ],
+      "ratio": [
+        1.0909,
+        1.26
+      ],
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+    },
+    {
       "name": "collar",
       "png": [
         324,
@@ -990,7 +1134,7 @@
         1.0031,
         0.9223
       ],
-      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     }
   ],
   "derived_parts": [],

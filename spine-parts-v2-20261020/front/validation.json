@@ -147,79 +147,79 @@
     {
       "name": "upper_arm_screen_left",
       "size": [
-        118,
-        173
+        108,
+        137
       ],
       "padding": [
-        2,
-        2,
-        2,
-        1
+        3,
+        4,
+        4,
+        3
       ]
     },
     {
       "name": "upper_arm_screen_right",
       "size": [
-        113,
-        172
+        104,
+        136
       ],
       "padding": [
+        4,
+        4,
         3,
-        2,
-        1,
-        1
+        3
       ]
     },
     {
       "name": "forearm_screen_left",
       "size": [
-        112,
-        155
+        103,
+        123
       ],
       "padding": [
+        5,
         3,
-        2,
-        1,
-        1
+        3,
+        3
       ]
     },
     {
       "name": "forearm_screen_right",
       "size": [
-        118,
-        157
+        108,
+        124
       ],
       "padding": [
-        2,
-        2,
-        3,
-        1
+        4,
+        4,
+        4,
+        3
       ]
     },
     {
       "name": "cuff_screen_left",
       "size": [
-        108,
-        126
+        99,
+        100
       ],
       "padding": [
-        1,
-        1,
-        2,
-        1
+        3,
+        3,
+        3,
+        3
       ]
     },
     {
       "name": "cuff_screen_right",
       "size": [
-        108,
-        126
+        99,
+        100
       ],
       "padding": [
-        2,
-        1,
-        1,
-        1
+        3,
+        3,
+        3,
+        3
       ]
     },
     {
@@ -555,7 +555,7 @@
     "unbound_parts": 2,
     "deprecated_parts": 2,
     "png_files_in_parts": 46,
-    "expected_differences": 1,
+    "expected_differences": 7,
     "atlas_derived_parts": 4
   },
   "checks": {
@@ -563,16 +563,16 @@
     "pivot_equals_bound_bone_position": "passed (42 slots)",
     "bbox_centre_max_delta_px": 0.5,
     "setup_json_reproduces_rig_quads": "passed (max corner delta 0.000068 px)",
-    "parts_vs_atlas_size": "expected: 1 of 42 parts differ on purpose (see layout.json expected_differences); the atlas is not a licence to rewrite parts/",
+    "parts_vs_atlas_size": "expected: 7 of 42 parts differ on purpose (see layout.json expected_differences); the atlas is not a licence to rewrite parts/",
     "psd_pixel_roundtrip": "not re-run; the PSD was not rebuilt"
   },
   "padding": {
-    "1,1,2,1": 1,
-    "2,1,1,1": 1,
-    "2,2,2,1": 1,
     "2,2,2,2": 35,
     "2,2,2,12": 1,
-    "2,2,3,1": 1,
-    "3,2,1,1": 2
+    "3,3,3,3": 2,
+    "3,4,4,3": 1,
+    "4,4,3,3": 1,
+    "4,4,4,3": 1,
+    "5,3,3,3": 1
   }
 }

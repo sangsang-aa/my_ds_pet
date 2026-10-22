@@ -68,14 +68,10 @@ ATLAS_DERIVED = {
 }
 
 # Why a part's PNG and its atlas region may legitimately differ in size.
-DIFF_REASON_SCALED = ("the atlas bakes the display scale into the texture "
-                      "(LANCZOS); region_scale records the ratio and the rig "
-                      "keeps drawing the same size. Do not copy the atlas "
-                      "region back into parts/.")
-DIFF_REASON_CROP = ("the package PNG is a different crop of the same art than "
-                    "the atlas region; the rig expresses the difference in "
-                    "width/height. Do not copy the atlas region back into "
-                    "parts/.")
+DIFF_REASON = ("the atlas region is a re-fit of the package PNG (rescaled "
+               "and/or recropped when the atlas was built). region_scale "
+               "records the ratio and the rig keeps drawing the same size. "
+               "Do not copy the atlas region back into parts/.")
 
 # Prose for parts the original manifest never described.
 NEW_NOTES = {
@@ -238,13 +234,12 @@ def describe(view):
         aw, ah = region["orig"]
         if (pw, ph) == (aw, ah):
             continue
-        same_aspect = abs(pw / float(ph) - aw / float(ah)) < 0.02
         expected.append({
             "name": entry["name"],
             "png": [pw, ph],
             "atlas": [aw, ah],
             "ratio": [round(aw / float(pw), 4), round(ah / float(ph), 4)],
-            "reason": DIFF_REASON_SCALED if same_aspect else DIFF_REASON_CROP,
+            "reason": DIFF_REASON,
         })
 
     layout = {

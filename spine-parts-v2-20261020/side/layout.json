@@ -733,7 +733,7 @@
         0.8797,
         0.98
       ],
-      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     },
     {
       "name": "coat_fur_trim",
@@ -749,7 +749,7 @@
         0.9514,
         0.9579
       ],
-      "reason": "the atlas bakes the display scale into the texture (LANCZOS); region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     },
     {
       "name": "visible_sleeve",
@@ -765,7 +765,7 @@
         1.0,
         1.2348
       ],
-      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     },
     {
       "name": "eyebrow",
@@ -781,7 +781,7 @@
         1.0462,
         1.0
       ],
-      "reason": "the package PNG is a different crop of the same art than the atlas region; the rig expresses the difference in width/height. Do not copy the atlas region back into parts/."
+      "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     }
   ],
   "derived_parts": [
