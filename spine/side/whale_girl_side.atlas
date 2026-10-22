@@ -47,9 +47,9 @@ visible_sock
   index: -1
 visible_boot
   rotate: false
-  xy: 1214, 523
-  size: 117, 98
-  orig: 117, 98
+  xy: 1911, 262
+  size: 133, 100
+  orig: 133, 100
   offset: 0, 0
   index: -1
 coat_far_flap
