@@ -62,10 +62,9 @@ REPLACED = {
 
 # Parts whose PNG was cut out of the atlas, so the atlas is their only source
 # and a re-cut cannot recover detail.  Recorded as `source: atlas-derived`.
-ATLAS_DERIVED = {
-    "front": {"sock_screen_left", "sock_screen_right",
-              "eyebrow_screen_left", "eyebrow_screen_right"},
-}
+# Empty since the v5 PSDs supplied real layers for the front socks/eyebrows and
+# the side/back derived parts, so every bound part now has native art.
+ATLAS_DERIVED = {}
 
 # Why a part's PNG and its atlas region may legitimately differ in size.
 DIFF_REASON = ("the atlas region is a re-fit of the package PNG (rescaled "

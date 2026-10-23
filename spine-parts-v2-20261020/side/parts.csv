@@ -2,11 +2,11 @@
 tail_trunk,0,body,287,749,254,155,330.0,795.0,完整插画替换；原坐标适配；无原碎片叠加
 tail_fluke_upper,1,tail_trunk,501,745,74,124,525.0,857.0,完整插画替换；原坐标适配；无原碎片叠加
 tail_fluke_lower,2,tail_trunk,516,811,131,75,526.0,859.0,完整插画替换；原坐标适配；无原碎片叠加
-far_sock,3,far_boot,175,816,79,72,216.0,860.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
-far_boot,4,body,151,876,113,96,216.0,860.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
-visible_sock,5,visible_boot,195,817,81,72,236.0,862.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+far_sock,3,far_boot,175,816,79,72,216.0,860.0,New part.
+far_boot,4,body,151,876,113,96,216.0,860.0,New part.
+visible_sock,5,visible_boot,195,817,81,72,236.0,862.0,New part.
 visible_boot,6,body,161,875,133,100,236.0,862.0,原画轮廓精修；去白边、邻件色和碎片；无颜色外扩
-coat_far_flap,7,coat_torso,41,635,131,187,125.0,661.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+coat_far_flap,7,coat_torso,41,635,131,187,125.0,661.0,New part.
 coat_fur_trim,8,coat_torso,74,650,391,190,226.0,726.0,原画轮廓精修；去白边、邻件色和碎片；无颜色外扩
 coat_torso,9,body,83,501,359,326,231.0,581.0,完整插画替换；原坐标适配；无原碎片叠加
 face_ear_neck,10,head,72,204,248,342,229.0,460.0,完整插画替换；原坐标适配；无原碎片叠加

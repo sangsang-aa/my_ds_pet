@@ -556,7 +556,7 @@
     "deprecated_parts": 2,
     "png_files_in_parts": 46,
     "expected_differences": 7,
-    "atlas_derived_parts": 4
+    "atlas_derived_parts": 0
   },
   "checks": {
     "bbox_width_height_equals_png_size": "passed (42 parts)",

@@ -86,6 +86,63 @@
       "method": "完整插画替换；原坐标适配；无原碎片叠加"
     },
     {
+      "name": "far_sock",
+      "draw_order": 3,
+      "parent": "far_boot",
+      "pivot_xy": [
+        216.0,
+        860.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        175,
+        816,
+        79,
+        72
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
+    },
+    {
+      "name": "far_boot",
+      "draw_order": 4,
+      "parent": "body",
+      "pivot_xy": [
+        216.0,
+        860.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        151,
+        876,
+        113,
+        96
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
+    },
+    {
+      "name": "visible_sock",
+      "draw_order": 5,
+      "parent": "visible_boot",
+      "pivot_xy": [
+        236.0,
+        862.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        195,
+        817,
+        81,
+        72
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
+    },
+    {
       "name": "visible_boot",
       "draw_order": 6,
       "parent": "body",
@@ -108,6 +165,25 @@
       ],
       "note": "侧面仅一只完整可见靴子；含可见袜筒和腿部细条，不虚构另一只脚。",
       "method": "原画轮廓精修；去白边、邻件色和碎片；无颜色外扩"
+    },
+    {
+      "name": "coat_far_flap",
+      "draw_order": 7,
+      "parent": "coat_torso",
+      "pivot_xy": [
+        125.0,
+        661.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        41,
+        635,
+        131,
+        187
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
     },
     {
       "name": "coat_fur_trim",
@@ -736,80 +812,7 @@
       "reason": "the atlas region is a re-fit of the package PNG (rescaled and/or recropped when the atlas was built). region_scale records the ratio and the rig keeps drawing the same size. Do not copy the atlas region back into parts/."
     }
   ],
-  "derived_parts": [
-    {
-      "name": "far_sock",
-      "draw_order": 3,
-      "parent": "far_boot",
-      "pivot_xy": [
-        216.0,
-        860.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        175,
-        816,
-        79,
-        72
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    },
-    {
-      "name": "far_boot",
-      "draw_order": 4,
-      "parent": "body",
-      "pivot_xy": [
-        216.0,
-        860.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        151,
-        876,
-        113,
-        96
-      ],
-      "note": "Far-side boot, drawn behind the near one.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    },
-    {
-      "name": "visible_sock",
-      "draw_order": 5,
-      "parent": "visible_boot",
-      "pivot_xy": [
-        236.0,
-        862.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        195,
-        817,
-        81,
-        72
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    },
-    {
-      "name": "coat_far_flap",
-      "draw_order": 7,
-      "parent": "coat_torso",
-      "pivot_xy": [
-        125.0,
-        661.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        41,
-        635,
-        131,
-        187
-      ],
-      "note": "Far-side coat flap, drawn behind the coat.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    }
-  ],
+  "derived_parts": [],
   "unbound_parts": [],
   "deprecated_parts": []
 }

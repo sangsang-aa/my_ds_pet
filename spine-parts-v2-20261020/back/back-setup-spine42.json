@@ -165,9 +165,19 @@
   ],
   "slots": [
     {
+      "name": "sock_left",
+      "bone": "sock_left",
+      "attachment": "sock_left"
+    },
+    {
       "name": "boot_left",
       "bone": "boot_left",
       "attachment": "boot_left"
+    },
+    {
+      "name": "sock_right",
+      "bone": "sock_right",
+      "attachment": "sock_right"
     },
     {
       "name": "boot_right",
@@ -274,6 +284,16 @@
     {
       "name": "default",
       "attachments": {
+        "sock_left": {
+          "sock_left": {
+            "type": "region",
+            "path": "sock_left",
+            "x": 4.5,
+            "y": 53.0,
+            "width": 71,
+            "height": 66
+          }
+        },
         "boot_left": {
           "boot_left": {
             "type": "region",
@@ -282,6 +302,16 @@
             "y": -15.0,
             "width": 119,
             "height": 130
+          }
+        },
+        "sock_right": {
+          "sock_right": {
+            "type": "region",
+            "path": "sock_right",
+            "x": 18.5,
+            "y": 55.0,
+            "width": 71,
+            "height": 66
           }
         },
         "boot_right": {

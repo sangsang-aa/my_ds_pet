@@ -1,7 +1,7 @@
 ﻿name,draw_order,parent,left,top,width,height,pivot_x,pivot_y,method
-sock_left,0,boot_left,246,804,71,66,277.0,890.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+sock_left,0,boot_left,246,804,71,66,277.0,890.0,New part.
 boot_left,1,coat_back,214,840,119,130,277.0,890.0,Complete clean boot redraw replacing the occluded source; one boot per attachment.
-sock_right,2,boot_right,388,804,71,66,405.0,892.0,Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/.
+sock_right,2,boot_right,388,804,71,66,405.0,892.0,New part.
 boot_right,3,coat_back,356,840,119,130,405.0,892.0,Complete clean boot redraw replacing the occluded source; one boot per attachment.
 tail_trunk,4,body,292,816,192,139,352.0,829.0,Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded.
 tail_fluke_down,5,tail_trunk,424,926,84,103,471.0,922.0,Complete clean tail redraw split at smooth painted joint overlaps; old angular root scraps discarded.

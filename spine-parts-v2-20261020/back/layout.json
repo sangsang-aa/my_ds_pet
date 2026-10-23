@@ -14,6 +14,25 @@
   "derived_from": "spine/back/whale_girl_back.json (rest pose)",
   "parts": [
     {
+      "name": "sock_left",
+      "draw_order": 0,
+      "parent": "boot_left",
+      "pivot_xy": [
+        277.0,
+        890.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        246,
+        804,
+        71,
+        66
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
+    },
+    {
       "name": "boot_left",
       "draw_order": 1,
       "parent": "coat_back",
@@ -36,6 +55,25 @@
       ],
       "note": "Clean v2 attachment; see method for restoration provenance.",
       "method": "Complete clean boot redraw replacing the occluded source; one boot per attachment."
+    },
+    {
+      "name": "sock_right",
+      "draw_order": 2,
+      "parent": "boot_right",
+      "pivot_xy": [
+        405.0,
+        892.0
+      ],
+      "source": "native",
+      "bbox_xywh": [
+        388,
+        804,
+        71,
+        66
+      ],
+      "original_bbox_xywh": null,
+      "note": "",
+      "method": "New part."
     },
     {
       "name": "boot_right",
@@ -527,44 +565,7 @@
     }
   ],
   "expected_differences": [],
-  "derived_parts": [
-    {
-      "name": "sock_left",
-      "draw_order": 0,
-      "parent": "boot_left",
-      "pivot_xy": [
-        277.0,
-        890.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        246,
-        804,
-        71,
-        66
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    },
-    {
-      "name": "sock_right",
-      "draw_order": 2,
-      "parent": "boot_right",
-      "pivot_xy": [
-        405.0,
-        892.0
-      ],
-      "source": "atlas-derived",
-      "bbox_xywh": [
-        388,
-        804,
-        71,
-        66
-      ],
-      "note": "Sock, drawn under the boot.",
-      "method": "Derived crop baked into the atlas; there is no standalone PNG for this slot in parts/."
-    }
-  ],
+  "derived_parts": [],
   "unbound_parts": [],
   "deprecated_parts": []
 }

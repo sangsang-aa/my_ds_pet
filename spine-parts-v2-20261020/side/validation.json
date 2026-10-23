@@ -41,10 +41,62 @@
       ]
     },
     {
+      "name": "far_sock",
+      "size": [
+        79,
+        72
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "far_boot",
+      "size": [
+        113,
+        96
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "name": "visible_sock",
+      "size": [
+        81,
+        72
+      ],
+      "padding": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
       "name": "visible_boot",
       "size": [
         133,
         100
+      ],
+      "padding": [
+        6,
+        4,
+        3,
+        3
+      ]
+    },
+    {
+      "name": "coat_far_flap",
+      "size": [
+        131,
+        187
       ],
       "padding": [
         2,
@@ -368,23 +420,24 @@
   ],
   "counts": {
     "rig_slots": 32,
-    "png_backed_parts": 28,
-    "derived_parts": 4,
+    "png_backed_parts": 32,
+    "derived_parts": 0,
     "unbound_parts": 0,
     "deprecated_parts": 0,
-    "png_files_in_parts": 28,
+    "png_files_in_parts": 32,
     "expected_differences": 2,
     "atlas_derived_parts": 0
   },
   "checks": {
-    "bbox_width_height_equals_png_size": "passed (28 parts)",
+    "bbox_width_height_equals_png_size": "passed (32 parts)",
     "pivot_equals_bound_bone_position": "passed (32 slots)",
     "bbox_centre_max_delta_px": 0.5,
     "setup_json_reproduces_rig_quads": "passed (max corner delta 0.000068 px)",
-    "parts_vs_atlas_size": "expected: 2 of 28 parts differ on purpose (see layout.json expected_differences); the atlas is not a licence to rewrite parts/",
+    "parts_vs_atlas_size": "expected: 2 of 32 parts differ on purpose (see layout.json expected_differences); the atlas is not a licence to rewrite parts/",
     "psd_pixel_roundtrip": "not re-run; the PSD was not rebuilt"
   },
   "padding": {
-    "2,2,2,2": 28
+    "2,2,2,2": 31,
+    "6,4,3,3": 1
   }
 }

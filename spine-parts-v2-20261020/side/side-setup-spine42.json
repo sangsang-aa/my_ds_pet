@@ -234,9 +234,29 @@
       "attachment": "tail_fluke_lower"
     },
     {
+      "name": "far_sock",
+      "bone": "far_sock",
+      "attachment": "far_sock"
+    },
+    {
+      "name": "far_boot",
+      "bone": "far_boot",
+      "attachment": "far_boot"
+    },
+    {
+      "name": "visible_sock",
+      "bone": "visible_sock",
+      "attachment": "visible_sock"
+    },
+    {
       "name": "visible_boot",
       "bone": "visible_boot",
       "attachment": "visible_boot"
+    },
+    {
+      "name": "coat_far_flap",
+      "bone": "coat_far_flap",
+      "attachment": "coat_far_flap"
     },
     {
       "name": "coat_fur_trim",
@@ -393,6 +413,36 @@
             "height": 75
           }
         },
+        "far_sock": {
+          "far_sock": {
+            "type": "region",
+            "path": "far_sock",
+            "x": -1.5,
+            "y": 8.0,
+            "width": 79,
+            "height": 72
+          }
+        },
+        "far_boot": {
+          "far_boot": {
+            "type": "region",
+            "path": "far_boot",
+            "x": -8.5,
+            "y": -64.0,
+            "width": 113,
+            "height": 96
+          }
+        },
+        "visible_sock": {
+          "visible_sock": {
+            "type": "region",
+            "path": "visible_sock",
+            "x": -0.5,
+            "y": 9.0,
+            "width": 81,
+            "height": 72
+          }
+        },
         "visible_boot": {
           "visible_boot": {
             "type": "region",
@@ -401,6 +451,16 @@
             "y": -63.0,
             "width": 133,
             "height": 100
+          }
+        },
+        "coat_far_flap": {
+          "coat_far_flap": {
+            "type": "region",
+            "path": "coat_far_flap",
+            "x": -18.5,
+            "y": -67.5,
+            "width": 131,
+            "height": 187
           }
         },
         "coat_fur_trim": {

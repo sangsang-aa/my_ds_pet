@@ -117,7 +117,7 @@
         306.0,
         911.0
       ],
-      "source": "atlas-derived",
+      "source": "native",
       "bbox_xywh": [
         264,
         839,
@@ -160,7 +160,7 @@
         424.0,
         912.0
       ],
-      "source": "atlas-derived",
+      "source": "native",
       "bbox_xywh": [
         383,
         839,
@@ -992,7 +992,7 @@
         269.0,
         346.0
       ],
-      "source": "atlas-derived",
+      "source": "native",
       "bbox_xywh": [
         227,
         337,
@@ -1011,7 +1011,7 @@
         429.0,
         344.0
       ],
-      "source": "atlas-derived",
+      "source": "native",
       "bbox_xywh": [
         387,
         335,
