@@ -45,6 +45,9 @@ pip install -r requirements.txt
 | `mode` | `"flood"` | `flood` 只删与边框连通的背景；`chroma` 删除所有接近背景色的像素 |
 | `threshold` | `60` | 与边框背景色的 RGB 距离阈值 |
 | `feather` | `25` | 平滑过渡带宽度（smoothstep） |
+| `trim` | `1` | 把 alpha 边缘向内收 N 像素；1 可去掉抗锯齿留下的白/绿细边 |
+| `decontaminate` | `true` | 用最近的不透明像素颜色替换半透明边缘色，避免白边/绿边 |
+| `despill` | `true` | 在边缘压掉背景的主色通道（绿幕溢色） |
 | `clear_corners` | `false` | 擦除四角的小块孤立非透明岛（AI 水印），主体不受影响 |
 | `corner_size` | `"96x48"` | 四角探测框尺寸 `WxH` |
 | `corner_max_px` | `2000` | 探测框内所有连通块都小于该像素数时才擦除 |
@@ -87,6 +90,25 @@ python3 convert_rgba.py frames/ --mode chroma --threshold 45
   （`pet_down.gif` → `pet_down/000.png`、`001.png` …），保留 alpha。
 - 桌宠渲染端（GDI+）只认 png/jpg/gif/bmp，**不支持 WebP**；本工具能读 WebP，
   但转出来的素材请用 PNG。
+
+### 白边 / 白框是怎么来的
+
+只改 alpha 的抠图，会把**边缘像素原来的颜色**留在半透明区域：
+
+- 白底素材 → 半透明边缘仍是白色，合成到绿幕/桌面时就是一圈白边；
+- 绿幕素材 → 半透明边缘仍是绿色，合成后是一圈绿边。
+
+现在默认做三步：
+
+1. `trim=1`：alpha 向内收 1px，直接切掉最外圈抗锯齿；
+2. `decontaminate=True`：把半透明边缘的 RGB 换成最近的不透明像素颜色；
+3. `despill=True`：把边缘残留的背景主色（通常是绿）压掉。
+
+对白底图实测：`turnaround.jpg` 的半透明白边像素从 **1491** 降到 **1**。
+如果素材特别糊、边缘特别宽，可以加大 `--trim 2`；但 2px 以上会开始啃角色轮廓。
+
+> 注意：缩小图片（LANCZOS）会重新引入半透明边缘。正确顺序是
+> **先在原分辨率抠干净 → 再用预乘 alpha 缩放**，不要在缩放后又用普通 RGBA 缩放。
 
 ## 测试
 

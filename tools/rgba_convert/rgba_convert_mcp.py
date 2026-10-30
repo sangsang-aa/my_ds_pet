@@ -48,6 +48,10 @@ server = MCPServer(
         "subject, but may punch holes in light subject areas). "
         "Returns a per-file log and a summary line. Output PNG names match the "
         "input basenames so existing frame-loading conventions keep working. "
+        "trim=N erodes the alpha edge by N pixels (default 1) to remove the "
+        "white/green halo left by anti-aliasing; decontaminate=True replaces "
+        "translucent edge RGB with the nearest opaque color; despill=True "
+        "reduces the background's dominant color on edge pixels. "
         "With clear_corners=True, small isolated non-transparent islands at the "
         "four corners (moving AI watermarks) are erased; the subject itself is a "
         "single large component and is never erased."
@@ -59,6 +63,9 @@ def convert_to_rgba(
     mode: str = "flood",
     threshold: int = 60,
     feather: int = 25,
+    trim: int = 1,
+    decontaminate: bool = True,
+    despill: bool = True,
     backup: bool = False,
     delete_source: bool = False,
     force: bool = False,
@@ -73,6 +80,8 @@ def convert_to_rgba(
         return f"error: mode must be one of {VALID_MODES}, got {mode!r}"
     if threshold < 0 or feather < 0:
         return "error: threshold and feather must be >= 0"
+    if trim < 0:
+        return "error: trim must be >= 0"
     if corner_max_px < 0:
         return "error: corner_max_px must be >= 0"
     try:
@@ -86,6 +95,9 @@ def convert_to_rgba(
         mode=mode,
         threshold=threshold,
         feather=feather,
+        trim=trim,
+        decontaminate=decontaminate,
+        despill=despill,
         backup=backup,
         delete_source=delete_source,
         force=force,

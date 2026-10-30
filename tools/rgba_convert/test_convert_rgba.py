@@ -99,7 +99,8 @@ def test_clear_corner_islands_noop_when_empty():
 
 
 def make_args(**over: object) -> argparse.Namespace:
-    base = dict(mode="flood", threshold=60, feather=25, clear_corners=False,
+    base = dict(mode="flood", threshold=60, feather=25, trim=1,
+                decontaminate=True, despill=True, clear_corners=False,
                 corner_size=(96, 48), corner_max_px=2000,
                 dry_run=False, backup=False, delete_source=False, force=False)
     base.update(over)
@@ -149,3 +150,38 @@ def test_already_transparent_image_skipped_without_flag(tmp_path):
 
     assert convert_rgba.process_image(src, make_args(clear_corners=False)) == "skip"
     assert Image.open(src).convert("RGBA").getpixel(CORNER_ISLAND_PROBE_TL)[3] == 255
+
+
+def test_trim_alpha_erodes_one_pixel():
+    alpha = Image.new("L", (10, 10), 0)
+    fill_gray(alpha, (2, 2, 8, 8), 128)
+    fill_gray(alpha, (3, 3, 7, 7), 255)
+
+    out = convert_rgba.trim_alpha(alpha, 1)
+    assert out.getpixel((2, 2)) == 0
+    assert out.getpixel((5, 5)) == 255
+
+
+def test_decontaminate_edges_copies_interior_color():
+    rgb = Image.new("RGB", (9, 9), (255, 255, 255))
+    fill_color(rgb, (2, 2, 7, 7), (255, 200, 200))  # white-ish fringe
+    fill_color(rgb, (3, 3, 6, 6), (200, 0, 0))      # interior
+    alpha = Image.new("L", (9, 9), 0)
+    fill_gray(alpha, (2, 2, 7, 7), 128)
+    fill_gray(alpha, (3, 3, 6, 6), 255)
+
+    out = convert_rgba.decontaminate_edges(rgb, alpha, radius=2)
+    r, g, b = out.getpixel((2, 2))
+    assert r > 150 and g < 80 and b < 80
+
+
+def test_despill_edges_reduces_dominant_background_channel():
+    rgb = Image.new("RGB", (9, 9), (0, 177, 64))
+    fill_color(rgb, (2, 2, 7, 7), (100, 200, 100))
+    alpha = Image.new("L", (9, 9), 0)
+    fill_gray(alpha, (2, 2, 7, 7), 128)
+    fill_gray(alpha, (3, 3, 6, 6), 255)
+
+    out = convert_rgba.despill_edges(rgb, alpha, (0, 177, 64), strength=1.0)
+    r, g, b = out.getpixel((2, 2))
+    assert g <= max(r, b) + 1

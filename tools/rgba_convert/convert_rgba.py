@@ -13,7 +13,7 @@ from collections import deque
 from pathlib import Path
 from typing import Optional, Sequence
 
-from PIL import Image, ImageChops, ImageSequence
+from PIL import Image, ImageChops, ImageFilter, ImageSequence
 
 try:
     from PIL import ImageMath
@@ -39,6 +39,17 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         help="max RGB distance from the border color to count as background")
     parser.add_argument("--feather", type=int, default=25, metavar="N",
                         help="smoothstep band width centered on the threshold")
+    parser.add_argument("--trim", type=int, default=1, metavar="N",
+                        help="erode the alpha edge by N pixels; 1 removes the "
+                             "white/green halo left by anti-aliasing")
+    parser.add_argument("--decontaminate", action=argparse.BooleanOptionalAction,
+                        default=True,
+                        help="replace translucent edge RGB with the nearest "
+                             "opaque color so no background halo remains")
+    parser.add_argument("--despill", action=argparse.BooleanOptionalAction,
+                        default=True,
+                        help="reduce the background's dominant color on "
+                             "translucent edge pixels (green-screen spill)")
     parser.add_argument("--dry-run", action="store_true", dest="dry_run",
                         help="print planned actions without writing anything")
     parser.add_argument("--backup", action="store_true",
@@ -60,6 +71,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.threshold < 0 or args.feather < 0:
         parser.error("--threshold and --feather must be >= 0")
+    if args.trim < 0:
+        parser.error("--trim must be >= 0")
     if args.corner_max_px < 0:
         parser.error("--corner-max-px must be >= 0")
     try:
@@ -241,6 +254,73 @@ def transparent_percent(alpha: Image.Image) -> float:
     return 100.0 * sum(histogram[:255]) / pixels
 
 
+def trim_alpha(alpha: Image.Image, pixels: int) -> Image.Image:
+    """Erode the alpha edge by N pixels.
+
+    A 1 px erosion removes the anti-aliased white/green fringe that survives the
+    color-distance key, without visibly shrinking the subject.
+    """
+    if pixels <= 0:
+        return alpha
+    return alpha.filter(ImageFilter.MinFilter(pixels * 2 + 1))
+
+
+def decontaminate_edges(rgb: Image.Image, alpha: Image.Image,
+                        radius: int = 2) -> Image.Image:
+    """Replace translucent edge RGB with the nearest opaque pixel's color.
+
+    The key only changes alpha, so edge pixels keep the old background color
+    (white or green). When the sprite is composited on another background, that
+    old color shows up as a halo. Propagating the nearest interior color fixes
+    it without touching the interior.
+    """
+    if radius <= 0:
+        return rgb
+    opaque = alpha.point([255 if v >= 250 else 0 for v in range(256)])
+    edge = alpha.point([255 if 0 < v < 250 else 0 for v in range(256)])
+    known = opaque
+    fill = rgb.copy()
+    for _ in range(radius):
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            shifted = ImageChops.offset(fill, dx, dy)
+            shifted_known = ImageChops.offset(known, dx, dy)
+            take = ImageChops.multiply(
+                edge,
+                ImageChops.multiply(ImageChops.invert(known), shifted_known),
+            )
+            fill = Image.composite(shifted, fill, take)
+            known = ImageChops.lighter(known, take)
+    return fill
+
+
+def despill_edges(rgb: Image.Image, alpha: Image.Image,
+                  background: tuple[int, int, int],
+                  strength: float = 1.0) -> Image.Image:
+    """Reduce the background's dominant color on translucent edge pixels."""
+    if strength <= 0:
+        return rgb
+    values = list(background)
+    dominant = max(range(3), key=lambda i: values[i])
+    others = sorted(values)
+    if values[dominant] - others[-2] < 15:  # near-grey background: no spill
+        return rgb
+
+    channels = list(rgb.split())
+    dominant_channel = channels[dominant]
+    limit = ImageChops.lighter(
+        channels[(dominant + 1) % 3], channels[(dominant + 2) % 3]
+    )
+    diff = ImageChops.subtract(dominant_channel, limit)
+    reduction = diff.point(lambda v: int(v * strength))
+    cleaned = ImageChops.subtract(dominant_channel, reduction)
+
+    edge = ImageChops.subtract(alpha, trim_alpha(alpha, 1)).point(
+        [0] + [255] * 255
+    )
+    channels[dominant] = Image.composite(cleaned, dominant_channel, edge)
+    return Image.merge("RGB", channels)
+
+
 def parse_size(text: str) -> tuple[int, int]:
     """Parse a 'WxH' size string (such as '96x48') into (width, height)."""
     match = re.fullmatch(r"\s*(\d+)\s*[xX]\s*(\d+)\s*", text)
@@ -372,6 +452,15 @@ def _remove_background(
         alpha = build_alpha(dist, args.mode, inner, outer, visited)
     else:
         alpha = build_alpha(dist, args.mode, inner, outer)
+
+    trim = getattr(args, "trim", 1)
+    if trim > 0:
+        alpha = trim_alpha(alpha, trim)
+    if getattr(args, "decontaminate", True):
+        rgb = decontaminate_edges(rgb, alpha, radius=2)
+    if getattr(args, "despill", True):
+        rgb = despill_edges(rgb, alpha, bg)
+
     corners = 0
     if getattr(args, "clear_corners", False):
         corners, alpha = clear_corner_islands(alpha, args.corner_size,
