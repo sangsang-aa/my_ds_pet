@@ -48,10 +48,12 @@ server = MCPServer(
         "subject, but may punch holes in light subject areas). "
         "Returns a per-file log and a summary line. Output PNG names match the "
         "input basenames so existing frame-loading conventions keep working. "
-        "trim=N erodes the alpha edge by N pixels (default 1) to remove the "
-        "white/green halo left by anti-aliasing; decontaminate=True replaces "
+        "trim=N erodes the alpha edge by N pixels (default 0; keep 0 to avoid "
+        "eating thin features); decontaminate=True replaces "
         "translucent edge RGB with the nearest opaque color; despill=True "
-        "reduces the background's dominant color on edge pixels. "
+        "reduces the background's dominant color on edge pixels; "
+        "remove_holes=True makes enclosed neutral-white gaps (between hair "
+        "strands, coat and tail) transparent while keeping white fur. "
         "With clear_corners=True, small isolated non-transparent islands at the "
         "four corners (moving AI watermarks) are erased; the subject itself is a "
         "single large component and is never erased."
@@ -63,9 +65,11 @@ def convert_to_rgba(
     mode: str = "flood",
     threshold: int = 60,
     feather: int = 25,
-    trim: int = 1,
+    trim: int = 0,
     decontaminate: bool = True,
     despill: bool = True,
+    remove_holes: bool = False,
+    hole_min_area: int = 100,
     backup: bool = False,
     delete_source: bool = False,
     force: bool = False,
@@ -98,6 +102,8 @@ def convert_to_rgba(
         trim=trim,
         decontaminate=decontaminate,
         despill=despill,
+        remove_holes=remove_holes,
+        hole_min_area=hole_min_area,
         backup=backup,
         delete_source=delete_source,
         force=force,

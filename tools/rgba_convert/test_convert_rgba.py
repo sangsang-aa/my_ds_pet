@@ -99,8 +99,9 @@ def test_clear_corner_islands_noop_when_empty():
 
 
 def make_args(**over: object) -> argparse.Namespace:
-    base = dict(mode="flood", threshold=60, feather=25, trim=1,
-                decontaminate=True, despill=True, clear_corners=False,
+    base = dict(mode="flood", threshold=60, feather=25, trim=0,
+                decontaminate=True, despill=True, remove_holes=False,
+                hole_min_area=100, clear_corners=False,
                 corner_size=(96, 48), corner_max_px=2000,
                 dry_run=False, backup=False, delete_source=False, force=False)
     base.update(over)
@@ -185,3 +186,16 @@ def test_despill_edges_reduces_dominant_background_channel():
     out = convert_rgba.despill_edges(rgb, alpha, (0, 177, 64), strength=1.0)
     r, g, b = out.getpixel((2, 2))
     assert g <= max(r, b) + 1
+
+
+def test_remove_white_holes_keeps_tinted_fur():
+    rgba = Image.new("RGBA", (30, 30), (0, 0, 0, 0))
+    fill_color(rgba, (4, 4, 26, 26), (200, 0, 0, 255))
+    fill_color(rgba, (9, 9, 21, 21), (255, 255, 255, 255))  # 144 px neutral hole
+    fill_color(rgba, (5, 5, 8, 8), (250, 245, 255, 255))    # tinted fur
+
+    out = convert_rgba.remove_white_holes(
+        rgba.convert("RGB"), rgba.getchannel("A")
+    )
+    assert out.getpixel((15, 15)) == 0
+    assert out.getpixel((6, 6)) == 255

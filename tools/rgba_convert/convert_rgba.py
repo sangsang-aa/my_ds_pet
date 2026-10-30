@@ -39,9 +39,9 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         help="max RGB distance from the border color to count as background")
     parser.add_argument("--feather", type=int, default=25, metavar="N",
                         help="smoothstep band width centered on the threshold")
-    parser.add_argument("--trim", type=int, default=1, metavar="N",
-                        help="erode the alpha edge by N pixels; 1 removes the "
-                             "white/green halo left by anti-aliasing")
+    parser.add_argument("--trim", type=int, default=0, metavar="N",
+                        help="erode the alpha edge by N pixels; keep 0 to avoid "
+                             "eating thin features (eyes, hair strands)")
     parser.add_argument("--decontaminate", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="replace translucent edge RGB with the nearest "
@@ -50,6 +50,13 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         default=True,
                         help="reduce the background's dominant color on "
                              "translucent edge pixels (green-screen spill)")
+    parser.add_argument("--remove-holes", action="store_true", dest="remove_holes",
+                        help="make enclosed neutral-white gaps (between hair "
+                             "strands, coat and tail) transparent; white fur is kept")
+    parser.add_argument("--hole-min-area", type=int, default=100, dest="hole_min_area",
+                        metavar="N",
+                        help="only remove white holes at least N pixels (protects "
+                             "eye highlights and small specks)")
     parser.add_argument("--dry-run", action="store_true", dest="dry_run",
                         help="print planned actions without writing anything")
     parser.add_argument("--backup", action="store_true",
@@ -321,6 +328,79 @@ def despill_edges(rgb: Image.Image, alpha: Image.Image,
     return Image.merge("RGB", channels)
 
 
+def remove_white_holes(rgb: Image.Image, alpha: Image.Image,
+                       min_area: int = 100,
+                       max_area: int = 1000,
+                       max_spread: float = 4.0,
+                       ring_lum: float = 210.0) -> Image.Image:
+    """Make enclosed, neutral-white gaps transparent.
+
+    Illustrations on a white background often have white paper showing through
+    gaps between hair strands or between a limb and the body. Those gaps are
+    opaque after the key, so they survive as white patches. A gap is:
+      * neutral white (max-min channel spread < max_spread),
+      * small (area <= max_area),
+      * surrounded by dark line art (mean ring luminance < ring_lum).
+
+    The character's white fur is tinted (lavender) and/or bordered by lighter
+    fur, so it is kept.
+    """
+    width, height = rgb.size
+    px = rgb.load()
+    ap = alpha.load()
+    total = width * height
+    mask = bytearray(total)
+    for y in range(height):
+        row = y * width
+        for x in range(width):
+            r, g, b = px[x, y]  # type: ignore[misc]
+            if ap[x, y] >= 250 and min(r, g, b) >= 248:  # type: ignore[index]
+                mask[row + x] = 1
+
+    labels, sizes = label_components(bytes(mask), width, height)
+    spread_sum = [0] * len(sizes)
+    ring_sum = [0.0] * len(sizes)
+    ring_count = [0] * len(sizes)
+
+    for y in range(height):
+        row = y * width
+        for x in range(width):
+            cid = labels[row + x]
+            if cid < 0:
+                continue
+            r, g, b = px[x, y]  # type: ignore[misc]
+            spread_sum[cid] += max(r, g, b) - min(r, g, b)
+            for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                ny, nx = y + dy, x + dx
+                if 0 <= ny < height and 0 <= nx < width:
+                    j = ny * width + nx
+                    if labels[j] != cid:
+                        nr, ng, nb = px[nx, ny]  # type: ignore[misc]
+                        ring_sum[cid] += 0.299 * nr + 0.587 * ng + 0.114 * nb
+                        ring_count[cid] += 1
+
+    holes = [False] * len(sizes)
+    for cid, size in enumerate(sizes):
+        if not size:
+            continue
+        mean_spread = spread_sum[cid] / size
+        mean_ring = ring_sum[cid] / ring_count[cid] if ring_count[cid] else 255.0
+        if min_area <= size <= max_area and mean_spread < max_spread and mean_ring < ring_lum:
+            holes[cid] = True
+
+    if not any(holes):
+        return alpha
+
+    out = bytearray(alpha.tobytes())
+    for y in range(height):
+        row = y * width
+        for x in range(width):
+            cid = labels[row + x]
+            if cid >= 0 and holes[cid]:
+                out[row + x] = 0
+    return Image.frombytes("L", (width, height), bytes(out))
+
+
 def parse_size(text: str) -> tuple[int, int]:
     """Parse a 'WxH' size string (such as '96x48') into (width, height)."""
     match = re.fullmatch(r"\s*(\d+)\s*[xX]\s*(\d+)\s*", text)
@@ -456,6 +536,10 @@ def _remove_background(
     trim = getattr(args, "trim", 1)
     if trim > 0:
         alpha = trim_alpha(alpha, trim)
+    if getattr(args, "remove_holes", False):
+        alpha = remove_white_holes(
+            rgb, alpha, min_area=getattr(args, "hole_min_area", 100)
+        )
     if getattr(args, "decontaminate", True):
         rgb = decontaminate_edges(rgb, alpha, radius=2)
     if getattr(args, "despill", True):
