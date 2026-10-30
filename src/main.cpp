@@ -32,6 +32,23 @@ extern char** __argv;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
+    // The layered-window bitmap is sized in physical pixels. Without DPI
+    // awareness Windows virtualizes CreateWindowEx to the scaled size, so the
+    // bitmap (269x358) no longer fills the window (404x537 at 150%) and the
+    // uncovered area shows as a white frame. Prefer per-monitor V2, fall back
+    // to system DPI awareness on older Windows.
+    if (HMODULE user32 = GetModuleHandleW(L"user32.dll")) {
+        using SetDpiContextFn = BOOL(WINAPI*)(HANDLE);
+        auto setDpiContext = reinterpret_cast<SetDpiContextFn>(
+            GetProcAddress(user32, "SetProcessDpiAwarenessContext"));
+        if (setDpiContext != nullptr) {
+            // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 == (HANDLE)-4
+            setDpiContext(reinterpret_cast<HANDLE>(-4));
+        } else {
+            SetProcessDPIAware();
+        }
+    }
+
     // argv[1] optionally forces a single base action; with no argument the pet
     // uses a random idle pool ("idle" + "idle2") and switches between them.
     const bool explicitAction =
