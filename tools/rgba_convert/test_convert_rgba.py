@@ -117,9 +117,9 @@ def watermarked_rgb() -> Image.Image:
 
 def test_remove_background_corner_clearing_toggle():
     rgb = watermarked_rgb()
-    rgba_off, _, corners_off = convert_rgba._remove_background(
+    rgba_off, _, corners_off, _ = convert_rgba._remove_background(
         rgb, make_args(clear_corners=False))
-    rgba_on, _, corners_on = convert_rgba._remove_background(
+    rgba_on, _, corners_on, _ = convert_rgba._remove_background(
         rgb, make_args(clear_corners=True))
 
     assert corners_off == 0 and corners_on == 1
@@ -199,3 +199,32 @@ def test_remove_white_holes_keeps_tinted_fur():
     )
     assert out.getpixel((15, 15)) == 0
     assert out.getpixel((6, 6)) == 255
+
+def test_punch_enclosed_key_clears_pocket_the_flood_cannot_reach():
+    # A ring of opaque subject pixels traps pure key green in the middle.
+    alpha = Image.new("L", (21, 21), 0)
+    fill_gray(alpha, (2, 2, 19, 19), 255)
+    for y in range(8, 13):
+        for x in range(8, 13):
+            alpha.putpixel((x, y), 0)  # pocket is already transparent here
+    dist = Image.new("L", (21, 21), 255)  # everything far from the key colour
+    for y in range(8, 13):
+        for x in range(8, 13):
+            dist.putpixel((x, y), 5)  # pocket matches the background
+
+    # Without the punch the pocket stays opaque (flood fill never reaches it).
+    assert alpha.getpixel((10, 10)) == 0
+    filled = alpha.copy()
+    fill_gray(filled, (8, 8, 13, 13), 255)
+    punched, out = convert_rgba.punch_enclosed_key(filled, dist, 47.5)
+    assert punched == 25
+    assert out.getpixel((10, 10)) == 0
+    assert out.getpixel((5, 5)) == 255
+
+
+def test_clear_rect_erases_only_inside_the_box():
+    alpha = Image.new("L", (40, 40), 255)
+    out = convert_rgba.clear_rect(alpha, (25, 25, 40, 40))
+    assert out.getpixel((30, 30)) == 0
+    assert out.getpixel((24, 24)) == 255
+    assert out.getpixel((39, 10)) == 255

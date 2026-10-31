@@ -75,6 +75,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
                         metavar="N",
                         help="a corner box is cleared only when every component "
                              "touching it is smaller than N pixels")
+    parser.add_argument("--punch-enclosed", action=argparse.BooleanOptionalAction,
+                        default=True, dest="punch_enclosed",
+                        help="also make enclosed key-coloured pockets transparent "
+                             "(a loop of hair or a hood band can trap pure green "
+                             "that the flood fill cannot reach); default on")
+    parser.add_argument("--clear-rect", action="append", default=None, metavar="X0,Y0,X1,Y1",
+                        dest="clear_rects",
+                        help="erase an explicit rectangle of alpha, e.g. a baked-in "
+                             "watermark that sits next to the subject; repeatable")
     args = parser.parse_args(argv)
     if args.threshold < 0 or args.feather < 0:
         parser.error("--threshold and --feather must be >= 0")
@@ -86,6 +95,16 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         args.corner_size = parse_size(args.corner_size)
     except ValueError as exc:
         parser.error(str(exc))
+    rects = []
+    for raw in args.clear_rects or []:
+        parts = [p.strip() for p in raw.replace("x", ",").replace(" ", ",").split(",") if p.strip()]
+        if len(parts) != 4 or not all(p.lstrip("-").isdigit() for p in parts):
+            parser.error(f"--clear-rect expects X0,Y0,X1,Y1, got {raw!r}")
+        x0, y0, x1, y1 = (int(p) for p in parts)
+        if x1 <= x0 or y1 <= y0:
+            parser.error(f"--clear-rect needs X1>X0 and Y1>Y0, got {raw!r}")
+        rects.append((x0, y0, x1, y1))
+    args.clear_rects = rects
     return args
 
 
@@ -253,6 +272,34 @@ def build_alpha(dist: Image.Image, mode: str, inner: float, outer: float,
             alpha, Image.new("L", (width, height), 255), mask
         )
     return alpha
+
+
+def punch_enclosed_key(alpha: Image.Image, dist: Image.Image,
+                       inner: float) -> tuple[int, Image.Image]:
+    """Make background-coloured pixels transparent even when the flood key
+    cannot reach them.
+
+    A loop of hair, a hood band or a tail can enclose a pocket of pure key
+    green. The flood fill only walks in from the border, so such a pocket stays
+    fully opaque and shows up as a solid green blob in the sprite. Anything that
+    matches the key colour is background regardless of connectivity, so punch
+    it out by colour.
+
+    Returns (pixels_punched, alpha).
+    """
+    hit = dist.point(lambda v: 255 if v <= inner else 0)
+    hit = ImageChops.multiply(hit, alpha.point([0] + [255] * 255))
+    punched = sum(hit.histogram()[1:])
+    if not punched:
+        return 0, alpha
+    return punched, ImageChops.subtract(alpha, hit)
+
+
+def clear_rect(alpha: Image.Image, box: tuple[int, int, int, int]) -> Image.Image:
+    """Erase a rectangle of alpha (client watermark burned into the frame)."""
+    out = alpha.copy()
+    out.paste(0, box)
+    return out
 
 
 def transparent_percent(alpha: Image.Image) -> float:
@@ -521,7 +568,7 @@ def process_image(source: Path, args: argparse.Namespace) -> str:
 
 def _remove_background(
         rgb: Image.Image,
-        args: argparse.Namespace) -> tuple[Image.Image, Optional[int], int]:
+        args: argparse.Namespace) -> tuple[Image.Image, Optional[int], int, int]:
     bg = background_color(rgb)
     dist = distance_image(rgb, bg)
     inner = args.threshold - args.feather / 2.0
@@ -536,6 +583,11 @@ def _remove_background(
     trim = getattr(args, "trim", 1)
     if trim > 0:
         alpha = trim_alpha(alpha, trim)
+    punched = 0
+    if getattr(args, "punch_enclosed", True):
+        punched, alpha = punch_enclosed_key(alpha, dist, inner)
+    for box in getattr(args, "clear_rects", None) or []:
+        alpha = clear_rect(alpha, box)
     if getattr(args, "remove_holes", False):
         alpha = remove_white_holes(
             rgb, alpha, min_area=getattr(args, "hole_min_area", 100)
@@ -551,7 +603,7 @@ def _remove_background(
                                               args.corner_max_px)
     rgba = rgb.convert("RGBA")
     rgba.putalpha(alpha)
-    return rgba, enclosed, corners
+    return rgba, enclosed, corners, punched
 
 
 def _clear_existing_corners(source: Path, img: Image.Image,
@@ -593,11 +645,13 @@ def _save(source: Path, output: Path, rgba: Image.Image,
 
 def _convert_and_save(source: Path, output: Path, rgb: Image.Image,
                       args: argparse.Namespace) -> str:
-    rgba, enclosed, corners = _remove_background(rgb, args)
+    rgba, enclosed, corners, punched = _remove_background(rgb, args)
     pct = transparent_percent(rgba.getchannel("A"))
     detail = f"transparent={pct:.1f}%"
     if enclosed is not None:
         detail += f", enclosed_preserved={enclosed}"
+    if punched:
+        detail += f", enclosed_key_punched={punched}"
     if corners:
         detail += f", corners_cleared={corners}"
     return _save(source, output, rgba, args, detail)
@@ -618,7 +672,7 @@ def _process_animation(source: Path, img: Image.Image,
             print(f"[backup] {source} -> {backup}")
     out_dir.mkdir(parents=True, exist_ok=True)
     for index, frame in enumerate(ImageSequence.Iterator(img)):
-        rgba, _, _ = _remove_background(frame.convert("RGB"), args)
+        rgba, _, _, _ = _remove_background(frame.convert("RGB"), args)
         rgba.save(out_dir / f"{index:03d}.png", "PNG", optimize=True)
     if args.delete_source and source.suffix.lower() != ".png":
         source.unlink()
