@@ -1,5 +1,9 @@
 {
-  "source": "examples\\characters\\whale_girl\\front_green.png",
+  "source_image": "examples\\characters\\whale_girl\\front_green.png",
+  "source_size": [
+    480,
+    640
+  ],
   "spec": "idle",
   "frames": 1,
   "canvas": [
@@ -7,13 +11,15 @@
     512
   ],
   "baselineY": 0.898,
+  "scale": 0.8,
+  "shift": -21,
   "key": {
-    "mode": "chroma",
+    "background": [
+      0,
+      177,
+      64
+    ],
     "transparent_pct": 68.74,
     "enclosed_punched": 2134
-  },
-  "sourceSize": [
-    480,
-    640
-  ]
+  }
 }
