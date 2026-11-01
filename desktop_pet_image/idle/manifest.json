@@ -1,0 +1,19 @@
+{
+  "source": "examples\\characters\\whale_girl\\front_green.png",
+  "spec": "idle",
+  "frames": 1,
+  "canvas": [
+    384,
+    512
+  ],
+  "baselineY": 0.898,
+  "key": {
+    "mode": "chroma",
+    "transparent_pct": 68.74,
+    "enclosed_punched": 2134
+  },
+  "sourceSize": [
+    480,
+    640
+  ]
+}
