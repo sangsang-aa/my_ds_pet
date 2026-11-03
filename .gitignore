@@ -13,3 +13,7 @@ build-*/
 dist/
 CMakeFiles/
 CMakeCache.txt
+
+# 生成产物 / 临时输出
+output/
+
