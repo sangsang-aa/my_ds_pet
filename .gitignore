@@ -17,3 +17,7 @@ CMakeCache.txt
 # 生成产物 / 临时输出
 output/
 
+
+# 停用素材（保留在本地，不入库）
+desktop_pet_image/_unused/
+
