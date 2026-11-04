@@ -1,73 +1,76 @@
-# AGENTS.md — Desktop Pet Demo
+# AGENTS.md — Desktop Pet Demo (Windows copy)
 
 Win32 + GDI+ layered-window desktop pet. Single C++17 app, no framework, no test
 framework. `README.md` documents behaviour; only non-obvious, hard-won facts here.
 
 ## Workflow expectation
-- The user runs this repo under the `ai-coding-protocol` skill: **present a
-  proposal and wait for approval before editing anything.** Bug fixes too.
-
-## Where things live
-- Canonical source = this WSL tree, `/home/zh180/pet_demo`.
-- `/home/zh180/desktop_pet_image` is a **symlink** into `pet_demo/desktop_pet_image`.
-- A separate **Windows build copy** exists at `E:\pet_demo` (own `.git`). Never sync
-  files between the two unless the user explicitly asks.
-- Tooling lives **outside** the repo in `/home/zh180/MCPS/` (that dir is NOT a git repo).
+- The user runs this repo under the `ai-coding-protocol` skill: **present a proposal and
+  wait for approval before editing anything.** Bug fixes too.
+- `E:\pet_demo` is the Windows build copy with its own git. A separate WSL checkout lives at
+  `/home/zh180/pet_demo`. Don't sync files between them unless asked.
+- Work branch is `AIvideo` and it has **no upstream** (origin only has `main` / `image` /
+  `tool`). Commits stay local — don't push.
 
 ## Build
-- Windows: `build.bat` (tries `cl`, then `g++`, then CMake). MinGW one-liner
-  (cmd.exe does **not** expand globs and g++ doesn't either — list the files):
-  `x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe`
-- **Close the running pet first** or linking fails with
+- `cmd /c build.bat` — tries `cl`, then `g++` (on PATH at `E:\mingw64\bin`), then CMake.
+- **Close the running pet first**, or linking fails with
   `cannot open output file pet_demo.exe: Permission denied` (Windows locks the exe):
-  `taskkill /IM pet_demo.exe /F 2>nul`
-- `build.bat`'s g++ path writes the source list to `build\sources.txt` with **forward
-  slashes** and passes it as `@build\sources.txt`: g++ treats `\` inside an `@file` as an
-  escape and would mangle `E:\pet_demo\src\main.cpp` into `E:pet_demosrcmain.cpp`.
-- This WSL box has **no mingw / cmake / wine** installed — only g++, so nothing here can
-  build or run the GUI as-is. A rootless cross-toolchain lives at `~/.local/mingw/root/`
-  (extract via `apt-get download` + `dpkg -x`; use `root/usr/bin/x86_64-w64-mingw32-g++-posix`
-  with `-Isrc`). Prefer it over `/tmp` — `/tmp` has been wiped mid-session.
+  `taskkill /IM pet_demo.exe /F`.
+- `build.bat`'s g++ path writes `build\sources.txt` with **forward slashes**: g++ treats `\`
+  inside an `@file` as an escape and would mangle `src\main.cpp`.
+- `pet_demo.exe` must sit **next to** `desktop_pet_image/`; asset paths resolve from the exe dir.
 
 ## Tests
-Pure-logic assert programs (no framework); they exercise the `<windows.h>`-free headers:
+Pure-logic assert programs (no `<windows.h>`, no framework). All six compile and pass with
+the MinGW g++ here in about a second each:
+
+```powershell
+foreach ($t in 'behavior_test','bubble_logic_test','drag_logic_test',
+              'inifile_test','sweep_logic_test','walk_logic_test') {
+  g++ -std=c++17 -Wall -Wextra -O2 "tests\$t.cpp" -o "build\$t.exe"; & "build\$t.exe"
+}
 ```
-g++ -std=c++17 -Wall -Wextra -O2 tests/behavior_test.cpp     -o /tmp/bt && /tmp/bt
-g++ -std=c++17 -Wall -Wextra -O2 tests/bubble_logic_test.cpp -o /tmp/bu && /tmp/bu
-g++ -std=c++17 -Wall -Wextra -O2 tests/walk_logic_test.cpp   -o /tmp/wt && /tmp/wt
-g++ -std=c++17 -Wall -Wextra -O2 tests/sweep_logic_test.cpp  -o /tmp/st && /tmp/st
-python3 -m pytest /home/zh180/MCPS/test_convert_rgba.py /home/zh180/MCPS/test_fetch_emoji.py
-```
-Behaviour/visual changes can only be verified by the user on Windows.
+
+Behaviour and visuals can only be verified by running the app on Windows.
 
 ## Architecture (not visible from filenames)
-- `src/main.cpp` is WinMain wiring only; `src/` is grouped by feature: `core/` (shared:
-  `config.h` constants · `util.*` · `assets.*` (`Frame`, `LoadFrames`, `bounds.txt`) ·
-  `bounds.*` (the current frame's subject box, read by the bubble / head-sweep band) ·
-  `render.*`
-  (`render::PresentLayered`)) · `pet/` (`behavior.h` + `behaviors.cpp` = the **behavior
-  registry**; `struct Pet` = a registry-driven behavior player; `walk_logic.h`) ·
-  `bubble/` (`struct Bubble`: own window + timer, click-through, follows the pet HWND,
-  + `bubble_logic.h`). Cross-module includes go through `-Isrc` (`#include "core/config.h"`).
-- **To add a pet behavior: append one `pet_behavior::Spec` to `MutableBehaviors()` in
-  `behaviors.cpp` and drop a matching `desktop_pet_image/<action>/NNN.png` folder.** The
-  core loop in `pet.cpp` needs no change; `Trigger` / `Playback` / weight / timing / window
-  delta are all data.
-- **Tunables are externalized**: an optional `desktop_pet_image/pet.ini` overrides the
-  `core/config.h` defaults — `[pet]` / `[bubble]` for globals, plus one section per behavior
-  action (e.g. `[walking_up] min_ticks=… weight=… dy=…`). Parsed by `core/inifile.h`, applied
-  by `core/settings.*` at startup; absent file ⇒ all defaults (zero behaviour change).
-- `src/pet/behavior.h` · `src/pet/walk_logic.h` · `src/bubble/bubble_logic.h` are
-  deliberately **pure (no `<windows.h>`)** — keep new testable logic there so `tests/`
-  can run on Linux.
-- **GDI+ decodes png/jpg/gif/bmp only — never WebP.** Convert webp to PNG for assets.
-- Frames: `desktop_pet_image/<action>/NNN.png`; loading stops at the first missing frame
-  (max 120); scaled by `kScaleFactor = 0.70`. Paths resolve relative to the **exe dir**,
-  so `pet_demo.exe` and `desktop_pet_image/` must be siblings.
-- `desktop_pet_image/emoji/` is intentionally gitignored (third-party stickers, local only).
+- `src/main.cpp` — WinMain, DPI-awareness (`SetProcessDpiAwarenessContext`), wiring only.
+- `src/core/` — `config.h` (constants) · `util` · `assets` (Frame, LoadFrames, bounds.txt) ·
+  `bounds` (current subject box, read by bubble and head-sweep) · `render`
+  (`render::PresentLayered`) · `inifile.h` + `settings`.
+- `src/pet/` — `behaviors.cpp` is the **behavior registry**; `pet.cpp` is a registry-driven
+  player; `walk_logic` / `drag_logic` / `sweep_logic` are pure and unit-tested.
+- `src/bubble/` — own window + timer, click-through, follows the pet HWND.
+- **To add a behavior: append one `pet_behavior::Spec` to `MutableBehaviors()` and drop in
+  `desktop_pet_image/<action>/NNN.png`.** `pet.cpp` needs no change.
+- `Playback`: `Boomerang` (forward then backward) only for clips that are **not** closed
+  loops; a closed walk cycle must be `Loop`, otherwise it moonwalks on the return half.
+  `FullCycle` stops on the last frame.
+- Tunables: an optional `desktop_pet_image/pet.ini` overrides `core/config.h` (one section
+  per action). Absent file ⇒ all defaults. No such file is checked in.
+- Keep `behavior.h` / `walk_logic.h` / `drag_logic.h` / `sweep_logic.h` / `bubble_logic.h` /
+  `inifile.h` free of Windows headers so `tests/` keeps building anywhere.
+- GDI+ decodes png/jpg/gif/bmp only — **never WebP**.
+- Frames: `desktop_pet_image/<action>/NNN.png` (3 digits), loading stops at the first missing
+  frame, max 120, 10 fps (`kTimerElapseMs = 100`), drawn at `kScaleFactor = 0.70` ⇒ a 384×512
+  frame is a 269×358 window (and `269×358` is the expected size at 150% DPI).
+- `bounds.txt` (one `x y w h` per line) drives the bubble and the head-sweep band.
 
-## Git
-- Remote is SSH (`git@github.com:sangsang-aa/my_ds_pet.git`). The HTTPS token in
-  `~/.git-credentials` **cannot write** (403) — push over SSH.
-- Develop on `main`. `image` is an older asset branch, kept as-is.
-- Commit messages: imperative English (e.g. `Add ...`, `Fix ...`, `Document ...`).
+## Asset naming lies
+- `walking_left` / `walking_right` — real walk cycles, side view (right is a mirror).
+- **`walking_up` = fly up** (arm raised, feet off the ground) and **`walking_down` = dive**.
+  They are *not* walks; only the window delta moves up/down.
+- `drag` = held up by the scruff (`OnDragStart`, `Loop`). The grabbing "hand" is the mouse
+  cursor and is never drawn.
+- `idle` is deliberately a single frame (no breathing); `idle2` exists on disk but is not
+  registered in the behavior table.
+- `desktop_pet_image/_unused/` holds the maid-outfit skin (gitignored) — a different costume,
+  not a variant of the current one.
+
+## Conventions
+- Commit messages: imperative English (`Add …`, `Fix …`, `Document …`).
+- Replacing a clip: delete stale `NNN.png` beyond the new frame count, then rewrite
+  `bounds.txt`; the loader would otherwise read leftover frames.
+- Don't rescale or re-time frames in this repo — assets arrive as 384×512 RGBA from
+  `E:\pet-motion-prompt`, subject height ≈0.68, baseline y ≈460.
+- `emoji/` is gitignored via `desktop_pet_image/.gitignore`; it is bubble stickers, not an action.
