@@ -36,7 +36,10 @@ constexpr int kWaitMaxTicks = 1800;     // ~3 min
 // Reactions
 constexpr int kHeadBandPercent = 45;    // top 45% of the pet counts as the "head"
 constexpr int kHeadBandTopPercent = 0;  // skip this much of the subject's top
-constexpr int kHeadBandBottomInsetPx = 100;  // raise the band's bottom edge
+// Raise the band's bottom edge by a share of the subject's height. A fixed
+// pixel inset collapsed the band to ~9px on a 244px-tall subject, landing it on
+// the transparent gap above the hood, so the gesture could never trigger.
+constexpr int kHeadBandBottomInsetPercent = 20;
 constexpr int kSweepThresholdPx = 50;   // horizontal travel of one stroke -> counts
 constexpr int kMaxSweepDeltaPx = 80;    // ignore jumpy deltas (mouse re-entry)
 constexpr int kSweepPassesToTrigger = 2;  // two back-and-forth strokes -> shy

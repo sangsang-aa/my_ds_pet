@@ -372,7 +372,14 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
         const int bh = bounds.valid && bounds.h > 0 ? bounds.h : petH;
         const int bandTop = by + bh * GetSettings().headBandTopPercent / 100;
         int bandBottom = by + bh * GetSettings().headBandPercent / 100 -
-                         kHeadBandBottomInsetPx;
+                         bh * kHeadBandBottomInsetPercent / 100;
+        // Keep the band tall enough to hit the sprite, and never past the subject.
+        if (bandBottom - bandTop < bh / 8) {
+            bandBottom = bandTop + bh / 8;
+        }
+        if (bandBottom > by + bh) {
+            bandBottom = by + bh;
+        }
         if (bandBottom < bandTop) {
             bandBottom = bandTop;
         }
