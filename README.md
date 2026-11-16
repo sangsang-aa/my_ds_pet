@@ -50,8 +50,10 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 **气泡表情包**：程序会**不定期（约 20~60 秒）**在宠物头顶弹出一个气泡，随机显示
 `desktop_pet_image\emoji\emoji_NN.png` 中的一张表情包，约 3 秒后消失。气泡是**独立的
 分层窗口**，用 `WS_EX_TRANSPARENT` 实现**点击穿透**（不挡宠物的点击/拖拽），并持续跟随
-宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能。
-表情包素材用 `MCPS/fetch_emoji.py` 抓取（见文末）。
+宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能
+（其余功能不受影响）。表情包不随仓库分发，把自己的图片放进去即可：
+`python tools/make_emoji.py <图片或目录>` 会自动编号并缩放，详见
+`desktop_pet_image\emoji\README.md`。用 `MCPS/fetch_emoji.py` 抓取也可以（见文末）。
 
 **启动失败会有弹窗**：GUI 程序没有控制台，找不到帧时不再静默退出，而是弹出错误框，
 写明「资源目录、请求的动作、该目录下实际可用的动作」，方便排查（例如动作名拼错、
@@ -63,8 +65,12 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
 - 左键按住拖动：移动宠物，同时**循环播放 `drag` 挣扎动画**；松手后进入 2~3 分钟等待
   （位移超过系统拖拽阈值才进入拖动，否则视为点击）
 - 鼠标在头顶左右扫过：播放 `shy` 害羞动画一次
-- 右键单击：退出程序
+- 右键单击宠物本体：退出程序
 - 按 ESC：退出程序
+
+> **只有画到宠物身上的像素才响应鼠标**：窗口是整块 269×358 的矩形，但透明留白
+> （约占窗口一半）会**点击穿透**，落到它后面的桌面或窗口上。所以右键点在宠物旁边的
+> 透明区域不会退出程序——这个行为由 `WM_NCHITTEST` + 逐帧 alpha 掩码实现。
 
 ## 帧加载约定
 
@@ -198,6 +204,7 @@ dy        = -5
 | `docs/guides/asset-packaging.md` | 帧序列要不要打包：PNG 图集 vs 动画 WebP 的实测对比 |
 | `docs/guides/edge-repair.md` | 抠图残留"绿边"的诊断与修复，含**原视频必须保存**的硬标准 |
 | `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点（用法见上表最后一行） |
+| `tools/make_emoji.py` | 把任意图片/GIF 变成编号连续的 `emoji/emoji_NN.png` 表情包 |
 | `tools/migrate_canvas.py` | 旧画布（384×456 / 384×384）顶部补齐到 384×512 |
 
 ## 编译
