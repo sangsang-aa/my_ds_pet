@@ -189,6 +189,17 @@ weight    = 1
 dy        = -5
 ```
 
+## 开发文档
+
+| 位置 | 内容 |
+|------|------|
+| `AGENTS.md` | 给协作者 / AI 的工作约定与踩坑记录（构建、测试、资产约定） |
+| `docs/guides/reference-dsh-whale-musume.md` | 与参考桌宠工程的逐层对照：可借鉴的工程纪律与优先级 |
+| `docs/guides/asset-packaging.md` | 帧序列要不要打包：PNG 图集 vs 动画 WebP 的实测对比 |
+| `docs/guides/edge-repair.md` | 抠图残留"绿边"的诊断与修复，含**原视频必须保存**的硬标准 |
+| `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点（用法见上表最后一行） |
+| `tools/migrate_canvas.py` | 旧画布（384×456 / 384×384）顶部补齐到 384×512 |
+
 ## 编译
 
 ### 方法一：MSVC 一行命令（推荐）
