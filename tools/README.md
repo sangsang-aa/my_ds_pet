@@ -6,6 +6,7 @@
 |---|---|---|
 | `migrate_canvas.py` | 把旧画布（384×456 / 384×384）顶部补透明到 384×512 | 本文件 |
 | `fix_edges.py` | 修抠图残留的**青色/绿色边缘环**、透明区幽灵 RGB、孤立白点 | `docs/guides/edge-repair.md` |
+| `make_emoji.py` | 把图片/GIF 转成 `emoji/emoji_NN.png`（自动编号 + 缩放） | `desktop_pet_image/emoji/README.md` |
 
 ---
 

@@ -6,8 +6,11 @@ __pycache__/
 *~RF*.TMP
 *:Zone.Identifier
 
-# Emoji stickers are fetched locally (third-party art) and intentionally not committed.
-emoji/
+# Emoji stickers are fetched locally (third-party art) and intentionally not
+# committed. The folder itself ships with a README so a fresh clone knows how
+# to populate it (tools/make_emoji.py does the numbering and scaling).
+emoji/*
+!emoji/README.md
 
 # V2 source videos plus their staging frames and old-frame backups: local only.
 视频文件V2/
