@@ -141,13 +141,13 @@ desktop_pet_image/idle/bounds.txt 第一行: 61 110 262 353
 源画布: 384×512
 窗口/缩放帧: 269×358（scale_factor 0.70）
 期望缩放后: 43 77 183 247
-代码实际使用: 61 110 262 353
+修复前实际使用: 61 110 262 353
 ```
 
-`LoadFrameBounds` 直接 `frames[index].bx = bx; ...`；`PresentFrame` 直接
+修复前，`LoadFrameBounds` 直接 `frames[index].bx = bx; ...`；`PresentFrame` 直接
 `windowRect.left + frame.bx`。它没有乘 `scale_factor`，也没有夹到 269×358。
 
-**根因**：`bounds.txt` 由源画布生成（`tools/migrate_canvas.py` 的 `TARGET_W/H = 384/512` 可以佐证），但消费端按缩放帧坐标使用。`Frame.mask` 是在缩放后的位图上生成的，所以命中测试正常，只有 bounds 消费者错。
+**历史根因**：`bounds.txt` 由源画布生成（`tools/migrate_canvas.py` 的 `TARGET_W/H = 384/512` 可以佐证），但消费端按缩放帧坐标使用。`Frame.mask` 是在缩放后的位图上生成的，所以命中测试正常，只有 bounds 消费者错。
 
 **历史影响面**：
 
