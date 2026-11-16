@@ -34,6 +34,42 @@ std::string ReadTextFile(const std::wstring& path) {
     return text;
 }
 
+// One bit per pixel: alpha >= kHitAlpha is clickable. Frames without an alpha
+// channel leave the mask empty, which the hit test reads as "fully opaque".
+void BuildHitMask(gdi::Bitmap& bitmap, Frame& frame) {
+    frame.mask = AlphaMask();
+    if ((bitmap.GetPixelFormat() & PixelFormatAlpha) == 0) {
+        return;
+    }
+    const int w = static_cast<int>(bitmap.GetWidth());
+    const int h = static_cast<int>(bitmap.GetHeight());
+    if (w <= 0 || h <= 0) {
+        return;
+    }
+    gdi::Rect rect(0, 0, w, h);
+    gdi::BitmapData data = {};
+    if (bitmap.LockBits(&rect, gdi::ImageLockModeRead, PixelFormat32bppARGB,
+                        &data) != gdi::Ok ||
+        data.Scan0 == nullptr) {
+        return;
+    }
+    frame.mask.Reset(w, h);
+    const ptrdiff_t stride = data.Stride;
+    const uint8_t* base = static_cast<const uint8_t*>(data.Scan0);
+    if (stride < 0) {
+        base += static_cast<ptrdiff_t>(h - 1) * stride;
+    }
+    for (int y = 0; y < h; ++y) {
+        const uint8_t* row = base + static_cast<ptrdiff_t>(y) * stride;
+        for (int x = 0; x < w; ++x) {
+            if (row[x * 4 + 3] >= kHitAlpha) {
+                frame.mask.Set(x, y);
+            }
+        }
+    }
+    bitmap.UnlockBits(&data);
+}
+
 // `bounds.txt` holds one `x y w h` subject box per frame, written by
 // MCPS/prepare_action.py; without it every frame counts as fully opaque.
 void LoadFrameBounds(const std::wstring& path, std::vector<Frame>& frames) {
@@ -125,7 +161,8 @@ std::vector<Frame> LoadFrames(const std::wstring& exeDir,
         Frame frame;
         frame.hbmp = hbmp;
         frame.hasAlpha = (frameBitmap->GetPixelFormat() & PixelFormatAlpha) != 0;
-        frames.push_back(frame);
+        BuildHitMask(*frameBitmap, frame);
+        frames.push_back(std::move(frame));
     }
     LoadFrameBounds(exeDir + assetsDir + L"\\" + action + L"\\bounds.txt", frames);
     return frames;

@@ -109,6 +109,7 @@ void Pet::PresentFrame(HWND hwnd, const Frame& frame) {
     if (memDC == nullptr || frame.hbmp == nullptr) {
         return;
     }
+    currentFrame = &frame;
     RECT windowRect = {};
     GetWindowRect(hwnd, &windowRect);
     render::PresentLayered(hwnd, memDC, frame.hbmp, windowRect.left,
@@ -121,8 +122,15 @@ void Pet::PresentFrame(HWND hwnd, const Frame& frame) {
                                           petH, true });
 }
 
-void Pet::PresentBase(HWND hwnd) {
-    if (basePool.empty()) {
+bool Pet::HitTest(int x, int y) const {
+    if (currentFrame == nullptr || !currentFrame->hasAlpha ||
+        currentFrame->mask.Empty()) {
+        return x >= 0 && y >= 0 && x < petW && y < petH;
+    }
+    return currentFrame->mask.Test(x, y);
+}
+
+void Pet::PresentBase(HWND hwnd) {    if (basePool.empty()) {
         return;
     }
     const std::vector<Frame>& base =
@@ -484,6 +492,19 @@ LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,
             pet->OnLButtonDown(hwnd);
         }
         return 0;
+
+    case WM_NCHITTEST: {
+        // Let the transparent margins fall through to whatever is underneath.
+        // Without this the window's full rectangle eats right-clicks, and a
+        // right-click anywhere inside it quits the pet.
+        POINT point = { static_cast<short>(LOWORD(lParam)),
+                        static_cast<short>(HIWORD(lParam)) };
+        ScreenToClient(hwnd, &point);
+        if (pet != nullptr && !pet->HitTest(point.x, point.y)) {
+            return HTTRANSPARENT;
+        }
+        return HTCLIENT;
+    }
 
     case WM_MOUSEMOVE:
         if (pet != nullptr) {

@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "alpha_mask.h"
+
 struct Frame {
     HBITMAP hbmp = nullptr;
     bool hasAlpha = false;  // source PNG had an alpha channel?
@@ -14,6 +16,9 @@ struct Frame {
     int by = 0;
     int bw = 0;
     int bh = 0;
+    // 1 bit per pixel: alpha >= kHitAlpha. Empty means "treat as fully opaque",
+    // so frames without an alpha channel keep the whole rectangle clickable.
+    AlphaMask mask;
 };
 
 std::wstring FrameName(int index);

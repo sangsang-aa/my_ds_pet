@@ -55,6 +55,7 @@ struct Pet {
     HDC memDC = nullptr;
     int petW = 0;
     int petH = 0;
+    const Frame* currentFrame = nullptr;  // frame on screen, for hit testing
 
     // Load every behavior in the registry (plus the idle pool) relative to
     // (exeDir, assetsDir). On failure returns false and fills `error`.
@@ -67,6 +68,11 @@ struct Pet {
 
     void PresentFrame(HWND hwnd, const Frame& frame);
     void PresentBase(HWND hwnd);
+
+    // Window hit test: is (x, y) — client coordinates — on the sprite itself?
+    // The transparent margins of the canvas must stay click-through, otherwise
+    // a right-click on "empty desktop" inside the window rectangle quits the pet.
+    bool HitTest(int x, int y) const;
 
     void OnTimer(HWND hwnd);
     void OnLButtonDown(HWND hwnd);

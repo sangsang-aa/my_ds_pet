@@ -19,6 +19,11 @@ constexpr wchar_t kClassName[] = L"DesktopPetWindowClass";
 constexpr wchar_t kAssetsDir[] = L"desktop_pet_image";
 constexpr wchar_t kDefaultAction[] = L"idle";
 
+// Hit testing: the window is the full frame rectangle, the sprite is not.
+// Pixels with alpha below this are click-through so the transparent margins
+// cannot swallow a left-click (reaction) or a right-click (quit).
+constexpr int kHitAlpha = 16;
+
 // Idle <-> walk behaviour
 constexpr int kWalkStepPx = 5;          // window movement per tick while walking
 constexpr int kIdleMinTicks = 30;       // idle dwell before walking (~3s)
@@ -47,8 +52,7 @@ constexpr int kSweepResetTicks = 20;      // ~2s idle before the gesture is drop
 constexpr int kShyCooldownTicks = 25;   // ~2.5s between shy reactions
 
 // Speech-bubble emoji
-constexpr wchar_t kBubbleClassName[] = L"DesktopPetBubbleClass";
-constexpr UINT_PTR kBubbleTimerId = 2;
+constexpr wchar_t kBubbleClassName[] = L"DesktopPetBubbleClass";constexpr UINT_PTR kBubbleTimerId = 2;
 constexpr UINT kBubbleTimerElapseMs = 100;
 constexpr int kBubbleEmojiSizePx = 220;  // emoji is scaled to fit this box
 constexpr int kBubblePadPx = 10;         // padding between emoji and bubble edge

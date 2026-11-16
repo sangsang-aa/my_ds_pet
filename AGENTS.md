@@ -23,11 +23,11 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - `pet_demo.exe` must sit **next to** `desktop_pet_image/`; asset paths resolve from the exe dir.
 
 ## Tests
-Pure-logic assert programs (no `<windows.h>`, no framework). All six compile and pass with
+Pure-logic assert programs (no `<windows.h>`, no framework). All seven compile and pass with
 the MinGW g++ here in about a second each:
 
 ```powershell
-foreach ($t in 'behavior_test','bubble_logic_test','drag_logic_test',
+foreach ($t in 'alpha_mask_test','behavior_test','bubble_logic_test','drag_logic_test',
               'inifile_test','sweep_logic_test','walk_logic_test') {
   g++ -std=c++17 -Wall -Wextra -O2 "tests\$t.cpp" -o "build\$t.exe"; & "build\$t.exe"
 }
@@ -37,9 +37,14 @@ Behaviour and visuals can only be verified by running the app on Windows.
 
 ## Architecture (not visible from filenames)
 - `src/main.cpp` — WinMain, DPI-awareness (`SetProcessDpiAwarenessContext`), wiring only.
-- `src/core/` — `config.h` (constants) · `util` · `assets` (Frame, LoadFrames, bounds.txt) ·
+- `src/core/` — `config.h` (constants) · `util` · `assets` (Frame, LoadFrames, bounds.txt,
+  per-frame hit mask) · `alpha_mask.h` (pure 1-bit coverage test) ·
   `bounds` (current subject box, read by bubble and head-sweep) · `render`
   (`render::PresentLayered`) · `inifile.h` + `settings`.
+- The window is **click-through where the frame is transparent**: `WM_NCHITTEST` consults
+  the current frame's `AlphaMask` (alpha >= `kHitAlpha`) and returns `HTTRANSPARENT`
+  otherwise. Without it the whole 269x358 rectangle — mostly empty margins — eats clicks,
+  and a right-click on "empty desktop" quits the pet (issue #1).
 - `src/pet/` — `behaviors.cpp` is the **behavior registry**; `pet.cpp` is a registry-driven
   player; `walk_logic` / `drag_logic` / `sweep_logic` are pure and unit-tested.
 - `src/bubble/` — own window + timer, click-through, follows the pet HWND.
