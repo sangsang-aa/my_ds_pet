@@ -9,9 +9,10 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - `E:\pet_demo` is the Windows build copy with its own git. A separate WSL checkout lives at
   `/home/zh180/pet_demo`. Don't sync files between them unless asked.
 - Work branch is `AIvideo`, tracking `origin/AIvideo` (remote: `sangsang-aa/my_ds_pet`).
-  Push once the build and the six test programs pass; never force-push.
-- Do **not** commit `desktop_pet_image/视频文件/女仆装/` or other relocated source folders
-  unless the move is explicitly part of the task.
+  Push once the build and the seven test programs pass; never force-push.
+- A relocated source folder is committed as a **pure rename** (verify with
+  `git diff --cached --summary`: every entry must read `(100%)`), and only when the move is
+  explicitly part of the task.
 
 ## Build
 - `cmd /c build.bat` — tries `cl`, then `g++` (on PATH at `E:\mingw64\bin`), then CMake.
@@ -79,7 +80,7 @@ Behaviour and visuals can only be verified by running the app on Windows.
   *derived* artifact: keying, despill and canvas migration are lossy and irreversible.
   When a key is wrong the only clean fix is re-keying the original; without it you are
   limited to cosmetic edge repair (`tools/fix_edges.py`).
-- The current white-hood costume has **lost its sources** — `desktop_pet_image/视频文件/`
+- The current white-hood costume has **lost its sources** — `desktop_pet_image/视频文件/女仆装/`
   only holds the *maid* outfit (a different skin). Do not treat those as sources for the
   current frames, and do not overwrite a frame that has no source.
 - Each action directory should carry a `SOURCE.txt`: source file name + frame-extract
