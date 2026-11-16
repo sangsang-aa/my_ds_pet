@@ -5,6 +5,7 @@
 > 基线：分支 `AIvideo` @ `d88b53e`（2026-11-16）；当前代码已修复 R1/R2。
 > 验证：MinGW-w64 g++ 16.2.0 构建通过；8/8 测试通过；启动日志已抓取。
 > 历史快照：[`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md)
+> 修复记录：[`../archives/2026-11-16-bounds-fix.md`](../archives/2026-11-16-bounds-fix.md)
 
 ## 和现有文档的分工
 
@@ -55,7 +56,7 @@
 
 ## 最近修复
 
-- **R1：`bounds.txt` 缩放**。`ScaleSubjectBounds` 在 `Pet::PresentFrame` 中把源画布坐标换算到窗口并夹取；新增 `tests/bounds_scale_test.cpp`。详见 [`04-assets-and-config.md`](04-assets-and-config.md#缩放换算r1已修复)。
+- **R1：`bounds.txt` 缩放**。`ScaleSubjectBounds` 在 `Pet::PresentFrame` 中把源画布坐标换算到窗口并夹取；新增 `tests/bounds_scale_test.cpp`。详见 [`04-assets-and-config.md`](04-assets-and-config.md#缩放换算r1已修复) 与 [`../archives/2026-11-16-bounds-fix.md`](../archives/2026-11-16-bounds-fix.md)。
 - **R2：README 同步**。基底池、竖向播放、头部带、帧数、气泡尺寸、emoji 命名、启动日志、`pet.ini` 注释规则与开发文档索引已按代码/实测回写；历史漂移保留在 baseline。
 
 ## 当前已知问题（摘要）
