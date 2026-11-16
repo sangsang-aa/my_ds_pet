@@ -88,30 +88,34 @@ x y w h
 
 消费者：
 
+- `Pet::PresentFrame` 调用 `ScaleSubjectBounds`，按 `scale_factor` 把源坐标换算到缩放帧，并夹到 `petW/petH`；然后发布 `SubjectBounds`；
 - 气泡：`BubblePetRect` 读 `SubjectBounds`，决定气泡放在头顶还是侧面；
 - 扫头：`Pet::OnMouseMove` 用 `SubjectBounds` 计算头部带；
 - 命中测试 **不用** bounds，用逐帧 `AlphaMask`。
 
-### 已知缺陷：bounds 未随缩放换算（R1）
+### 缩放换算（R1，已修复）
 
-`bounds.txt` 是 384×512 源画布坐标，但 `LoadFrameBounds` 直接赋值；`PresentFrame` 又把这些值直接加到 269×358 窗口的屏幕坐标上，**没有乘 `scale_factor`**。
+`bounds.txt` 是 384×512 源画布坐标，窗口是 269×358。`ScaleSubjectBounds` 在 `Pet::PresentFrame` 里完成换算和夹取：
+
+```cpp
+x = lround(bx * scale);
+y = lround(by * scale);
+w = lround(bw * scale);
+h = lround(bh * scale);
+// 负坐标 -> 裁掉左边/上边；右下越界 -> 夹到 frameW/frameH
+```
 
 以 `idle/bounds.txt` 第一行为例：
 
 ```
 源坐标:   61 110 262 353      （384×512 画布）
-按 0.70:  43  77 183 247      （269×358 窗口，期望）
-实际使用: 61 110 262 353      （代码现状）
+按 0.70:  43  77 183 247      （269×358 窗口，修复后）
+修复前:   61 110 262 353      （直接当窗口坐标，气泡/扫头偏移）
 ```
 
-后果：
+修复前气泡水平中心算成 `61 + 262/2 = 192`，窗口中心是 `134.5`，整体偏右约 57 px；扫头带也按源高度 353 计算并向下偏移。修复后 `ScaleSubjectBounds` 把它们换算到 269×358，命中测试不受影响（`AlphaMask` 本来就在缩放帧上生成）。
 
-- 气泡水平中心算成 `61 + 262/2 = 192`，而窗口中心是 `134.5`，整体偏右约 57 px；
-- 上方气泡的底边会压到实际头顶附近，侧面气泡会离身体更远；
-- 扫头判定带按源高度 353 计算并向下偏移，落在脸部/上半身而不是头顶；
-- 命中测试不受影响，因为 `AlphaMask` 是在缩放后的帧上生成的。
-
-修复方向：在 `LoadFrameBounds` 里按 `scale_factor` 缩放并夹到帧边界，或保留源坐标、在 `PresentFrame` 统一换算；修完需要回归气泡四向放置和扫头触发。**本次文档提交没有改代码。**
+回归：`tests/bounds_scale_test.cpp` 覆盖 `idle` 实际数值、负坐标、右下越界、完全在窗口外、0 尺寸、`scale=1.0` / `0.5`；`PresentFrame` 对 `valid=false` 仍回退整块窗口。
 
 ## 5. emoji 契约
 

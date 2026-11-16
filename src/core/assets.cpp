@@ -70,8 +70,10 @@ void BuildHitMask(gdi::Bitmap& bitmap, Frame& frame) {
     bitmap.UnlockBits(&data);
 }
 
-// `bounds.txt` holds one `x y w h` subject box per frame, written by
-// MCPS/prepare_action.py; without it every frame counts as fully opaque.
+// `bounds.txt` holds one `x y w h` subject box per frame in SOURCE canvas
+// coordinates (e.g. 384x512), written by MCPS/prepare_action.py; without it
+// every frame counts as fully opaque. Pet::PresentFrame scales the box to the
+// displayed window before publishing SubjectBounds.
 void LoadFrameBounds(const std::wstring& path, std::vector<Frame>& frames) {
     const std::string text = ReadTextFile(path);
     if (text.empty()) {

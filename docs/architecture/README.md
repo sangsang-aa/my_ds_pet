@@ -2,15 +2,15 @@
 
 本目录记录 **当前代码实际如何工作**，以及继续开发时必须遵守的契约。它面向要改代码的人（或 AI），不是用户手册。
 
-> 基线：分支 `AIvideo` @ `d88b53e`（2026-11-16）
-> 验证：MinGW-w64 g++ 16.2.0 构建通过；7/7 测试通过；启动日志已抓取。
-> 完整快照：[`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md)
+> 基线：分支 `AIvideo` @ `d88b53e`（2026-11-16）；当前代码已修复 R1/R2。
+> 验证：MinGW-w64 g++ 16.2.0 构建通过；8/8 测试通过；启动日志已抓取。
+> 历史快照：[`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md)
 
 ## 和现有文档的分工
 
 | 位置 | 写什么 | 是否随代码更新 |
 |---|---|---|
-| `README.md` | 用户视角：怎么运行、按键、可见行为 | 应该更新，但目前有滞后 |
+| `README.md` | 用户视角：怎么运行、按键、可见行为 | 已按当前代码同步 |
 | `AGENTS.md` | 协作约定：构建、测试、资产命名、踩坑 | 是 |
 | `docs/guides/` | 方案对比与实测：图集 vs WebP、抠图修边、参考工程 | 阶段性 |
 | `docs/architecture/` | **当前代码事实**、模块边界、数据契约、风险 | **是，改代码时同步** |
@@ -42,7 +42,7 @@
 | 气泡 | 独立分层窗口，自己的 100 ms 定时器，点击穿透，跟随宠物 |
 | 线程 | 单 UI 线程；没有工作线程、锁或异步 IO |
 | 构建 | `build.bat` 依次尝试 `cl` → `g++` → CMake |
-| 测试 | 7 个纯逻辑断言程序，不依赖 `<windows.h>` |
+| 测试 | 8 个纯逻辑断言程序，不依赖 `<windows.h>` |
 
 ## 维护规则
 
@@ -53,9 +53,12 @@
 5. 新增“硬约束”（例如“不能删源视频”）时，先写进 `AGENTS.md`，再在架构文档里引用。
 6. 发现“文档说 A、代码做 B”时，不要静默改文档：在归档里保留证据，再单独修代码或修文档。
 
+## 最近修复
+
+- **R1：`bounds.txt` 缩放**。`ScaleSubjectBounds` 在 `Pet::PresentFrame` 中把源画布坐标换算到窗口并夹取；新增 `tests/bounds_scale_test.cpp`。详见 [`04-assets-and-config.md`](04-assets-and-config.md#缩放换算r1已修复)。
+- **R2：README 同步**。基底池、竖向播放、头部带、帧数、气泡尺寸、emoji 命名、启动日志、`pet.ini` 注释规则与开发文档索引已按代码/实测回写；历史漂移保留在 baseline。
+
 ## 当前已知问题（摘要）
 
-- **`bounds.txt` 坐标未随 `kScaleFactor` 缩放**：`bounds.txt` 按 384×512 源画布生成，`LoadFrameBounds` 直接赋值，消费者却把它当 269×358 窗口坐标用。气泡和扫头判定因此偏移。详见 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
-- **根 `README.md` 有多处过期描述**：idle 池、竖向播放方式、若干帧数、气泡尺寸等。详细对照见 [`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md#文档漂移对照)。
-- **`idle2` / `busy` / `peek` 有帧但未注册**：当前只有 `idle` 进入基底池；其余三个动作不会被播放。
-- **`core/settings.cpp` 反向依赖 `pet/behaviors.h`**：能工作，但破坏了“core 不依赖领域层”的边界。
+- **`idle2` / `busy` / `peek` 有帧但未注册**：当前只有 `idle` 进入基底池；其余三个动作不会被播放。详见 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r3-未注册的动作)。
+- **`core/settings.cpp` 反向依赖 `pet/behaviors.h`**：能工作，但破坏了“core 不依赖领域层”的边界。详见 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r4-core--pet-反向依赖)。

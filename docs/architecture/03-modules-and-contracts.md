@@ -18,7 +18,7 @@
 | `util.h/.cpp` | exe 目录、错误框、可用动作列表、UTF-8→宽字符、共享 RNG | `GetExecutableDir`、`ShowFatalError`、`WideFromUtf8`、`Rng`、`RandomInRange` | Win32 | 否 |
 | `assets.h/.cpp` | 帧与 emoji 加载、缩放、`HBITMAP`、alpha 掩码、`bounds.txt` | `Frame`、`LoadFrames`、`LoadEmojiPaths`、`FramePath` | Win32 + GDI+ | 否 |
 | `alpha_mask.h` | 1 bit/像素覆盖掩码 | `AlphaMask::Reset/Set/Test/Empty` | 无 | **是** |
-| `bounds.h/.cpp` | 全局“当前主体矩形”（屏幕坐标） | `SetSubjectBounds`、`GetSubjectBounds`、`SubjectBounds` | 无 | **是**（`.cpp` 也纯） |
+| `bounds.h/.cpp` | 全局“当前主体矩形”（屏幕坐标）+ 源坐标缩放 | `SetSubjectBounds`、`GetSubjectBounds`、`SubjectBounds`、`ScaleSubjectBounds` | 无 | **是**（`.cpp` 也纯） |
 | `render.h/.cpp` | GDI+ 生命周期、`UpdateLayeredWindow` 合成 | `GdiplusSession`、`render::PresentLayered` | Win32 + GDI+ | 否 |
 | `gdi.h` | 统一包含 Win32 + GDI+，定义 `gdi = Gdiplus` 别名 | — | Win32 + GDI+ | 否 |
 | `inifile.h` | 极简 INI 解析 | `pet_ini::Parse/Find/IntOr/DoubleOr` | 无 | **是** |
@@ -47,7 +47,7 @@
 
 | 位置 | 职责 |
 |---|---|
-| `tests/*.cpp` | 7 个纯逻辑断言程序；不包含 `<windows.h>` |
+| `tests/*.cpp` | 8 个纯逻辑断言程序；不包含 `<windows.h>` |
 | `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点 |
 | `tools/migrate_canvas.py` | 旧画布顶部补透明到 384×512；同步/重建 `bounds.txt` |
 | `tools/make_emoji.py` | 任意图片/GIF → 编号连续的 `emoji/emoji_NN.png` |
@@ -67,7 +67,7 @@ struct Frame {
 
 - `hbmp`：已经按 `scale_factor` 缩放后的位图，尺寸是窗口尺寸（默认 269×358）；拥有权归 `Frame`。
 - `hasAlpha`：缩放后的位图是否带 alpha 通道；决定 `UpdateLayeredWindow` 的 `AlphaFormat`。
-- `bx/by/bw/bh`：主体框；**按 `bounds.txt` 原样读入**。`bounds.txt` 是源画布（384×512）坐标，但当前消费者把它当缩放帧坐标用，见 [R1](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
+- `bx/by/bw/bh`：主体框；**按 `bounds.txt` 原样读入**，单位是源画布（384×512）坐标。`Pet::PresentFrame` 用 `ScaleSubjectBounds` 换算到缩放帧并发布 `SubjectBounds`；见 [R1](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
 - `mask`：按缩放后的帧生成，1 bit/像素；空表示“没有掩码”，命中测试会退回整块矩形。
 
 ### `pet_behavior::Spec`（`src/pet/behavior.h`）
@@ -140,6 +140,7 @@ struct SubjectBounds {
 | `pet_bubble::NextIntervalTicks(min,max,rand01)` | `max <= min` 返回 `min`；否则 `rand01` 映射到闭区间 `[min,max]` |
 | `pet_sweep::Feed(state, dx, threshold, passesNeeded)` | 方向反转且上一段累计 >= threshold 才算一次；达到 passesNeeded 时清空 state 并返回 true |
 | `pet_sweep::Idle(state, resetTicks)` | 每 tick 累计位移减半；超过 resetTicks 清空 |
+| `ScaleSubjectBounds(bx,by,bw,bh,scale,frameW,frameH)` | 源画布坐标 → 缩放帧坐标；按 `lround` 取整并夹到帧内；空/完全越界返回 `valid=false` |
 | `pet_walk::AtEndFrame(index,size)` | `size <= 1` 或 `index >= size-1` |
 | `pet_walk::AtStartFrame(index)` | `index <= 0` |
 | `pet_drag::ClampToScreen(x,y,w,h,sw,sh)` | 把窗口左上角夹到 `[0, sw-w] × [0, sh-h]`；窗口比屏幕大时上限取 0 |
@@ -151,13 +152,14 @@ struct SubjectBounds {
 2. 帧从 `000.png` 连续加载，遇到第一个缺失就停；最多 120 帧。不会跳过缺号。
 3. 同一动作的所有帧应当同尺寸；**运行期不校验**。窗口尺寸只由第一帧决定。
 4. `bounds.txt` 的有效行按顺序映射到已加载帧；非法行会被跳过且不推进索引（后续行前移一帧），缺失行不会报错，未赋值的帧保持 0。
-5. `Frame.mask` 为空时，命中测试视为整块不透明。
-6. `cooldowns.size() == clips.size()`；`StartBehavior` 写 `cooldowns[activeClip]`。
-7. `currentFrame` 指向 `basePool`/`clips` 内部，`DestroyResources` 后不得再使用。
-8. `SubjectBounds` 每次 `PresentFrame` 更新；消费者不能假设它在窗口移动后立即准确。
-9. `Settings` 在 `Pet::Load` 前应用；`Behaviors()` 的覆盖也发生在加载前。
-10. 只有一个 `Pet` / `Bubble` 实例；全局 `Settings`、`Behaviors`、`Rng`、`SubjectBounds` 不支持多实例。
-11. `PetWndProc` / `BubbleWndProc` 在 `WM_CREATE` 里把 `lpCreateParams` 写入 `GWLP_USERDATA`；之前的消息不依赖该指针。
+5. `bounds.txt` 是源画布坐标；`SubjectBounds` 是缩放后的屏幕坐标，转换只发生在 `Pet::PresentFrame`。
+6. `Frame.mask` 为空时，命中测试视为整块不透明。
+7. `cooldowns.size() == clips.size()`；`StartBehavior` 写 `cooldowns[activeClip]`。
+8. `currentFrame` 指向 `basePool`/`clips` 内部，`DestroyResources` 后不得再使用。
+9. `SubjectBounds` 每次 `PresentFrame` 更新；消费者不能假设它在窗口移动后立即准确。
+10. `Settings` 在 `Pet::Load` 前应用；`Behaviors()` 的覆盖也发生在加载前。
+11. 只有一个 `Pet` / `Bubble` 实例；全局 `Settings`、`Behaviors`、`Rng`、`SubjectBounds` 不支持多实例。
+12. `PetWndProc` / `BubbleWndProc` 在 `WM_CREATE` 里把 `lpCreateParams` 写入 `GWLP_USERDATA`；之前的消息不依赖该指针。
 
 ## 4. 扩展点
 
@@ -201,5 +203,5 @@ struct SubjectBounds {
 | 全局可变状态 | `Settings`、`Behaviors`、`Rng`、`SubjectBounds` | 单实例假设；测试并行/多宠物会互相污染 |
 | 加载顺序隐式 | `assets.cpp` 读 `GetSettings().scaleFactor` | 必须先应用 `pet.ini` 再 `LoadFrames`；否则缩放用默认值 |
 | 无资产校验 | `LoadFrames` / `LoadFrameBounds` | 混合画布、错误 bounds 不会报错，只在视觉上出问题 |
-| `bounds.txt` 单位不一致 | `assets.cpp` + 消费者 | 气泡/扫头偏移；见 R1 |
+| `bounds.txt` 单位转换 | `assets.cpp` + `PresentFrame` | 已由 `ScaleSubjectBounds` 修复；回归测试见 `tests/bounds_scale_test.cpp` |
 | 路径拼接 | `exeDir + assetsDir` | `assetsDir` 传绝对路径会拼坏；当前只支持相对目录名 |

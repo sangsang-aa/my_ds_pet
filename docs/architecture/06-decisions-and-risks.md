@@ -2,6 +2,8 @@
 
 本文记录“为什么这样做”和“哪里会坏”。决策是当前实现的理由，不是不可改的教条；风险按影响排序，修复建议只是方向，不代表已经排期。
 
+> R1（bounds 缩放）与 R2（README 漂移）已在本次提交解决；条目保留是为了对照历史基线 `d88b53e`，当前状态以各条目的“状态”行为准。
+
 ## 1. 关键决策
 
 ### D1. 分层窗口 + `UpdateLayeredWindow`，不用 `SetLayeredWindowAttributes`
@@ -37,7 +39,7 @@
 
 - **选择**：每个动作目录一份逐帧 `x y w h`；`SubjectBounds` 发布屏幕坐标；气泡和扫头读它。
 - **理由**：384×512 画布有大量透明留白，气泡按整块画布定位会离头很远。
-- **现状缺陷**：`bounds.txt` 是源画布坐标，消费者没有乘缩放系数，见 [R1](#r1-bounds-未缩放p1)。这是实现缺陷，不是设计意图。
+- **坐标转换**：`bounds.txt` 是源画布坐标；`PresentFrame` 用 `ScaleSubjectBounds` 换算到窗口坐标后再发布。历史缺陷见 [R1](#r1-bounds-未缩放p1)。
 
 ### D6. 气泡是独立窗口 + 独立定时器
 
@@ -103,8 +105,8 @@
 
 | ID | 风险 | 严重度 | 影响 | 证据/位置 | 建议 |
 |---|---|---|---|---|---|
-| R1 | `bounds.txt` 未缩放 | **P1** | 气泡偏移、侧面气泡离身体远、扫头带落在脸/上身 | `assets.cpp` `LoadFrameBounds`；`pet.cpp` `PresentFrame`；`idle/bounds.txt` | 在加载/使用时乘 `scale_factor`，加回归测试 |
-| R2 | 根 README 多处过期 | **P1** | 用户按错帧数/行为理解工程；调参踩坑 | `README.md` 第 20~22、35~40、93~96 行等 | 按归档对照表回写，或标注“以 architecture 为准” |
+| R1 | `bounds.txt` 缩放 | **已修复** | 历史：气泡偏移、侧面气泡离身体远、扫头带落在脸/上身 | `core/bounds.h` `ScaleSubjectBounds`；`pet.cpp` `PresentFrame`；`tests/bounds_scale_test.cpp` | 已换算并夹取；保留回归测试 |
+| R2 | README 文档漂移 | **已同步** | 历史：用户按错帧数/行为理解工程；调参踩坑 | `README.md` 第 20~22、35~40、93~96 行等 | 已按代码/实测回写；历史对照见 baseline |
 | R3 | `idle2` / `busy` / `peek` 未注册 | P2 | 有帧但不播；维护者以为坏了 | `pet.cpp` `Pet::Load` 只遍历 `idle`；`behaviors.cpp` 无这三项 | 注册、移入 `_unused`，或在资产表标明“未启用” |
 | R4 | core 反向依赖 pet | P2 | 分层不纯；复用 core 时被注册表拖住 | `core/settings.cpp` → `pet/behaviors.h` | 把行为覆盖拆成回调/数据结构，或移到 pet 层 |
 | R5 | `Spec::minTicks` 语义与注释不一致 | P2 | 调参把“持续时间”当“待机停留”；INI 行为段效果反直觉 | `behavior.h` 注释 vs `StartBehavior` | 拆分 `durationMin/Max` 与 `cooldownTicks`，更新注释/测试 |
@@ -128,7 +130,9 @@
 
 ### R1. bounds 未缩放（P1）
 
-**现象**：气泡偏右/偏高，侧面气泡离身体远；扫头要扫到脸附近才触发。
+**状态：已修复（本提交）**
+
+**历史现象（修复前）**：气泡偏右/偏高，侧面气泡离身体远；扫头要扫到脸附近才触发。
 
 **证据**：
 
@@ -145,24 +149,26 @@ desktop_pet_image/idle/bounds.txt 第一行: 61 110 262 353
 
 **根因**：`bounds.txt` 由源画布生成（`tools/migrate_canvas.py` 的 `TARGET_W/H = 384/512` 可以佐证），但消费端按缩放帧坐标使用。`Frame.mask` 是在缩放后的位图上生成的，所以命中测试正常，只有 bounds 消费者错。
 
-**影响面**：
+**历史影响面**：
 
 - `BubblePetRect` → `PlaceBubble` 的水平中心/侧面 x；
 - `Pet::OnMouseMove` 的 `bx/by/bw/bh` → 头部带；
 - 不影响 `HitTest`（用 mask）。
 
-**修复方向**：
+**修复方式（已实施）**：
 
-1. 在 `LoadFrameBounds` 里按 `GetSettings().scaleFactor` 缩放 `bx/by/bw/bh`，并 `clamp` 到 `frame` 尺寸；
-2. 或在 `PresentFrame` 里统一换算，保留 `Frame` 的源坐标语义；
-3. 加一个纯逻辑测试：给定源 bounds + scale，输出期望窗口 bounds；
-4. 修完手工回归：气泡上/右/左/下四向、扫头在头顶触发、宠物在屏幕边缘时气泡不越界。
+1. `src/core/bounds.h` 新增纯函数 `ScaleSubjectBounds`：按 `lround(value * scale)` 换算，负坐标裁掉左边/上边，右下越界夹到帧尺寸；空框/完全越界返回 `valid=false`；
+2. `Pet::PresentFrame` 用 `GetSettings().scaleFactor` 和 `petW/petH` 调用它，再加窗口原点发布 `SubjectBounds`；`Frame` 仍保留源坐标语义；
+3. `tests/bounds_scale_test.cpp` 覆盖 `idle` 实际数值、负坐标、越界、空框、`scale=1.0`/`0.5`；
+4. 无效 bounds 仍回退整块窗口，保持旧行为。
 
-**状态**：截至 `d88b53e` 未修复；本次只写文档，没有改 `src/`。
+**状态**：已在本次提交修复。`d88b53e` 的基线仍保留“未修复”的历史记录；修复后的回归由 `tests/bounds_scale_test.cpp` 覆盖。
 
 ### R2. README 文档漂移（P1）
 
-根 `README.md` 是用户入口，但有多处与代码/资产不一致。完整对照表在
+**状态：已同步（本提交）**
+
+根 `README.md` 是用户入口；修复前有多处与代码/资产不一致。完整历史对照表在
 [`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md#文档漂移对照)。最影响理解的几条：
 
 - 无参数启动说在 `idle`/`idle2` 间随机；代码只加载 `idle`，且 `idle` 只有 1 帧。
@@ -171,7 +177,7 @@ desktop_pet_image/idle/bounds.txt 第一行: 61 110 262 353
 - 气泡日志写 `240x252`，实际 `252x252`。
 - `README` 的 `pet.ini` 示例用行尾 `;` 注释，但解析器不支持行尾注释。
 
-**处理建议**：先决定“以哪套行为为准”，再回写 `README.md`；不要直接把架构文档的内容复制过去。本次文档提交不改 README，避免把“记录现状”和“改变用户说明”混在一起。
+**处理结果**：`README.md` 已按当前代码和实测资产回写：基底池、竖向播放方式、头部带、帧数、气泡尺寸、emoji 命名、启动日志、`pet.ini` 注释规则和开发文档索引都已同步；历史漂移仍保留在 baseline，便于追溯。
 
 ### R3. 未注册的动作
 
@@ -308,7 +314,7 @@ idle_min_ticks = 5 ; 5 秒
 
 ### R14. Win32/GDI+ 层没有自动化测试
 
-7 个测试全部是纯逻辑；`Pet::OnTimer`、`HitTest`、鼠标阈值、`UpdateLayeredWindow`、气泡绘制、DPI 都没有测试。当前只能靠手工验收清单。
+8 个测试全部是纯逻辑；`Pet::OnTimer`、`HitTest`、鼠标阈值、`UpdateLayeredWindow`、气泡绘制、DPI 都没有测试。当前只能靠手工验收清单。
 
 **方向**：至少加“启动后窗口存在/尺寸正确/日志正确”的脚本检查；进一步可以做截图对比，但 GDI+ 渲染在不同 Windows 版本上可能有细微差异。
 
@@ -352,8 +358,8 @@ idle_min_ticks = 5 ; 5 秒
 
 | 优先级 | 事项 | 理由 |
 |---:|---|---|
-| P1 | 修 R1 bounds 缩放 | 直接影响气泡/扫头正确性，改动小、可测试 |
-| P1 | 处理 R2 README 漂移 | 用户入口，错误信息会反复误导 |
+| 已完成 | R1 bounds 缩放 | 直接影响气泡/扫头正确性，改动小、可测试 |
+| 已完成 | R2 README 同步 | 用户入口，错误信息会反复误导 |
 | P1 | 决定 R3 未注册动作 | 资产维护成本，越拖越乱 |
 | P2 | R4 / R5 边界与语义 | 影响后续加行为、调参 |
 | P2 | R6 / R7 / R8 行为细节 | 可在文档/参数层解决，未必改代码 |

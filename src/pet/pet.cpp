@@ -114,10 +114,16 @@ void Pet::PresentFrame(HWND hwnd, const Frame& frame) {
     GetWindowRect(hwnd, &windowRect);
     render::PresentLayered(hwnd, memDC, frame.hbmp, windowRect.left,
                            windowRect.top, petW, petH, frame.hasAlpha);
-    SetSubjectBounds(frame.bw > 0 && frame.bh > 0
-                         ? SubjectBounds{ windowRect.left + frame.bx,
-                                          windowRect.top + frame.by, frame.bw,
-                                          frame.bh, true }
+    // bounds.txt is in source-canvas coordinates; convert it to the scaled
+    // window before publishing. A missing/off-frame box falls back to the
+    // whole window, which is what the old code did for unknown bounds.
+    const SubjectBounds local = ScaleSubjectBounds(
+        frame.bx, frame.by, frame.bw, frame.bh, GetSettings().scaleFactor,
+        petW, petH);
+    SetSubjectBounds(local.valid
+                         ? SubjectBounds{ windowRect.left + local.x,
+                                          windowRect.top + local.y, local.w,
+                                          local.h, true }
                          : SubjectBounds{ windowRect.left, windowRect.top, petW,
                                           petH, true });
 }

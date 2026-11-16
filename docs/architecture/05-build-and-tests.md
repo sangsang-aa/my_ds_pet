@@ -86,11 +86,11 @@ g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/asset
 
 ## 3. 测试
 
-7 个纯逻辑断言程序，不依赖 `<windows.h>`，可在任意主机用 g++ 编译：
+8 个纯逻辑断言程序，不依赖 `<windows.h>`，可在任意主机用 g++ 编译：
 
 ```powershell
 foreach ($t in 'alpha_mask_test','behavior_test','bubble_logic_test','drag_logic_test',
-              'inifile_test','sweep_logic_test','walk_logic_test') {
+              'inifile_test','sweep_logic_test','walk_logic_test','bounds_scale_test') {
   g++ -std=c++17 -Wall -Wextra -O2 "tests\$t.cpp" -o "build\$t.exe"
   & "build\$t.exe"
 }
@@ -109,8 +109,9 @@ foreach ($t in 'alpha_mask_test','behavior_test','bubble_logic_test','drag_logic
 | `inifile_test` | section/key、整行注释、trim、重复键最后生效、CRLF、缺尾换行、整数/浮点回退 | **行尾注释不支持**；`settings.cpp` 的键映射/范围校验 |
 | `sweep_logic_test` | 单次不触发、一次换向算 1 pass、两次触发并清空、长扫不换向不触发、位移不足、dx=0、Idle 超时 | 头部带几何、真实鼠标事件、冷却/抢占 |
 | `walk_logic_test` | 末帧/首帧判断、空 clip、size=2 | `FullCycle`/`Boomerang` 的实际推进、撞边 |
+| `bounds_scale_test` | `idle` 源坐标→窗口实际数值、负坐标裁剪、右下越界裁剪、完全在窗口外、0 尺寸、`scale=1.0`/`0.5` | `bounds.txt` 读取/行映射、真实 Frame/窗口、气泡布局 |
 
-**测试盲区**：`Pet::OnTimer`、`Pet::OnMouseMove`、`Pet::HitTest`、`Bubble` 窗口、GDI+ 解码/缩放、`bounds.txt` 缩放都没有单元测试；这些只能构建后手工验证，或后续补集成测试。
+**测试盲区**：`Pet::OnTimer`、`Pet::OnMouseMove`、`Pet::HitTest`、`Bubble` 窗口、GDI+ 解码/缩放、`bounds.txt` 读取与行映射都没有单元测试；这些只能构建后手工验证，或后续补集成测试。`bounds.txt` 的坐标换算本身已由 `bounds_scale_test` 覆盖。
 
 ### 新增测试
 
@@ -119,7 +120,7 @@ foreach ($t in 'alpha_mask_test','behavior_test','bubble_logic_test','drag_logic
 3. 用上面的循环命令编译运行，保持 `-Wall -Wextra` 零警告；
 4. 把测试名加入 `AGENTS.md` 的循环列表，保证以后不会漏跑。
 
-## 4. 本机基线（2026-11-16）
+## 4. 本机基线（2026-11-16，R1 修复后）
 
 实际执行的命令与结果：
 
@@ -136,7 +137,7 @@ g++.exe (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r1) 16.2.0
 $ cmd /c build.bat
 [pet] build OK: pet_demo.exe via g++
 
-$ 7 个测试
+$ 8 个测试
 alpha_mask: all tests passed
 behavior: all tests passed
 bubble_logic: all tests passed
@@ -144,25 +145,28 @@ drag_logic: all tests passed
 inifile: all tests passed
 sweep_logic: all tests passed
 walk_logic: all tests passed
+bounds_scale: all tests passed
 ```
 
 产物：
 
 | 项 | 值 |
 |---|---|
-| `pet_demo.exe` 大小 | 266,913 bytes |
-| 构建时间 | 2026-11-16 22:37:43 |
+| `pet_demo.exe` 大小 | 267,425 bytes |
+| 构建时间 | 2026-11-16 22:57:08 |
 | 构建路径 | g++（`build.bat` 的第二个分支） |
 | `pet.ini` | 不存在，全部默认值 |
 | emoji | 6 张，本地存在（gitignored） |
 
 启动验证：实际运行 3 秒，找到窗口类 `DesktopPetWindowClass`、标题 `Desktop Pet`，并用 `WM_CLOSE` 正常关闭；stdout 日志见 [`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md#启动日志实测)。
 
+R1 回归：临时 `pet.ini` 把 `[bubble] min_ticks/max_ticks` 调成 10（约 1 秒），运行 6 秒后确认 `DesktopPetBubbleClass` 窗口 `IsWindowVisible=True`，rect 位于宠物主体上方；截图见 `build/bubble_check3.png`（构建产物，gitignored），临时 `pet.ini` 已删除。
+
 未在本机复跑：MSVC `cl` 路径、CMake 两条生成器路径；它们由 `build.bat`/`CMakeLists.txt` 提供，但本次 g++ 先成功，脚本没有继续尝试。
 
 ## 5. 手工验收清单
 
-构建和 7 个测试只能证明纯逻辑与链接通过；以下必须运行程序确认：
+构建和 8 个测试只能证明纯逻辑与链接通过；以下必须运行程序确认：
 
 | 项 | 预期 |
 |---|---|
@@ -181,7 +185,7 @@ walk_logic: all tests passed
 | 缺资源 | 临时改名 `idle` 后启动，应弹错误框并列出可用动作 |
 | 缺 emoji | 临时改名 `emoji` 后启动，应日志 `bubble disabled`，其余正常 |
 
-> 当前已知的 `bounds.txt` 缩放缺陷会影响气泡位置和扫头判定带；验收时如果发现气泡偏右/侧面气泡离身体远，先看 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
+> R1 修复后，气泡应以主体中心对齐、扫头带应落在头顶；如果仍发现气泡偏右/侧面气泡离身体远，先看 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r1-bounds-未缩放p1) 的历史说明与回归测试。
 
 ## 6. 常见失败
 

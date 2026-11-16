@@ -11,44 +11,47 @@
 `pet_demo.exe`（x86-64）与 `pet_demo_x86.exe`（32 位））：
 
 ```
-pet_demo.exe                   无参数 = 随机待机（在 idle / idle2 之间随机切换）
+pet_demo.exe                   无参数 = 加载基底待机池（当前只有 idle）
 pet_demo.exe idle              强制单个待机动作，不做随机切换
 pet_demo.exe walking_right     强制播放其它单个动作
 pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录（默认 desktop_pet_image）
 ```
 
-**随机待机**：无参数启动时，程序把 `idle` 和 `idle2` 都加载为「待机动画池」，
-每播放完一轮就随机切换到池中的另一个待机动画；显式传入第一个参数则固定该动作、
-不做随机切换。
+**基底待机**：无参数启动时，程序把 `idle` 作为「待机动画池」；当前池中只有 `idle`
+（1 帧），所以视觉上是静止的。`idle2` 有 30 帧但当前未注册；要恢复随机切换，需在
+`Pet::Load` 的基底池里加回它。显式传入第一个参数则固定该动作、不做随机切换。
 
-程序启动时会加载：待机动画池（1~2 个循环动画）+ 固定的 `clicked` 动作（被点击时
+程序启动时会加载：基底待机池（当前只有 `idle`，1 帧）+ 固定的 `clicked` 动作（被点击时
 播放一次）+ `shy` 动作（鼠标扫过头顶时播放一次）+ 固定的 `drag` 动作（被拖拽时循环
 播放）+ 固定的**四方向移动**动作 `walking_left` / `walking_right` / `walking_up` /
 `walking_down`。各文件夹不存在或为空时打印 `... disabled` 并禁用对应行为（移动只有
 部分方向时，只在这些方向里随机）。
 
 **待机 ↔ 行走状态链**：宠物在待机状态停留一段随机时间（约 3~10 秒）后，随机选择
-**上 / 下 / 左 / 右**四个方向之一移动；移动期间循环播放对应方向的动画，同时**窗口沿
-该方向移动**（每 100ms 移动 5px）；走到**屏幕边缘**或移动时长到（约 1.5~4.5 秒）后
-回到待机，如此往复。
+**上 / 下 / 左 / 右**四个方向之一移动；同时**窗口沿该方向移动**（每 100ms 移动 5px）；
+走到**屏幕边缘**或移动时长到后回到待机，如此往复。
 
-> 上 / 下两个方向是**完整的一上一下**（起跳 → 悬停 → 降落），首尾都是落地姿势，正向
-> 循环本身即平滑，因此**按正常循环播放**（不再来回倒放）；左 / 右同理。
+> 四个方向不是同一种播放方式：
+> - 左 / 右是闭合走路循环，用 `Loop`，时长约 1.5~4.5 秒；
+> - `walking_up` 的素材是**飞起**，用 `Boomerang`（正向飞起再倒放回落地），周期固定
+>   52 tick（约 5.2 秒）；
+> - `walking_down` 的素材是**俯冲**，用 `FullCycle`，必须播到最后一个落地帧才回待机；
+>   目标时长 1.5~4.5 秒，但会延到末帧（常见约 2.9 或 5.9 秒）。
 >
-> 竖向走动在**时长到 / 撞边缘**后不会立刻切回待机，而是**继续播到末帧（落地姿势）**
-> 再回待机——否则宠物会在半空中、或在"起跳前的预备姿势"上突然变回站立，看起来像瞬移
-> 或"没落地"。
+> 竖向动作在**时长到 / 撞边缘**后不会立刻切回待机，而是继续到安全帧（`Boomerang` 回
+> 首帧，`FullCycle` 到末帧）——否则宠物会停在半空或起跳前的预备姿势上。
 
 **拖拽后等待**：把宠物拖到某个位置松手后，宠物进入约 **2~3 分钟**的"等待"阶段——
-只随机切换 `idle` / `idle2` 待机动画、**不做移动**；等待计时结束后再恢复上面的
+只循环 `idle` 待机动画、**不做移动**；等待计时结束后再恢复上面的
 待机 ↔ 行走链。等待期间左键单击只会播放 `clicked` 反应并继续等待，不会打断计时；
 再次拖拽会重新计时。
 
-**扫头害羞**：鼠标在宠物**头部（窗口上方约 45%）**左右扫过（累计水平位移超过阈值）
-时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，避免连续触发。
+**扫头害羞**：鼠标在宠物头部（主体顶部约 0~25%，由 `head_band_percent` 减去 20% 内缩
+算出）左右扫过（累计水平位移超过阈值）时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，
+避免连续触发。
 
 **气泡表情包**：程序会**不定期（约 20~60 秒）**在宠物头顶弹出一个气泡，随机显示
-`desktop_pet_image\emoji\emoji_NN.png` 中的一张表情包，约 3 秒后消失。气泡是**独立的
+`desktop_pet_image\emoji\emoji_01.png ...` 中的一张表情包，约 3 秒后消失。气泡是**独立的
 分层窗口**，用 `WS_EX_TRANSPARENT` 实现**点击穿透**（不挡宠物的点击/拖拽），并持续跟随
 宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能
 （其余功能不受影响）。表情包不随仓库分发，把自己的图片放进去即可：
@@ -84,22 +87,22 @@ pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录�
   （例如 `000.png`、`001.png`、`002.png` 存在而 `003.png` 缺失，则循环播放这 3 帧）
 - 最多尝试 120 帧（`000` ~ `119`）
 - 只存在 `000.png` 时程序正常运行，循环播放这一帧
-- 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=30/120 frames`、
-  `[pet] idle 'idle2' loaded=30/120 frames`、`[pet] random idle enabled across 2 animations`、
-  `[pet] walking_left loaded=30/120 frames`、`[pet] walking_up loaded=30/120 frames`、
-  `[pet] clicked loaded=16/120 frames`、`[pet] shy loaded=30/120 frames`、`[pet] emoji loaded=6 stickers`、
-  `[pet] bubble enabled (240x252, 6 stickers)`
+- 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=1/120 frames`、
+  `[pet] random idle enabled across 1 animations`、`[pet] walking_left loaded=30/120 frames`、
+  `[pet] walking_up loaded=27/120 frames`、`[pet] clicked loaded=30/120 frames`、
+  `[pet] shy loaded=40/120 frames`、`[pet] emoji loaded=6 stickers`、
+  `[pet] bubble enabled (252x252, 6 stickers)`
 
-> 素材说明：各动作的多帧序列现已合并进默认目录 `desktop_pet_image\`（`idle` 30 帧、
-> `idle2` 30 帧、`walking_left` 30 帧、`walking_right` 27 帧、`walking_up` 30 帧、
-> `walking_down` 30 帧、`clicked` 33 帧、`drag` 30 帧、`shy` 30 帧、`thinking` 30 帧）。
-> 原 `desktop_pet_image_video\` 目录内容与之重复，可删除。
+> 素材说明（2026-11-16 实测）：`idle` 1 帧、`idle2` 30 帧（未注册）、`walking_left` 30 帧、
+> `walking_right` 30 帧、`walking_up` 27 帧、`walking_down` 30 帧、`clicked` 30 帧、
+> `drag` 30 帧、`shy` 40 帧、`busy` 30 帧（未注册）、`peek` 30 帧（未注册）。
+> `thinking/` 不存在；原 `desktop_pet_image_video\` 目录内容与之重复，可删除。
 
 ## 图片要求
 
 - 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
 - **所有动作必须同一画布尺寸**（当前 `384x512`：人物约 355 高 + 上方留白给飞行/跳跃）；窗口大小取自第一帧
-- 每个动作可带一个 `bounds.txt`（每行一帧的 `x y w h`，人物在该帧里的实际边界，由 `MCPS/prepare_action.py` 生成）——气泡与扫头判定会跟随它，而不是整块画布
+- 每个动作可带一个 `bounds.txt`（每行一帧的 `x y w h`，人物在该帧里的实际边界，由 `MCPS/prepare_action.py` 生成；坐标是 384×512 源画布，程序显示时按 `scale_factor` 换算到窗口）——气泡与扫头判定会跟随它，而不是整块画布
 - 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
   （源图 384x512 → 屏幕上约 269x358，上方留白给飞行/跳跃动作）；嫌大/嫌小改 `src/core/config.h` 里的常量即可
 
@@ -163,48 +166,54 @@ GIF 会被跳过（可用 `force` 强制处理）。
 ## 参数配置（`pet.ini`，可选）
 
 在资源目录放一个 `desktop_pet_image/pet.ini` 就能**不重编译**调参数；文件不存在则全部用
-`src/core/config.h` 里的默认值。格式是极简 INI（`#` / `;` 注释；写错的值忽略并回退默认）：
+`src/core/config.h` 里的默认值。格式是极简 INI：`#` / `;` 注释必须**单独成行**，
+不支持行尾注释；写错的值忽略并回退默认。
 
 ```ini
 [pet]
-idle_min_ticks    = 30      ; 待机停留（tick，10/s）
-idle_max_ticks    = 100
-wait_min_ticks    = 1200    ; 拖拽后等待（仅待机，不游走）
-wait_max_ticks    = 1800
-head_band_percent = 45      ; 头顶扫过的判定带
+idle_min_ticks = 30
+idle_max_ticks = 100
+wait_min_ticks = 1200
+wait_max_ticks = 1800
+head_band_percent = 45
 sweep_threshold_px = 50
 max_sweep_delta_px = 80
-scale_factor      = 0.70    ; 宠物缩放
+scale_factor = 0.70
 
 [bubble]
-emoji_size_px = 220         ; 气泡表情尺寸
-pad_px        = 10
-radius_px     = 10
-tail_w        = 18
-tail_h        = 12
-gap_px        = 4
-min_ticks     = 200         ; 弹出间隔
-max_ticks     = 600
-show_ticks    = 30
+emoji_size_px = 220
+pad_px = 10
+radius_px = 10
+tail_w = 18
+tail_h = 12
+gap_px = 4
+min_ticks = 200
+max_ticks = 600
+show_ticks = 30
 
 # 每个行为一个 section（名字 = desktop_pet_image/<action>），可覆盖该行为：
 [walking_up]
-min_ticks = 15
-max_ticks = 45
-weight    = 1
-dy        = -5
+min_ticks = 52
+max_ticks = 52
+weight = 1
+dy = -5
 ```
+
+`head_band_percent = 45` 的实际判定底边还要减去 20% 的内缩，默认有效带是主体顶部
+0~25%；`[walking_up]` 的 52 tick 对应飞起动画的一个完整回摆周期。
 
 ## 开发文档
 
 | 位置 | 内容 |
 |------|------|
 | `AGENTS.md` | 给协作者 / AI 的工作约定与踩坑记录（构建、测试、资产约定） |
+| `docs/architecture/README.md` | 当前代码事实、模块边界、数据契约、风险（改代码前先读） |
+| `docs/archives/README.md` | 带日期的不可变工程快照与基线 |
 | `docs/guides/reference-dsh-whale-musume.md` | 与参考桌宠工程的逐层对照：可借鉴的工程纪律与优先级 |
 | `docs/guides/asset-packaging.md` | 帧序列要不要打包：PNG 图集 vs 动画 WebP 的实测对比 |
 | `docs/guides/edge-repair.md` | 抠图残留"绿边"的诊断与修复，含**原视频必须保存**的硬标准 |
-| `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点（用法见上表最后一行） |
-| `tools/make_emoji.py` | 把任意图片/GIF 变成编号连续的 `emoji/emoji_NN.png` 表情包 |
+| `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点（用法见 `docs/guides/edge-repair.md`） |
+| `tools/make_emoji.py` | 把任意图片/GIF 变成编号连续的 `emoji/emoji_01.png ...` 表情包 |
 | `tools/migrate_canvas.py` | 旧画布（384×456 / 384×384）顶部补齐到 384×512 |
 
 ## 编译

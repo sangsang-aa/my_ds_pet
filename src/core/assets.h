@@ -12,7 +12,9 @@
 struct Frame {
     HBITMAP hbmp = nullptr;
     bool hasAlpha = false;  // source PNG had an alpha channel?
-    int bx = 0;             // subject box inside the frame (0,0,0,0 = unknown)
+    // Subject box from bounds.txt, in SOURCE canvas coordinates (0,0,0,0 =
+    // unknown). Pet::PresentFrame scales it to the displayed window.
+    int bx = 0;
     int by = 0;
     int bw = 0;
     int bh = 0;

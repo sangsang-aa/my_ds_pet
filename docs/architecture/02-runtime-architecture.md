@@ -44,7 +44,7 @@ main.cpp
 边界说明：
 
 - `core/` 名义上是基础层，但 `core/settings.cpp` 为了把 `[action]` 段写回行为注册表，直接 include 了 `pet/behaviors.h`。这是当前唯一的 **core → 领域层** 反向依赖。
-- 纯逻辑头（`behavior.h`、`behaviors.h`、`alpha_mask.h`、`bounds.h`、`inifile.h`、`settings.h`、`util.h`、`walk_logic.h`、`drag_logic.h`、`sweep_logic.h`、`bubble_logic.h`）不包含 `<windows.h>`，所以 7 个测试可以在任意主机编译。
+- 纯逻辑头（`behavior.h`、`behaviors.h`、`alpha_mask.h`、`bounds.h`、`inifile.h`、`settings.h`、`util.h`、`walk_logic.h`、`drag_logic.h`、`sweep_logic.h`、`bubble_logic.h`）不包含 `<windows.h>`，所以 8 个测试可以在任意主机编译。
 - `config.h` 需要 `UINT_PTR`，因此包含 `<windows.h>`；纯逻辑头不要 include 它。
 
 ## 2. 启动时序
@@ -198,17 +198,20 @@ desktop_pet_image/<action>/bounds.txt
                                         ▼
                               Pet::PresentFrame
                                    │        │
-                                   │        └─► SetSubjectBounds（屏幕坐标）
-                                   │                  │
-                                   ▼                  ├─► Bubble 布局
-                          UpdateLayeredWindow         └─► 扫头判定带
+                                   │        ├─► ScaleSubjectBounds（source → window）
+                                   │        │            │
+                                   │        │            ▼
+                                   │        │   SetSubjectBounds（屏幕坐标）
+                                   │        │            │
+                                   ▼        │            ├─► Bubble 布局
+                          UpdateLayeredWindow           └─► 扫头判定带
                                    │
                                    └─► currentFrame ──► HitTest（客户区）
 ```
 
 关键点：
 
-- `Frame` 同时携带 **位图**、**alpha 掩码** 和 **主体边界**；三者都来自同一帧，但 `bounds.txt` 的坐标单位与缩放后的位图不一致（见下节）。
+- `Frame` 同时携带 **位图**、**alpha 掩码** 和 **主体边界**；`Frame.bx/by/bw/bh` 保持源画布坐标，`PresentFrame` 用 `ScaleSubjectBounds` 换算到缩放帧后再发布。
 - `SubjectBounds` 是全局单例（`core/bounds.cpp`），每次 `PresentFrame` 覆盖；气泡和扫头都读它。
 - `Settings` 也是全局单例；`Behaviors()` 是可变的全局注册表。程序假设只有一个 `Pet` 和一个 `Bubble` 实例。
 - `Rng()` 是共享的 `std::mt19937`，宠物和气泡都从同一个引擎取随机数（同一线程，无锁）。
@@ -225,7 +228,7 @@ desktop_pet_image/<action>/bounds.txt
 
 - 客户区 → 屏幕：`windowRect.left/top + clientX/Y`；
 - 屏幕 → 客户区：`ScreenToClient`（`WM_NCHITTEST`）；
-- `bounds.txt` 的 `bx/by/bw/bh` 目前被 **直接** 当作缩放帧坐标使用，没有乘 `scale_factor`。这是已知缺陷，详见 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
+- `bounds.txt` 的 `bx/by/bw/bh` 是源画布坐标；`Pet::PresentFrame` 调用 `ScaleSubjectBounds`，按 `scale_factor` 换算并夹到 `petW/petH`，再发布 `SubjectBounds`。历史缺陷与前后数值见 [`06-decisions-and-risks.md`](06-decisions-and-risks.md#r1-bounds-未缩放p1)。
 
 主屏限制：`InitGeometry` 存的是 `GetSystemMetrics(SM_CXSCREEN/SM_CYSCREEN)`；走路边缘、拖拽夹取、气泡夹取都用这一组值，不感知多显示器/每显示器 DPI。
 

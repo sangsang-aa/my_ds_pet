@@ -9,7 +9,7 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - `E:\pet_demo` is the Windows build copy with its own git. A separate WSL checkout lives at
   `/home/zh180/pet_demo`. Don't sync files between them unless asked.
 - Work branch is `AIvideo`, tracking `origin/AIvideo` (remote: `sangsang-aa/my_ds_pet`).
-  Push once the build and the seven test programs pass; never force-push.
+  Push once the build and the eight test programs pass; never force-push.
 - A relocated source folder is committed as a **pure rename** (verify with
   `git diff --cached --summary`: every entry must read `(100%)`), and only when the move is
   explicitly part of the task.
@@ -24,12 +24,12 @@ framework. `README.md` documents behaviour; only non-obvious, hard-won facts her
 - `pet_demo.exe` must sit **next to** `desktop_pet_image/`; asset paths resolve from the exe dir.
 
 ## Tests
-Pure-logic assert programs (no `<windows.h>`, no framework). All seven compile and pass with
+Pure-logic assert programs (no `<windows.h>`, no framework). All eight compile and pass with
 the MinGW g++ here in about a second each:
 
 ```powershell
 foreach ($t in 'alpha_mask_test','behavior_test','bubble_logic_test','drag_logic_test',
-              'inifile_test','sweep_logic_test','walk_logic_test') {
+              'inifile_test','sweep_logic_test','walk_logic_test','bounds_scale_test') {
   g++ -std=c++17 -Wall -Wextra -O2 "tests\$t.cpp" -o "build\$t.exe"; & "build\$t.exe"
 }
 ```
@@ -56,13 +56,15 @@ Behaviour and visuals can only be verified by running the app on Windows.
   `FullCycle` stops on the last frame.
 - Tunables: an optional `desktop_pet_image/pet.ini` overrides `core/config.h` (one section
   per action). Absent file ⇒ all defaults. No such file is checked in.
-- Keep `behavior.h` / `walk_logic.h` / `drag_logic.h` / `sweep_logic.h` / `bubble_logic.h` /
-  `inifile.h` free of Windows headers so `tests/` keeps building anywhere.
+- Keep `behavior.h` / `bounds.h` / `walk_logic.h` / `drag_logic.h` / `sweep_logic.h` /
+  `bubble_logic.h` / `inifile.h` free of Windows headers so `tests/` keeps building anywhere.
 - GDI+ decodes png/jpg/gif/bmp only — **never WebP**.
 - Frames: `desktop_pet_image/<action>/NNN.png` (3 digits), loading stops at the first missing
   frame, max 120, 10 fps (`kTimerElapseMs = 100`), drawn at `kScaleFactor = 0.70` ⇒ a 384×512
   frame is a 269×358 window (and `269×358` is the expected size at 150% DPI).
-- `bounds.txt` (one `x y w h` per line) drives the bubble and the head-sweep band.
+- `bounds.txt` (one `x y w h` per line) drives the bubble and the head-sweep band. It is in
+  **source-canvas** coordinates; `PresentFrame` scales it to the window (`ScaleSubjectBounds`)
+  before publishing `SubjectBounds`.
 
 ## Asset naming lies
 - `walking_left` / `walking_right` — real walk cycles, side view (right is a mirror).
