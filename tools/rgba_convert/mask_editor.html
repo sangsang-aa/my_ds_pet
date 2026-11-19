@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>桌宠白缝 Mask 标注工具</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --panel:#ffffff; --line:#d9dde3; --ink:#1f2329; --muted:#6b7280;
+    --accent:#2563eb; --pos:#e11d48; --neg:#0ea5e9; --ok:#16a34a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+       color:var(--ink);background:var(--bg)}
+  header{padding:12px 18px;background:var(--panel);border-bottom:1px solid var(--line);
+         display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:15px;font-weight:600;margin:0}
+  header .hint{color:var(--muted);font-size:12px}
+  .wrap{display:flex;gap:16px;padding:16px;align-items:flex-start;flex-wrap:wrap}
+  .tools{width:250px;flex:none;background:var(--panel);border:1px solid var(--line);
+         border-radius:10px;padding:14px}
+  .stage{flex:1;min-width:360px;background:var(--panel);border:1px solid var(--line);
+         border-radius:10px;padding:14px}
+  .grp{margin-bottom:16px}
+  .grp h2{font-size:12px;color:var(--muted);font-weight:600;margin:0 0 8px;
+          text-transform:uppercase;letter-spacing:.04em}
+  .row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  button{font:inherit;padding:7px 11px;border:1px solid var(--line);background:#fff;
+         color:var(--ink);border-radius:7px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.primary{background:var(--ok);color:#fff;border-color:var(--ok)}
+  label.file{display:inline-block;padding:7px 11px;border:1px dashed var(--accent);
+        color:var(--accent);border-radius:7px;cursor:pointer}
+  input[type=range]{width:100%}
+  .swatch{width:14px;height:14px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:5px}
+  .viewport{position:relative;overflow:hidden;height:min(72vh,760px);border-radius:8px;
+    outline:1px solid var(--line);cursor:crosshair;
+    background:
+      linear-gradient(45deg,#d0d0d0 25%,transparent 25%),
+      linear-gradient(-45deg,#d0d0d0 25%,transparent 25%),
+      linear-gradient(45deg,transparent 75%,#d0d0d0 75%),
+      linear-gradient(-45deg,transparent 75%,#d0d0d0 75%);
+    background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+  .viewport.pan{cursor:grab}
+  .viewport.panning{cursor:grabbing}
+  #cv{position:absolute;left:0;top:0;transform-origin:0 0;display:block;
+      touch-action:none;user-select:none;image-rendering:auto}
+  .stat{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+  .note{font-size:12px;color:var(--muted);background:#fafbfc;border:1px solid var(--line);
+        border-radius:7px;padding:9px;margin-top:8px}
+  .legend span{display:inline-block;margin-right:12px;font-size:12px}
+  kbd{font:inherit;font-size:11px;background:#eef1f5;border:1px solid var(--line);
+      border-radius:4px;padding:1px 5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>桌宠白缝 Mask 标注工具</h1>
+  <span class="hint">左键画/擦 · 右键撤销 · 滚轮以鼠标为中心缩放 · 按住滚轮(中键)或 <kbd>空格</kbd>+左键 拖动平移 · <kbd>F</kbd> 适应窗口</span>
+</header>
+<div class="wrap">
+  <div class="tools">
+    <div class="grp">
+      <h2>1. 载入图片</h2>
+      <div class="row"><label class="file">选择关键帧 PNG<input id="file" type="file" accept="image/png" hidden></label></div>
+      <div class="row"><label class="file">参考分类图(可选)<input id="ref" type="file" accept="image/png" hidden></label></div>
+      <div class="stat" id="imginfo">未载入</div>
+    </div>
+    <div class="grp">
+      <h2>2. 工具</h2>
+      <div class="row">
+        <button id="tBrush" class="active">✎ 画笔</button>
+        <button id="tEraser">◯ 橡皮</button>
+      </div>
+      <div class="row"><span>笔刷半径</span><span class="stat" id="rval">6</span></div>
+      <div class="row"><input id="radius" type="range" min="1" max="40" value="6"></div>
+      <div class="row">
+        <button id="undo">↶ 撤销</button>
+        <button id="clear">清空</button>
+      </div>
+    </div>
+    <div class="grp">
+      <h2>3. 视图</h2>
+      <div class="row"><button id="fit">适应窗口</button><span class="stat" id="zoomval">100%</span></div>
+      <div class="note">滚轮缩放（以鼠标为中心）；按住滚轮拖动，或按住空格用左键拖动来平移画面。</div>
+    </div>
+    <div class="grp">
+      <h2>4. 显示</h2>
+      <div class="row"><label><input id="showMask" type="checkbox" checked> 显示标记覆盖</label></div>
+      <div class="row"><label><input id="showRef" type="checkbox"> 显示参考分类图</label></div>
+      <div class="row"><label><input id="ghost" type="checkbox" checked> 标记处预览透明</label></div>
+    </div>
+    <div class="grp">
+      <h2>5. 导出</h2>
+      <div class="row"><button id="export" class="primary">导出 Mask PNG</button></div>
+      <div class="note">Mask 为黑白图：<b>白=要抠掉</b>，黑=保留。与原图同尺寸（不受视图缩放影响），直接交给批量脚本。</div>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="row" style="justify-content:space-between">
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--pos)"></i>画笔(抠掉)</span>
+        <span><i class="swatch" style="background:var(--neg)"></i>橡皮(保留)</span>
+      </div>
+      <div class="stat" id="cursor">-</div>
+    </div>
+    <div class="viewport" id="viewport"><canvas id="cv" width="384" height="512"></canvas></div>
+  </div>
+</div>
+<script>
+const viewport=document.getElementById('viewport');
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let W=0,H=0, base=null, ref=null;
+const mask=document.createElement('canvas'), mctx=mask.getContext('2d',{willReadFrequently:true});
+let tool='brush', radius=6, drawing=false, undoStack=[];
+const MAX_UNDO=40;
+let view={scale:1,tx:0,ty:0};
+let panning=false, panStart=null, spaceDown=false;
+
+function pushUndo(){
+  if(!W)return;
+  undoStack.push(mctx.getImageData(0,0,W,H));
+  if(undoStack.length>MAX_UNDO)undoStack.shift();
+}
+function setImg(canvas,file,cb){
+  const fr=new FileReader();
+  fr.onload=e=>{const im=new Image();im.onload=()=>{
+    canvas.width=im.width;canvas.height=im.height;
+    canvas.getContext('2d').drawImage(im,0,0);cb(im);};im.src=e.target.result;};
+  fr.readAsDataURL(file);
+}
+function applyView(){
+  cv.style.transform=`translate(${view.tx}px,${view.ty}px) scale(${view.scale})`;
+  document.getElementById('zoomval').textContent=Math.round(view.scale*100)+'%';
+}
+function fitView(){
+  if(!W)return;
+  const r=viewport.getBoundingClientRect();
+  const s=Math.min(r.width/W,r.height/H);
+  view.scale=s;view.tx=(r.width-W*s)/2;view.ty=(r.height-H*s)/2;
+  applyView();
+}
+document.getElementById('file').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const tmp=document.createElement('canvas');
+  setImg(tmp,f,im=>{
+    base=tmp;W=im.width;H=im.height;
+    cv.width=W;cv.height=H;mask.width=W;mask.height=H;
+    mctx.clearRect(0,0,W,H);undoStack=[];
+    document.getElementById('imginfo').textContent=`${f.name}  ${W}×${H}`;
+    fitView();render();
+  });
+};
+document.getElementById('ref').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  ref=document.createElement('canvas');setImg(ref,f,()=>{
+    document.getElementById('showRef').checked=true;render();});
+};
+function undo(){const s=undoStack.pop();if(s){mctx.putImageData(s,0,0);render();}}
+function setTool(t){
+  tool=t;
+  document.getElementById('tBrush').classList.toggle('active',t==='brush');
+  document.getElementById('tEraser').classList.toggle('active',t==='eraser');
+}
+document.getElementById('tBrush').onclick=()=>setTool('brush');
+document.getElementById('tEraser').onclick=()=>setTool('eraser');
+document.getElementById('undo').onclick=undo;
+document.getElementById('clear').onclick=()=>{pushUndo();mctx.clearRect(0,0,W,H);render();};
+document.getElementById('fit').onclick=fitView;
+document.getElementById('radius').oninput=e=>{
+  radius=+e.target.value;document.getElementById('rval').textContent=radius;};
+['showMask','showRef','ghost'].forEach(id=>document.getElementById(id).onchange=render);
+
+function pos(e){
+  const r=viewport.getBoundingClientRect();
+  return {x:(e.clientX-r.left-view.tx)/view.scale,
+          y:(e.clientY-r.top-view.ty)/view.scale};
+}
+function paint(p){
+  mctx.globalCompositeOperation=tool==='brush'?'source-over':'destination-out';
+  mctx.fillStyle='#ffffff';
+  mctx.beginPath();mctx.arc(p.x,p.y,radius,0,Math.PI*2);mctx.fill();
+  mctx.globalCompositeOperation='source-over';
+}
+viewport.addEventListener('contextmenu',e=>e.preventDefault());
+viewport.addEventListener('mousedown',e=>{if(e.button===1)e.preventDefault();});
+viewport.addEventListener('auxclick',e=>e.preventDefault());
+
+viewport.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(!base)return;
+  const r=viewport.getBoundingClientRect();
+  const sx=e.clientX-r.left, sy=e.clientY-r.top;
+  const cx=(sx-view.tx)/view.scale, cy=(sy-view.ty)/view.scale;
+  const factor=e.deltaY<0?1.15:1/1.15;
+  let ns=Math.min(10,Math.max(0.1,view.scale*factor));
+  view.tx=sx-cx*ns;view.ty=sy-cy*ns;view.scale=ns;
+  applyView();
+},{passive:false});
+
+viewport.addEventListener('pointerdown',e=>{
+  e.preventDefault();
+  if(!base){document.getElementById('cursor').textContent='请先载入关键帧 PNG';return;}
+  if(e.button===2){undo();return;}   // 右键撤销（contextmenu 已拦截，不弹菜单）
+  if(e.button===1||(e.button===0&&spaceDown)){
+    panning=true;viewport.classList.add('panning');
+    panStart={x:e.clientX,y:e.clientY,tx:view.tx,ty:view.ty};
+    try{viewport.setPointerCapture(e.pointerId);}catch(err){}
+    return;
+  }
+  if(e.button!==0)return;
+  drawing=true;
+  try{cv.setPointerCapture(e.pointerId);}catch(err){}
+  pushUndo();paint(pos(e));render();});
+window.addEventListener('pointermove',e=>{
+  if(panning&&panStart){
+    view.tx=panStart.tx+(e.clientX-panStart.x);
+    view.ty=panStart.ty+(e.clientY-panStart.y);
+    applyView();return;
+  }
+  const p=pos(e);
+  document.getElementById('cursor').textContent=`x=${Math.round(p.x)} y=${Math.round(p.y)}`;
+  if(drawing){paint(p);render();}});
+window.addEventListener('pointerup',()=>{drawing=false;panning=false;viewport.classList.remove('panning');});
+window.addEventListener('pointercancel',()=>{drawing=false;panning=false;viewport.classList.remove('panning');});
+
+window.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&!spaceDown){spaceDown=true;viewport.classList.add('pan');e.preventDefault();}
+  if(e.key==='f'||e.key==='F'){fitView();}
+});
+window.addEventListener('keyup',e=>{
+  if(e.code==='Space'){spaceDown=false;viewport.classList.remove('pan');}
+});
+
+function render(){
+  if(!base)return;
+  ctx.clearRect(0,0,W,H);
+  if(document.getElementById('ghost').checked){
+    const tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;
+    const tc=tmp.getContext('2d');tc.drawImage(base,0,0);
+    tc.globalCompositeOperation='destination-out';tc.drawImage(mask,0,0);
+    ctx.drawImage(tmp,0,0);
+  }else{
+    ctx.drawImage(base,0,0);
+  }
+  if(ref&&document.getElementById('showRef').checked){
+    ctx.globalAlpha=0.45;ctx.drawImage(ref,0,0);ctx.globalAlpha=1;
+  }
+  if(document.getElementById('showMask').checked){
+    const ov=document.createElement('canvas');ov.width=W;ov.height=H;
+    const oc=ov.getContext('2d');
+    const src=mctx.getImageData(0,0,W,H), dst=oc.createImageData(W,H);
+    for(let i=0;i<src.data.length;i+=4){
+      if(src.data[i+3]>0){dst.data[i]=225;dst.data[i+1]=29;dst.data[i+2]=72;dst.data[i+3]=110;}
+    }
+    oc.putImageData(dst,0,0);ctx.drawImage(ov,0,0);
+  }
+}
+document.getElementById('export').onclick=()=>{
+  if(!W){alert('请先载入关键帧');return;}
+  const out=document.createElement('canvas');out.width=W;out.height=H;
+  const oc=out.getContext('2d');oc.fillStyle='#000';oc.fillRect(0,0,W,H);
+  oc.drawImage(mask,0,0);
+  out.toBlob(b=>{const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download='mask_key.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);},'image/png');
+};
+applyView();
+</script>
+</body>
+</html>
