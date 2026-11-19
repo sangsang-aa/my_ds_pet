@@ -15,6 +15,7 @@
 
 #include <windows.h>
 
+#include <cstdio>
 #include <string>
 
 #include "bubble/bubble.h"
@@ -23,6 +24,7 @@
 #include "core/settings.h"
 #include "core/util.h"
 #include "pet/pet.h"
+#include "tray/tray.h"
 
 // __argc / __argv are exported by both the MSVC and the MinGW-w64 CRT, so the
 // GUI entry point can still see the (narrow) command-line arguments.
@@ -118,6 +120,49 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
     Bubble bubble;
     bubble.Init(hInstance, hwnd, exeDir, assetsDir);
 
+    // Right-click toolbar + system tray. All side effects are supplied as
+    // callbacks so Pet/Bubble stay independent of the tray module.
+    Tray tray;
+    TrayActions trayActions;
+    trayActions.toggleVisible = [&](bool show) {
+        ShowWindow(hwnd, show ? SW_SHOWNOACTIVATE : SW_HIDE);
+        bubble.SetSuspended(!show);
+        if (show) {
+            SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                         SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+    };
+    trayActions.about = []() {
+        MessageBoxW(nullptr,
+                    L"桌面宠物演示\n\n基于 Win32 分层窗口 + GDI+ 的透明桌宠。",
+                    L"关于桌面宠物", MB_OK | MB_ICONINFORMATION);
+    };
+    trayActions.quit = [&]() { DestroyWindow(hwnd); };
+    trayActions.pauseTopmost = [&](bool paused) { pet.PauseTopmost(paused); };
+
+    // The tray icon is the first frame of the action actually loaded. With no
+    // explicit action that is "idle"; with argv[1] it is that named action.
+    const std::wstring iconAction =
+        WideFromUtf8(explicitAction ? actionUtf8.c_str() : "idle");
+    const std::wstring firstFramePng =
+        exeDir + assetsDir + L"\\" +
+        (iconAction.empty() ? std::wstring(kDefaultAction) : iconAction) +
+        L"\\000.png";
+    std::wstring trayError;
+    const bool trayReady =
+        tray.Init(hInstance, hwnd, firstFramePng, trayActions, trayError);
+    if (!trayReady) {
+        std::wprintf(L"[pet] tray disabled: %ls\n", trayError.c_str());
+    }
+    if (trayReady) {
+        pet.onRightClick = [&tray]() { tray.ShowBar(); };
+        pet.onLeftClick = [&tray]() { tray.HideBar(); };
+        pet.onMoved = [&tray]() { tray.FollowPet(); };
+    } else {
+        // Fall back to the pre-tray behaviour: right-click quits.
+        pet.onRightClick = [&]() { DestroyWindow(hwnd); };
+    }
+
     pet.PresentBase(hwnd);
     ShowWindow(hwnd, SW_SHOWNOACTIVATE);
     SetFocus(hwnd);
@@ -127,6 +172,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
         TranslateMessage(&message);
         DispatchMessageW(&message);
     }
+
+    // The pet window is gone (WM_DESTROY posted the quit message); remove the
+    // tray icon before the process exits so no stale icon is left behind.
+    tray.Shutdown();
 
     return static_cast<int>(message.wParam);
 }

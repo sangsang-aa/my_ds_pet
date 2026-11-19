@@ -27,6 +27,7 @@ struct Bubble {
     int countdown = 0;
     int showLeft = 0;
     bool visible = false;
+    bool suspended = false;  // tray hide: keep the timer from re-showing it
 
     // Loads the emoji list, registers the class and creates the hidden bubble
     // window (owned by petHwnd). Returns false when there is nothing to show.
@@ -35,6 +36,10 @@ struct Bubble {
 
     void OnTimer();
     void OnDestroy();
+
+    // Hide the bubble and stop its timer from showing a new one (used when the
+    // pet is hidden via the tray). Resuming restarts the normal countdown.
+    void SetSuspended(bool value);
 };
 
 LRESULT CALLBACK BubbleWndProc(HWND hwnd, UINT message, WPARAM wParam,

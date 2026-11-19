@@ -153,12 +153,19 @@ bandBottom = by + bh * head_band_percent / 100
 - 宠物每约 1 秒重新置顶，可能把气泡压到下面；气泡定时器发现自己在宠物后面时会再次 `HWND_TOPMOST`。
 - `emoji/` 缺失或为空时只禁用气泡；其余功能不受影响。`emoji/index.json` 当前 **不被代码读取**。
 
-## 9. 退出与焦点
+## 9. 退出、焦点与托盘
 
-- 在宠物像素上右键：`WM_RBUTTONUP` → `DestroyWindow`。
-- 按 ESC：需要窗口有焦点；`WM_KEYDOWN` 收到 `VK_ESCAPE` 后销毁窗口。启动时 `SetFocus`，点击时也会 `SetFocus`。
-- `WM_DESTROY` → `Pet::DestroyResources()`：先删内存 DC，再删所有帧的 `HBITMAP`；气泡作为被拥有窗口一并销毁，`Bubble::OnDestroy` 删除自己的 DC/位图；最后 `PostQuitMessage`。
-- 在透明留白上右键不会退出，因为 `WM_NCHITTEST` 返回 `HTTRANSPARENT`，事件根本到不了宠物窗口。
+- 在宠物像素上右键：`WM_RBUTTONUP` → `Pet::onRightClick` 回调（由 `WinMain` 接到 `Tray::ShowBar`），在宠物下方弹出横向工具栏，不再直接退出。透明留白上的右键仍被 `WM_NCHITTEST` 的 `HTTRANSPARENT` 挡掉，不会弹工具栏。
+- **横向工具栏**是自绘分层窗口（`WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`），不用原生 `TrackPopupMenu`（后者条目只能竖排）。四个按钮按 `GDI+ MeasureString` 实测宽度横向排列：`显示 / 隐藏`（随状态切换文字）、`关于`、`活动`（灰显占位）、`退出`；圆角白底 + 竖分隔线，绘制成 32bpp ARGB 位图后用 `render::PresentLayered` 显示。
+- 定位：以 `GetWindowRect(petHwnd)` 为锚，工具栏居中贴在宠物**下方** `kBarGapPx` 处，并夹到主屏内。宠物每次移动（拖拽或自动游走）后 `Pet::onMoved` → `Tray::FollowPet()` → `PlaceBar()` 重新定位，所以工具栏显示期间始终贴在宠物下方，不会被拖走后留在原地。
+- 关闭：点某个按钮执行动作后关闭、点宠物（`Pet::onLeftClick` → `Tray::HideBar`）关闭、再右键（再次触发 `ShowBar` 时 toggle）关闭。工具栏**不** `SetCapture`：它位于宠物下方且不与宠物矩形重叠，捕获鼠标会把本该给宠物的左键（拖动）抢走，造成“工具栏开着就拖不动、要点两次”的延迟；不捕获后鼠标消息自然落到各自窗口，点宠物那一次点击也不会被吞（`OnLButtonDown` 先关栏再照常 `SetCapture` 拖拽）。每次关闭都恢复宠物置顶。
+- **根治覆盖**：工具栏打开期间 `TrayActions::pauseTopmost(true)` → `Pet::PauseTopmost(true)`，`Pet::OnTimer` 的每秒 `SetWindowPos(HWND_TOPMOST)` 被跳过；关闭时恢复并清零计数。两个窗口不再争 z-order，宠物不会盖住工具栏。
+- 系统托盘：图标为 `idle/000.png` 缩放的 32×32 HICON（首帧解码失败回退 `IDI_APPLICATION`）。左键单击切换显示/隐藏，右键弹同一横向工具栏。`src/tray/` 用消息-only 窗口接收 `Shell_NotifyIcon` 回调，与 Pet/Bubble 解耦。
+- 隐藏宠物时 `Bubble::SetSuspended(true)`：立即隐藏气泡并让气泡定时器停止，避免气泡孤零零冒出；重新显示时重置气泡倒计时。
+- `显示 / 隐藏` 和 `退出` 的具体动作由 `WinMain` 以 lambda 注入 `TrayActions`，tray 模块不知道 `hwnd` 以外的宠物内部状态。
+- 按 ESC：需要窗口有焦点；`WM_KEYDOWN` 收到 `VK_ESCAPE` 后销毁窗口（保持直接退出，不改）。启动时 `SetFocus`，点击时也会 `SetFocus`。
+- `WM_DESTROY` → `Pet::DestroyResources()`：先删内存 DC，再删所有帧的 `HBITMAP`；气泡作为被拥有窗口一并销毁，`Bubble::OnDestroy` 删除自己的 DC/位图；消息循环退出后 `Tray::Shutdown()` 执行 `NIM_DELETE` 并释放工具栏位图/DC/窗口、托盘图标与消息窗，最后 `PostQuitMessage`。
+- 托盘 `NIM_ADD` 失败时降级：右键退回旧行为（直接退出），宠物本身照常运行。见 [D16](06-decisions-and-risks.md#d16-横排工具栏--系统托盘托盘逻辑自成一模块) 与 [R21](06-decisions-and-risks.md#r21-托盘图标与横向工具栏无自动化验证)。
 
 ## 10. 点击穿透
 
@@ -181,7 +188,7 @@ bandBottom = by + bh * head_band_percent / 100
 
 ## 12. 当前没有实现
 
-- 系统托盘、开机自启、安装包；
+- 开机自启、安装包（系统托盘已实现）；
 - 声音、喂食/培养/存档等产品化功能；
 - 多显示器游走（坐标只使用主屏 `SM_CXSCREEN/SM_CYSCREEN`，拖拽也被夹在主屏）；
 - 单实例限制、设置界面、热更新；

@@ -204,8 +204,9 @@ void Pet::EnterWaiting(HWND hwnd) {
 
 void Pet::OnTimer(HWND hwnd) {
     // Re-assert topmost so the pet cannot stay buried behind another topmost or
-    // full-screen window (see kTopmostReassertTicks).
-    if (++topmostTicks >= kTopmostReassertTicks) {
+    // full-screen window (see kTopmostReassertTicks). Skipped while the tray
+    // bar is open, otherwise the pet would cover its own bar.
+    if (!topmostPaused && ++topmostTicks >= kTopmostReassertTicks) {
         topmostTicks = 0;
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -264,6 +265,9 @@ void Pet::OnTimer(HWND hwnd) {
             if (!atEdge) {
                 SetWindowPos(hwnd, nullptr, newLeft, newTop, 0, 0,
                              SWP_NOSIZE | SWP_NOZORDER);
+                if (onMoved) {
+                    onMoved();
+                }
             }
         }
 
@@ -333,6 +337,9 @@ void Pet::OnTimer(HWND hwnd) {
 
 void Pet::OnLButtonDown(HWND hwnd) {
     SetFocus(hwnd);  // make sure the ESC key reaches this window
+    if (onLeftClick) {
+        onLeftClick();  // dismiss the tray bar, but keep this click for dragging
+    }
     mouseDown = true;
     dragging = false;
     GetCursorPos(&mouseDownPos);
@@ -371,6 +378,9 @@ void Pet::OnMouseMove(HWND hwnd, LPARAM lParam) {
         // frozen there (and can be dragged out of reach entirely).
         pet_drag::ClampToScreen(x, y, petW, petH, screenW, screenH);
         SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        if (onMoved) {
+            onMoved();
+        }
     }
     // Mouse sweeping horizontally across the head -> shy reaction. The band is
     // taken from the subject's own box, not the full canvas frame.
@@ -531,7 +541,12 @@ LRESULT CALLBACK PetWndProc(HWND hwnd, UINT message, WPARAM wParam,
         return 0;
 
     case WM_RBUTTONUP:
-        DestroyWindow(hwnd);
+        // Right-click opens the tray menu instead of quitting outright. ESC
+        // remains the direct-exit key. Transparent margins never reach here
+        // because WM_NCHITTEST returns HTTRANSPARENT for them.
+        if (pet != nullptr && pet->onRightClick) {
+            pet->onRightClick();
+        }
         return 0;
 
     case WM_KEYDOWN:

@@ -64,4 +64,11 @@ constexpr int kBubbleMinTicks = 200;     // ~20s at 100ms per tick
 constexpr int kBubbleMaxTicks = 600;     // ~60s
 constexpr int kBubbleShowTicks = 30;     // ~3s visible
 
+// Horizontal toolbar (right-click / tray menu, self-drawn layered window)
+constexpr int kBarHeightPx = 40;         // height of the whole button bar
+constexpr int kBarItemPadPx = 14;        // horizontal padding inside a button
+constexpr int kBarGapPx = 8;             // gap between the bar and the pet
+constexpr int kBarRadiusPx = 10;         // rounded corner radius of the bar
+constexpr int kBarFontSizePx = 13;       // button label font size (points)
+
 #endif  // PET_CONFIG_H

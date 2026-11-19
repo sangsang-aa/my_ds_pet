@@ -5,6 +5,7 @@
 
 #include <windows.h>
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -42,6 +43,7 @@ struct Pet {
     int screenH = 0;
     int waitTicks = 0;
     int topmostTicks = 0;
+    bool topmostPaused = false;  // tray bar open: skip periodic re-assert
     pet_sweep::State sweep;
     int lastMouseX = 0;
     int lastMouseY = 0;
@@ -56,6 +58,15 @@ struct Pet {
     int petW = 0;
     int petH = 0;
     const Frame* currentFrame = nullptr;  // frame on screen, for hit testing
+
+    // Wired by WinMain: right-click requests the tray popup bar. Keeping this
+    // as a callback avoids a dependency from Pet to the tray module.
+    std::function<void()> onRightClick;
+    // Left-click on the pet: dismiss the tray bar if open. The click is still
+    // fully handled here (drag/click reaction), so no input is swallowed.
+    std::function<void()> onLeftClick;
+    // Pet window moved (drag or autonomous walk): let the tray bar follow.
+    std::function<void()> onMoved;
 
     // Load every behavior in the registry (plus the idle pool) relative to
     // (exeDir, assetsDir). On failure returns false and fills `error`.
@@ -80,6 +91,15 @@ struct Pet {
     void OnLButtonUp(HWND hwnd);
     void OnCaptureChanged(HWND hwnd);
     void DestroyResources();
+
+    // Pause/resume the periodic HWND_TOPMOST re-assert while the tray bar is
+    // open, so the pet cannot climb above its own bar.
+    void PauseTopmost(bool paused) {
+        topmostPaused = paused;
+        if (!paused) {
+            topmostTicks = 0;
+        }
+    }
 
 private:
     int PickNextAuto() const;

@@ -245,6 +245,9 @@ bool Bubble::Init(HINSTANCE hInstance, HWND petWindow,
 }
 
 void Bubble::OnTimer() {
+    if (suspended) {
+        return;  // pet is hidden via the tray; never show a stray bubble
+    }
     if (visible) {
         showLeft -= 1;
         if (showLeft <= 0) {
@@ -258,6 +261,22 @@ void Bubble::OnTimer() {
         if (countdown <= 0) {
             ShowBubble(*this);
         }
+    }
+}
+
+void Bubble::SetSuspended(bool value) {
+    if (value == suspended) {
+        return;
+    }
+    suspended = value;
+    if (value) {
+        if (visible) {
+            HideBubble(*this);
+        }
+    } else {
+        // Restart a full interval so a bubble does not pop immediately after
+        // the pet is shown again.
+        countdown = NextBubbleInterval(*this);
     }
 }
 

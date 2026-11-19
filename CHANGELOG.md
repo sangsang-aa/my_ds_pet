@@ -13,10 +13,17 @@
 - `docs/index.md`：全仓库文档总索引。
 - `docs/guides/asset-toolchain.md`：抠图工具链与 MCP 配置（从 `README.md` 下沉）。
 - `docs/guides/experiments.md`：`output/` 下图像生成与 Spine 拆件实验产物索引。
+- 系统托盘与右键横向工具栏（`src/tray/`）：托盘图标取 `idle/000.png`，左键显示/隐藏、右键在宠物下方弹一条自绘横排按钮栏（显示隐藏/关于/活动占位/退出）；`Pet::onRightClick` 与 `PauseTopmost`、Bubble 的 `SetSuspended` 作为回调接出，显示/隐藏/关于/退出由 `WinMain` 注入。退出执行 `NIM_DELETE`，不留残影。
 
 ### Changed
 - `README.md` 精简为「项目导航 + 用户手册」；工具链、编译细则、技术要点下沉到 `docs/`。
 - 修正 README 两处自相矛盾：预编译 exe 随仓库分发的说法、资产帧数的过期标注。
+- 修复右键界面被人物覆盖：右键菜单改为自绘横排工具栏并放到宠物下方；工具栏打开期间 `Pet::PauseTopmost(true)` 暂停每秒置顶重置，关闭时恢复，根治 z-order 争抢。
+- 修复工具栏打开时无法拖动宠物（输入延迟）：工具栏不再 `SetCapture` 抢鼠标，鼠标消息自然分发到宠物/工具栏；点宠物时经 `Pet::onLeftClick` 先关工具栏、本次左键照常用于拖动，不吞点击。
+- 修复拖拽后工具栏留在原地：新增 `Pet::onMoved` → `Tray::FollowPet()`，宠物移动（拖拽/游走）时工具栏重新定位，显示期间始终贴在宠物下方。
+- 右键从直接退出改为弹工具栏；ESC 仍直接退出。三条构建路径补 `shell32` 链接，
+  CMake/`build.bat` 的 cl 路径补 `src/tray/tray.cpp`。
+- 决策 D16 与风险 R21 记入 `docs/architecture/06-decisions-and-risks.md`。
 
 ## [2026-11-16] — bounds 缩放修复与架构文档
 

@@ -16,9 +16,11 @@ add_executable(pet_demo WIN32
     src/core/settings.cpp
     src/pet/behaviors.cpp
     src/pet/pet.cpp
+    src/tray/tray.cpp
     src/bubble/bubble.cpp)
 
 target_include_directories(pet_demo PRIVATE src)
 
 # Resolves to gdiplus.lib on MSVC and -lgdiplus on MinGW-w64.
-target_link_libraries(pet_demo PRIVATE gdiplus)
+# shell32 provides Shell_NotifyIconW for the system tray.
+target_link_libraries(pet_demo PRIVATE gdiplus shell32)
