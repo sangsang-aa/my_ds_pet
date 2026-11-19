@@ -68,7 +68,10 @@ desktop_pet_image/
 
 所有动作帧实测为 384×512 RGBA。当前实际预载帧数：`1 + 30 + 30 + 27 + 30 + 30 + 30 + 40 = 218`（idle + 7 条注册行为）。总资产帧数（含未注册）为 308。
 
-> 根 `README.md` 的帧数已经过期（`idle 30`、`clicked 33`、`shy 30`、`walking_right 27`、`walking_up 30` 等）。以本表为准；详细对照见 [`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md#文档漂移对照)。
+> 根 `README.md` 的帧数已按本表同步（R2，2026-11-16）；历史上曾过期
+> （`idle 30`、`clicked 33`、`shy 30`、`walking_right 27`、`walking_up 30` 等），
+> 漂移证据保留在 [`../archives/2026-11-16-baseline.md`](../archives/2026-11-16-baseline.md#文档漂移对照)。
+> 两者若再冲突，以本表和实测为准。
 
 ## 4. `bounds.txt`
 

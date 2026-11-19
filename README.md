@@ -1,303 +1,108 @@
 # 桌面宠物演示（Desktop Pet Demo）
 
-基于 Win32 分层窗口（Layered Window）API + GDI+ 的透明悬浮桌面宠物演示程序。
-读取指定动作目录下的 PNG 帧序列（`000.png`、`001.png` ...），以约 10 fps
-循环播放，窗口透明、置顶、无边框。
+基于 Win32 分层窗口 + GDI+ 的透明悬浮桌面宠物。读取 `desktop_pet_image/<动作>/`
+下的 PNG 帧序列（`000.png`、`001.png` …），约 10 fps 循环播放，窗口透明、置顶、无边框。
+
+> 想参与开发？先看 [`CONTRIBUTING.md`](CONTRIBUTING.md) 和
+> [`docs/index.md`](docs/index.md)（全仓库文档索引）。
 
 ## 运行
 
-把 `pet_demo.exe` 放在任意目录，并保证其同级存在资源目录
-`desktop_pet_image\<动作名>\000.png ...`（仓库里已预编译好
-`pet_demo.exe`（x86-64）与 `pet_demo_x86.exe`（32 位））：
+把 `pet_demo.exe` 放在任意目录，并保证同级存在资源目录 `desktop_pet_image/`。
+`build.bat` 构建后会在仓库根生成 exe；仓库不随附预编译 exe。
 
 ```
 pet_demo.exe                   无参数 = 加载基底待机池（当前只有 idle）
 pet_demo.exe idle              强制单个待机动作，不做随机切换
 pet_demo.exe walking_right     强制播放其它单个动作
-pet_demo.exe idle desktop_pet_image_video   # 第二个参数指定资源目录（默认 desktop_pet_image）
+pet_demo.exe idle <资源目录>   第二个参数指定资源目录（默认 desktop_pet_image）
 ```
 
-**基底待机**：无参数启动时，程序把 `idle` 作为「待机动画池」；当前池中只有 `idle`
-（1 帧），所以视觉上是静止的。`idle2` 有 30 帧但当前未注册；要恢复随机切换，需在
-`Pet::Load` 的基底池里加回它。显式传入第一个参数则固定该动作、不做随机切换。
+资源路径从**可执行文件所在目录**解析，不依赖当前工作目录；exe 必须和
+`desktop_pet_image/` 同级，否则弹错误框（会列出资源目录和实际可用的动作）。
 
-程序启动时会加载：基底待机池（当前只有 `idle`，1 帧）+ 固定的 `clicked` 动作（被点击时
-播放一次）+ `shy` 动作（鼠标扫过头顶时播放一次）+ 固定的 `drag` 动作（被拖拽时循环
-播放）+ 固定的**四方向移动**动作 `walking_left` / `walking_right` / `walking_up` /
-`walking_down`。各文件夹不存在或为空时打印 `... not found` / `loaded=0/120` 并禁用
-对应行为（移动只有部分方向时，只在这些方向里随机）。
+### 当前行为
 
-**待机 ↔ 行走状态链**：宠物在待机状态停留一段随机时间（约 3~10 秒）后，随机选择
-**上 / 下 / 左 / 右**四个方向之一移动；同时**窗口沿该方向移动**（每 100ms 移动 5px）；
-走到**屏幕边缘**或移动时长到后回到待机，如此往复。
+- **待机**：`idle` 单帧静止；停留约 3~10 秒后随机选一个方向移动。
+- **四向移动**：左右是走路循环；`walking_up` 素材是**飞起**（正放再倒放），
+  `walking_down` 是**俯冲**（必须播到落地末帧）。窗口每 tick 移动 5 px，
+  撞主屏边缘或时长到后回到待机。
+- **拖后等待**：拖拽松手后约 2~3 分钟只待机、不自动移动；单击仍有反应但不重置计时。
+- **扫头害羞**：鼠标在头顶左右扫过（两次换向）播放一次 `shy`，约 2.5 秒冷却。
+- **气泡表情**：每 20~60 秒在头顶弹出一张 `emoji/` 里的表情图，约 3 秒消失；
+  独立窗口、点击穿透、跟随宠物。`emoji/` 缺失则只禁用气泡。
+- **点击穿透**：只有画到宠物身上的像素响应鼠标，透明留白处点击/右键会落到下层窗口。
 
-> 四个方向不是同一种播放方式：
-> - 左 / 右是闭合走路循环，用 `Loop`，时长约 1.5~4.5 秒；
-> - `walking_up` 的素材是**飞起**，用 `Boomerang`（正向飞起再倒放回落地），周期固定
->   52 tick（约 5.2 秒）；
-> - `walking_down` 的素材是**俯冲**，用 `FullCycle`，必须播到最后一个落地帧才回待机；
->   目标时长 1.5~4.5 秒，但会延到末帧（常见约 2.9 或 5.9 秒）。
->
-> 竖向动作在**时长到 / 撞边缘**后不会立刻切回待机，而是继续到安全帧（`Boomerang` 回
-> 首帧，`FullCycle` 到末帧）——否则宠物会停在半空或起跳前的预备姿势上。
+### 操作方式
 
-**拖拽后等待**：把宠物拖到某个位置松手后，宠物进入约 **2~3 分钟**的"等待"阶段——
-只循环 `idle` 待机动画、**不做移动**；等待计时结束后再恢复上面的
-待机 ↔ 行走链。等待期间左键单击只会播放 `clicked` 反应并继续等待，不会打断计时；
-再次拖拽会重新计时。
+| 操作 | 效果 |
+|---|---|
+| 左键单击 | 播放一次 `clicked` 反应 |
+| 左键按住拖动 | 跟随光标，循环 `drag` 挣扎动画；松手进入等待 |
+| 鼠标在头顶左右扫 | 播放一次 `shy` |
+| 在宠物像素上右键 | 退出程序 |
+| ESC | 退出程序（需窗口有焦点） |
 
-**扫头害羞**：鼠标在宠物头部（主体顶部约 0~25%，由 `head_band_percent` 减去 20% 内缩
-算出）左右扫过（累计水平位移超过阈值）时，播放一次 `shy` 害羞动画；有约 2.5 秒冷却，
-避免连续触发。
+## 帧与素材约定
 
-**气泡表情包**：程序会**不定期（约 20~60 秒）**在宠物头顶弹出一个气泡，随机显示
-`desktop_pet_image\emoji\emoji_01.png ...` 中的一张表情包，约 3 秒后消失。气泡是**独立的
-分层窗口**，用 `WS_EX_TRANSPARENT` 实现**点击穿透**（不挡宠物的点击/拖拽），并持续跟随
-宠物移动。`emoji\` 目录缺失或为空时打印 `no emoji stickers, bubble disabled` 并禁用该功能
-（其余功能不受影响）。表情包不随仓库分发，把自己的图片放进去即可：
-`python tools/make_emoji.py <图片或目录>` 会自动编号并缩放，详见
-`desktop_pet_image\emoji\README.md`。用 `MCPS/fetch_emoji.py` 抓取也可以（见文末）。
+- 帧为 **PNG + alpha 通道（RGBA）**；动作帧命名 `NNN.png`（3 位），从 `000` 起连续，
+  遇第一个缺号停止，最多 120 帧。GDI+ **不解码 WebP**。
+- 所有动作统一画布 384×512；窗口按 `scale_factor=0.70` 缩放 → 269×358。
+- 每个动作可带 `bounds.txt`（每行一帧的 `x y w h`，源画布坐标），供气泡定位与扫头判定用。
+- `idle2` / `busy` / `peek` 有帧但**未注册**，当前不会播放（见
+  [`06-decisions-and-risks.md` R3](docs/architecture/06-decisions-and-risks.md#r3-未注册的动作)）。
+- 实测帧数：`idle` 1、`walking_left/right/down` 30、`walking_up` 27、
+  `clicked` 30、`drag` 30、`shy` 40。
 
-**启动失败会有弹窗**：GUI 程序没有控制台，找不到帧时不再静默退出，而是弹出错误框，
-写明「资源目录、请求的动作、该目录下实际可用的动作」，方便排查（例如动作名拼错、
-资源目录放错位置、素材缺失）。
-
-操作方式：
-
-- 左键单击：播放 `clicked` 反应动画一次，播完回到待机/等待
-- 左键按住拖动：移动宠物，同时**循环播放 `drag` 挣扎动画**；松手后进入 2~3 分钟等待
-  （位移超过系统拖拽阈值才进入拖动，否则视为点击）
-- 鼠标在头顶左右扫过：播放 `shy` 害羞动画一次
-- 右键单击宠物本体：退出程序
-- 按 ESC：退出程序
-
-> **只有画到宠物身上的像素才响应鼠标**：窗口是整块 269×358 的矩形，但透明留白
-> （约占窗口一半）会**点击穿透**，落到它后面的桌面或窗口上。所以右键点在宠物旁边的
-> 透明区域不会退出程序——这个行为由 `WM_NCHITTEST` + 逐帧 alpha 掩码实现。
-
-## 帧加载约定
-
-程序以「可执行文件所在目录」为基准（通过 `GetModuleFileNameW` 获取，再截掉文件名），
-拼接 `<资源目录>\<action>\NNN.png`（`NNN` 为 3 位零填充序号）。不依赖当前
-工作目录，也不写死绝对路径。
-
-- 从 `000.png` 开始连续加载
-- 遇到第一个不存在的帧立即停止
-- 只循环播放实际加载成功的帧
-  （例如 `000.png`、`001.png`、`002.png` 存在而 `003.png` 缺失，则循环播放这 3 帧）
-- 最多尝试 120 帧（`000` ~ `119`）
-- 只存在 `000.png` 时程序正常运行，循环播放这一帧
-- 启动时向 stdout 输出类似 `[pet] idle 'idle' loaded=1/120 frames`、
-  `[pet] random idle enabled across 1 animations`、`[pet] walking_left loaded=30/120 frames`、
-  `[pet] walking_up loaded=27/120 frames`、`[pet] clicked loaded=30/120 frames`、
-  `[pet] shy loaded=40/120 frames`、`[pet] emoji loaded=6 stickers`、
-  `[pet] bubble enabled (252x252, 6 stickers)`
-
-> 素材说明（2026-11-16 实测）：`idle` 1 帧、`idle2` 30 帧（未注册）、`walking_left` 30 帧、
-> `walking_right` 30 帧、`walking_up` 27 帧、`walking_down` 30 帧、`clicked` 30 帧、
-> `drag` 30 帧、`shy` 40 帧、`busy` 30 帧（未注册）、`peek` 30 帧（未注册）。
-> `thinking/` 不存在；原 `desktop_pet_image_video\` 目录内容与之重复，可删除。
-
-## 图片要求
-
-- 必须为 PNG 格式，带 alpha 通道（RGBA），透明区域才能正确显示
-- **所有动作必须同一画布尺寸**（当前 `384x512`：人物约 355 高 + 上方留白给飞行/跳跃）；窗口大小取自第一帧
-- 每个动作可带一个 `bounds.txt`（每行一帧的 `x y w h`，人物在该帧里的实际边界，由 `MCPS/prepare_action.py` 生成；坐标是 384×512 源画布，程序显示时按 `scale_factor` 换算到窗口）——气泡与扫头判定会跟随它，而不是整块画布
-- 窗口大小自动适配第一帧的像素尺寸，并按 `kScaleFactor = 0.70` 缩小显示
-  （源图 384x512 → 屏幕上约 269x358，上方留白给飞行/跳跃动作）；嫌大/嫌小改 `src/core/config.h` 里的常量即可
-
-## 去背景工具（RGB → RGBA）
-
-`/home/zh180/MCPS/convert_rgba.py` 批量把带纯色背景的图片（PNG/JPG 等）转换为透明背景 RGBA PNG，
-用于给桌宠素材抠掉白色（或任意纯色）背景：
-
-```
-python3 /home/zh180/MCPS/convert_rgba.py desktop_pet_image --recursive
-```
-
-- 默认 `--mode flood`：只抠掉与图片边缘连通的背景（保留角色身上与背景同色的部分，如白色皮肤）
-- `--mode chroma`：抠掉所有与背景色接近的像素（更激进，肢体间缝隙也会抠掉，但可能误伤角色浅色部位）
-- `--threshold 60`：背景色判定阈值（RGB 距离）；`--feather 25`：边缘羽化宽度
-- `--backup`：覆盖前把原图复制为 `<文件>.orig`；`--delete-source`：转换后删除非 PNG 源文件
-- `--clear-corners`：抠图后**擦掉四角的小块孤立残留**（会移动的 AI 水印）；角色是超大连通域、不会被误擦。
-  `--corner-size WxH`（默认 `96x48`）决定角框大小，`--corner-max-px N`（默认 `2000`）是「多大算角色」的下限
-- 已透明的 RGBA 图自动跳过（幂等），补新帧后重跑即可；**带 `--clear-corners` 时例外**——这类图跳过抠图、只擦四角水印
-- 输出始终为同名 `.png`，与程序帧加载约定（`<action>/NNN.png`）一致
-
-补帧流程：把新帧图放进 `desktop_pet_image/<action>/` → 跑一遍上面的命令 → 重开 demo。
-
-### 作为 MCP 工具调用（推荐）
-
-`/home/zh180/MCPS/rgba_convert_mcp.py` 把上面的抠图功能封装成 MCP server，已注册在
-`~/.config/opencode/opencode.jsonc`（名称 `rgba-convert`）。重启 opencode 后，
-直接让 AI 调用 `convert_to_rgba` 即可，无需手敲命令行。
-
-（MCP 相关脚本统一放在 `/home/zh180/MCPS/`，`convert_rgba.py` 与
-`rgba_convert_mcp.py` 同级，后者通过脚本目录自动 import 前者。）
-
-工具参数（与 `convert_rgba.py` 一致）：`paths`（必填，文件/目录列表）、
-`recursive`、`mode`、`threshold`、`feather`、`backup`、`delete_source`、`force`、
-`dry_run`。返回逐文件日志 + 汇总行。
-
-**GIF 支持**：输入也可以是**动图 GIF**。对多帧 GIF，会**逐帧抠图**并输出成
-**PNG 帧序列**到一个同名同级文件夹（去扩展名），例如
-`视频文件/pet_parachute_down.new.gif` → `视频文件/pet_parachute_down.new/000.png … 023.png`，
-保留完整 alpha（GIF 本身只有 1-bit 透明，故不做透明 GIF，改用 PNG 帧）。已含透明通道的
-GIF 会被跳过（可用 `force` 强制处理）。
-
-> 实现要点：MCP stdio 用 stdout 传输 JSON-RPC，而抠图函数会 print 到 stdout，
-> 因此 server 用 `contextlib.redirect_stdout` 把输出重定向到缓冲区再作为工具结果返回，
-> 避免污染协议。
-
-## 代码结构
-
-源码在 `src/`，按职责分模块：
-
-| 文件 | 职责 |
-|------|------|
-| `src/main.cpp` | `WinMain` 装配：加载资源 → 建宠物窗/气泡窗 → 消息循环 |
-| `src/core/` | **基础功能**：`config.h`（默认值）· `settings.*` + `inifile.h`（`pet.ini` 覆盖）· `bounds.*`（当前帧人物边界，气泡/扫头判定用）· `gdi.h` · `util.*` · `assets.*`（帧加载 + `bounds.txt`）· `render.*`（分层窗口绘制） |
-| `src/pet/` | **桌宠本体**：`behavior.h` + `behaviors.cpp`（**行为注册表**）· `pet.*`（注册表驱动的行为播放器）· `walk_logic.h`（纯逻辑） |
-| `src/bubble/` | **发表情包**：`bubble.*`（气泡窗口，独立定时器 + 点击穿透）· `bubble_logic.h`（纯逻辑） |
-
-新增功能（例如「培养」）建议加一个 `src/<feature>.*` 模块，尽量只依赖 `config.h` / `util.h`，
-不要直接改 `pet.*`。
+补帧、抠图、GIF 逐帧与 MCP 工具见 [`docs/guides/asset-toolchain.md`](docs/guides/asset-toolchain.md)；
+修绿边见 [`edge-repair.md`](docs/guides/edge-repair.md)。
+**硬规则：永不删除动作的源视频 / 源帧导出**——`NNN.png` 是有损派生产物。
 
 ## 参数配置（`pet.ini`，可选）
 
-在资源目录放一个 `desktop_pet_image/pet.ini` 就能**不重编译**调参数；文件不存在则全部用
-`src/core/config.h` 里的默认值。格式是极简 INI：`#` / `;` 注释必须**单独成行**，
-不支持行尾注释；写错的值忽略并回退默认。
+把 [`config/pet.example.ini`](config/pet.example.ini) 复制到
+`desktop_pet_image/pet.ini` 即可不重编译调参数；文件不存在则用 `src/core/config.h`
+默认值。可覆盖待机/等待时长、头部带、扫头阈值、缩放、气泡尺寸与间隔，
+以及每个行为 section 的 `min_ticks` / `max_ticks` / `weight` / `dx` / `dy`。
 
-```ini
-[pet]
-idle_min_ticks = 30
-idle_max_ticks = 100
-wait_min_ticks = 1200
-wait_max_ticks = 1800
-head_band_percent = 45
-sweep_threshold_px = 50
-max_sweep_delta_px = 80
-scale_factor = 0.70
+> 注释必须单独成行（不支持行尾 `;` 注释）；值非法会静默回退默认；`scale_factor` 改后需重启。
+> 完整键表见 [`04-assets-and-config.md`](docs/architecture/04-assets-and-config.md)。
 
-[bubble]
-emoji_size_px = 220
-pad_px = 10
-radius_px = 10
-tail_w = 18
-tail_h = 12
-gap_px = 4
-min_ticks = 200
-max_ticks = 600
-show_ticks = 30
+## 代码结构
 
-# 每个行为一个 section（名字 = desktop_pet_image/<action>），可覆盖该行为：
-[walking_up]
-min_ticks = 52
-max_ticks = 52
-weight = 1
-dy = -5
+| 位置 | 职责 |
+|---|---|
+| `src/main.cpp` | `WinMain` 装配：资源 → 建宠物窗/气泡窗 → 消息循环 |
+| `src/core/` | 基础功能：config、settings + inifile、bounds、gdi、util、assets、render |
+| `src/pet/` | 桌宠本体：`behavior.h` + `behaviors.cpp`（行为注册表）、`pet.*`、纯逻辑 walk/drag/sweep |
+| `src/bubble/` | 发表情包：`bubble.*`（独立窗口与定时器）、`bubble_logic.h` |
+
+加行为只需在 `MutableBehaviors()` 追加一条 `Spec` 并放好帧目录，`pet.cpp` 不用改。
+分层边界与接口契约见 [`03-modules-and-contracts.md`](docs/architecture/03-modules-and-contracts.md)。
+
+## 编译与测试
+
+```powershell
+taskkill /IM pet_demo.exe /F    # 关掉运行中的宠物，否则 exe 被锁
+cmd /c build.bat                # 依次尝试 cl → g++ → CMake
 ```
 
-`head_band_percent = 45` 的实际判定底边还要减去 20% 的内缩，默认有效带是主体顶部
-0~25%；`[walking_up]` 的 52 tick 对应飞起动画的一个完整回摆周期。
+也可直接用 CMake / MinGW / MSVC 命令，细则与 8 个测试的跑法见
+[`docs/architecture/05-build-and-tests.md`](docs/architecture/05-build-and-tests.md)。
+行为/视觉需在 Windows 上实际运行验证；纯逻辑有 8 个断言测试。
 
-## 开发文档
+## 文档导航
 
-| 位置 | 内容 |
-|------|------|
-| `AGENTS.md` | 给协作者 / AI 的工作约定与踩坑记录（构建、测试、资产约定） |
-| `docs/architecture/README.md` | 当前代码事实、模块边界、数据契约、风险（改代码前先读） |
-| `docs/archives/README.md` | 带日期的不可变工程快照与基线 |
-| `docs/guides/reference-dsh-whale-musume.md` | 与参考桌宠工程的逐层对照：可借鉴的工程纪律与优先级 |
-| `docs/guides/asset-packaging.md` | 帧序列要不要打包：PNG 图集 vs 动画 WebP 的实测对比 |
-| `docs/guides/edge-repair.md` | 抠图残留"绿边"的诊断与修复，含**原视频必须保存**的硬标准 |
-| `tools/fix_edges.py` | 修青色/绿色边缘环、透明区幽灵 RGB、孤立白点（用法见 `docs/guides/edge-repair.md`） |
-| `tools/make_emoji.py` | 把任意图片/GIF 变成编号连续的 `emoji/emoji_01.png ...` 表情包 |
-| `tools/migrate_canvas.py` | 旧画布（384×456 / 384×384）顶部补齐到 384×512 |
+完整索引见 [`docs/index.md`](docs/index.md)。常用入口：
 
-## 编译
+| 文档 | 内容 |
+|---|---|
+| [`AGENTS.md`](AGENTS.md) | 协作约定与踩坑（构建、测试、资产命名） |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | 分支、提交、改代码与文档同步流程 |
+| [`CHANGELOG.md`](CHANGELOG.md) | 变更记录 |
+| [`docs/architecture/README.md`](docs/architecture/README.md) | 当前代码事实（改代码前先读） |
+| [`docs/guides/README.md`](docs/guides/README.md) | 方案对比、实测、工具链、实验索引 |
+| [`docs/archives/README.md`](docs/archives/README.md) | 带日期的不可变工程快照 |
 
-### 方法一：MSVC 一行命令（推荐）
-
-打开「x64 Native Tools Command Prompt for VS 2022」（开始菜单 → Visual Studio 2022 →
-x64 Native Tools Command Prompt for VS 2022），进入本目录后执行：
-
-```
-build.bat
-```
-
-或直接手动执行等价命令：
-
-```
-cl /nologo /EHsc /std:c++17 /O2 src\*.cpp src\core\*.cpp src\pet\*.cpp src\bubble\*.cpp /I src gdiplus.lib user32.lib gdi32.lib /link /SUBSYSTEM:WINDOWS /OUT:pet_demo.exe
-```
-
-`build.bat` 优先尝试上面的 `cl` 命令；若当前环境没有 `cl`（不在开发者命令行里），
-会自动回退到 CMake + Visual Studio 生成器编译。
-
-如需 32 位（x86），请改用「x86 Native Tools Command Prompt for VS 2022」执行同样的
-`cl` 命令（或 CMake 生成器用 `-A Win32`）。
-
-### 方法二：CMake（MSVC）
-
-```
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
-cmake --build build --config Release
-```
-
-产物位于 `build\Release\pet_demo.exe`。
-
-### 方法三：MinGW-w64
-
-64 位（x86-64）：
-
-```
-x86_64-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
-```
-
-32 位（x86）：
-
-```
-i686-w64-mingw32-g++ -std=c++17 -O2 -mwindows -Isrc src/main.cpp src/core/util.cpp src/core/assets.cpp src/core/render.cpp src/pet/behaviors.cpp src/pet/pet.cpp src/bubble/bubble.cpp -lgdiplus -luser32 -lgdi32 -o pet_demo.exe
-```
-
-> ⚠️ 上面两条**逐个列出源文件**是为了兼容 Windows `cmd`：cmd **不展开通配符**，`g++` 自己也不展开，
-> 写成 `src/*.cpp src/*/*.cpp` 会把字面量原样传给编译器并报 `Invalid argument`。
-> 只有在 **POSIX shell**（WSL / Git-Bash / MSYS）里才可以用通配符 `src/*.cpp src/*/*.cpp`。
-> 省事可直接跑 `build.bat`（自动探测 `cl` / `g++` / `cmake`）。
-
-或使用 CMake + MinGW Makefiles：
-
-```
-cmake -S . -B build-mingw -G "MinGW Makefiles"
-cmake --build build-mingw
-```
-
-注意：`WIN32` 子系统（`/SUBSYSTEM:WINDOWS` / `-mwindows`）保证程序运行时不弹出控制台窗口。
-
-## 技术要点
-
-- 全部使用宽字符（`W` 后缀）Win32 API；入口为 `WinMain`，通过 `__argc/__argv`
-  取得命令行参数，并用 `MultiByteToWideChar(CP_UTF8, ...)` 转换为宽字符串
-- 窗口样式：`WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW`，窗口类样式
-  `CS_HREDRAW | CS_VREDRAW`，普通窗口过程（非对话框）
-- GDI+ 加载 PNG：`GdiplusStartup` + `Gdiplus::Bitmap`（宽字符路径）+
-  `GetHBITMAP(Gdiplus::Color(0,0,0,0), &hbmp)` + `GdiplusShutdown`（RAII 封装）
-- 合成：`CreateCompatibleDC` + `SelectObject(HBITMAP)` +
-  `UpdateLayeredWindow(..., ULW_ALPHA)`；`BLENDFUNCTION` 对 RGBA 帧用
-  `AlphaFormat = AC_SRC_ALPHA`（逐像素透明），对 RGB 帧用 `AlphaFormat = 0` +
-  `SourceConstantAlpha = 255`（整帧不透明）
-- 动画：`SetTimer(hwnd, TIMER_ID, 100, nullptr)` 约 10 fps，`WM_TIMER` 中推进帧序号
-  并重新调用 `UpdateLayeredWindow`；基底动作循环播放，`clicked` 动作播完一次自动
-  切回基底（断点续播），`drag` 动作在拖拽期间循环、松手切回基底
-- 点击/拖拽：`WM_LBUTTONDOWN` 时 `SetCapture` 记录按下位置；`WM_MOUSEMOVE` 中位移
-  超过 `SM_CXDRAG/SM_CYDRAG` 判定为拖动（`SetWindowPos` 跟随光标，抓取点保持在
-  光标下），否则 `WM_LBUTTONUP` 视为单击 → 触发 `clicked` 反应
-- 缩放：加载时用 GDI+ `Graphics::DrawImage`（`InterpolationModeHighQualityBicubic`）
-  按 `kScaleFactor=0.70` 缩放；缩放保持源的像素格式（RGB 保持不透明、RGBA 保持
-  逐像素 alpha）
-- 退出：`WM_RBUTTONUP` 与 `WM_KEYDOWN`（`VK_ESCAPE`）→ `DestroyWindow` → `PostQuitMessage`
-- 所有帧在启动时一次性预加载为 `std::vector<Frame>`（`Frame` 含 `HBITMAP` 与
-  `hasAlpha` 标记），基底与 `clicked` 两个动作分别存放，退出时全部
-  `DeleteObject`；内存 DC 也在退出时 `DeleteDC`，无 GDI 泄漏
+`output/` 下约 509 MB 图像生成 / Spine 拆件实验产物的说明见
+[`docs/guides/experiments.md`](docs/guides/experiments.md)。
